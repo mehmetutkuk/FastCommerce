@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastCommerce.DAL", "FastCommerce.DAL\FastCommerce.DAL.csproj", "{B0BD1900-865C-4A63-8907-CE66A1C1D71D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastCommerce.Entities", "FastCommerce.Entities\FastCommerce.Entities.csproj", "{B4451396-2F09-44E7-BF3F-F8111513495E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B0BD1900-865C-4A63-8907-CE66A1C1D71D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0BD1900-865C-4A63-8907-CE66A1C1D71D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0BD1900-865C-4A63-8907-CE66A1C1D71D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0BD1900-865C-4A63-8907-CE66A1C1D71D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4451396-2F09-44E7-BF3F-F8111513495E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4451396-2F09-44E7-BF3F-F8111513495E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4451396-2F09-44E7-BF3F-F8111513495E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4451396-2F09-44E7-BF3F-F8111513495E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D3B4023-0E22-4A2B-BDB7-0EBCB5F9337A}
+	EndGlobalSection
+EndGlobal
