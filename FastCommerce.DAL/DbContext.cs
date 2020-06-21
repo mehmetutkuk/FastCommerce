@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FastCommerce.Entities.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,12 +16,10 @@ namespace FastCommerce.DAL
         public DbSet<RoleObject> RoleObjects { get; set; }
         public DbSet<User> Users { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=fastCommerce;Username=postgres;Password=123");
-
 
         public ProductContext(DbContextOptions options) : base(options)
         {
+
         }
     }
 

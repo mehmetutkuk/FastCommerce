@@ -1,0 +1,39 @@
+version: '3.4'
+
+networks:
+  dockerapi-dev:
+    driver: bridge 
+
+services:
+  fastcommerce.web.api:
+    image: ${DOCKER_REGISTRY-}fastcommercewebapi
+    depends_on:
+      - "postgres_image"
+      - "redis_image"
+    build:
+      context: .
+      dockerfile: FastCommerce.Web.API/Dockerfile
+    environment:
+      DB_CONNECTION_STRING: "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword"      
+    networks:
+      - dockerapi-dev
+  postgres_image:
+    image: postgres:latest
+    ports:
+      - "5432"
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgresPassword"
+      POSTGRES_DB: "fastCommerce"
+    networks:
+      - dockerapi-dev
+  redis_image:
+    image: redis:latest
+    ports:
+      - "6379"
+    restart: always
+    networks:
+      - dockerapi-dev
+volumes:
+  database-data:

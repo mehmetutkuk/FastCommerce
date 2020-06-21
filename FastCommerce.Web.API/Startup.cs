@@ -29,8 +29,18 @@ namespace FastCommerce.Web.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            var ConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
             services.AddDbContext<ProductContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("ProductContext")));
+            
+            options.UseNpgsql(ConnectionString));
+            
+
+            services.AddMemoryCache();
+            
+            services.AddStackExchangeRedisCache(options => { 
+                options.Configuration = Environment.GetEnvironmentVariable("REDIS_IP"); 
+            });
+            
             services.AddSwaggerGen(c =>
             {
    
