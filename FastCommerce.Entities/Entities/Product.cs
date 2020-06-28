@@ -8,7 +8,7 @@ namespace FastCommerce.Entities.Entities
     {
         public int ProductID { get; set; }
         public string ProductName { get; set; }
-
+        public DateTime LastModified { get; set; }
 
     }
 }

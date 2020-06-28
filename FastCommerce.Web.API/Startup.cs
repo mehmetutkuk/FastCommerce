@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FastCommerce.DAL;
+using FastCommerce.Entities.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,11 +14,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Nest;
 
 namespace FastCommerce.Web.API
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,11 +32,14 @@ namespace FastCommerce.Web.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddElasticsearch(Configuration);
+
             var ConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
             services.AddDbContext<ProductContext>(options =>
             
             options.UseNpgsql(ConnectionString));
-            
+
+//            services.AddElasticsearch(Configuration);
 
             services.AddMemoryCache();
             
@@ -91,5 +97,30 @@ namespace FastCommerce.Web.API
                 endpoints.MapControllers();
             });
         }
+       
     }
+    public static class ElasticsearchExtensions
+    {
+        public static void AddElasticsearch(
+            this IServiceCollection services, IConfiguration configuration)
+        {
+            var url = configuration["elasticsearch:url"];
+            var defaultIndex = configuration["elasticsearch:index"];
+
+            var settings = new ConnectionSettings(new Uri(url))
+                .DefaultIndex(defaultIndex)
+                .DefaultMappingFor<Product>(m => m
+                    .PropertyName(p => p.ProductID, "ProductID")
+                )
+                .DefaultMappingFor<User>(m => m
+                    .Ignore(c => c.ProfilePhoto)
+                    .PropertyName(c => c.UserID, "UserID")
+                );
+
+            var client = new ElasticClient(settings);
+
+            services.AddSingleton<IElasticClient>(client);
+        }
+    }
+
 }
