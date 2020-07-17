@@ -9,6 +9,10 @@ namespace FastCommerce.Entities.Entities
         public int ProductID { get; set; }
         public string ProductName { get; set; }
         public DateTime LastModified { get; set; }
+        public int Quantity { get; set; }
+        public int Rating { get; set; }
+        public double Price { get; set; }
 
+        
     }
 }

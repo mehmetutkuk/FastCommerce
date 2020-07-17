@@ -36,20 +36,21 @@ namespace FastCommerce.Web.API
 
             var ConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
             services.AddDbContext<ProductContext>(options =>
-            
+
             options.UseNpgsql(ConnectionString));
 
-//            services.AddElasticsearch(Configuration);
+            //            services.AddElasticsearch(Configuration);
 
             services.AddMemoryCache();
-            
-            services.AddStackExchangeRedisCache(options => { 
-                options.Configuration = Environment.GetEnvironmentVariable("REDIS_IP"); 
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Environment.GetEnvironmentVariable("REDIS_IP");
             });
-            
+
             services.AddSwaggerGen(c =>
             {
-   
+
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
@@ -97,29 +98,42 @@ namespace FastCommerce.Web.API
                 endpoints.MapControllers();
             });
         }
-       
+
     }
     public static class ElasticsearchExtensions
     {
-        public static void AddElasticsearch(
-            this IServiceCollection services, IConfiguration configuration)
+        public static void AddElasticsearch(this IServiceCollection services, IConfiguration configuration)
         {
             var url = configuration["elasticsearch:url"];
             var defaultIndex = configuration["elasticsearch:index"];
 
             var settings = new ConnectionSettings(new Uri(url))
-                .DefaultIndex(defaultIndex)
-                .DefaultMappingFor<Product>(m => m
-                    .PropertyName(p => p.ProductID, "ProductID")
-                )
-                .DefaultMappingFor<User>(m => m
-                    .Ignore(c => c.ProfilePhoto)
-                    .PropertyName(c => c.UserID, "UserID")
-                );
+            .DefaultIndex(defaultIndex);
+
+            AddDefaultMappings(settings);
 
             var client = new ElasticClient(settings);
 
-            services.AddSingleton<IElasticClient>(client);
+            services.AddSingleton(client);
+
+            CreateIndex(client, defaultIndex);
+        }
+
+        private static void AddDefaultMappings(ConnectionSettings settings)
+        {
+            settings.
+            DefaultMappingFor<Product>(m => m
+            .Ignore(p => p.Price)
+            .Ignore(p => p.Quantity)
+            .Ignore(p => p.Rating)
+            );
+        }
+
+        private static void CreateIndex(IElasticClient client, string indexName)
+        {
+            var createIndexResponse = client.Indices.Create(indexName,
+            index => index.Map<Product>(x => x.AutoMap())
+            );
         }
     }
 
