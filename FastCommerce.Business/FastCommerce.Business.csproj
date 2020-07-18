@@ -10,7 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FastCommerce.DAL\FastCommerce.DAL.csproj" />
     <ProjectReference Include="..\FastCommerce.Entities\FastCommerce.Entities.csproj" />
+    <ProjectReference Include="..\Utility\Utility\Utility\Utility.csproj" />
   </ItemGroup>
 
 </Project>

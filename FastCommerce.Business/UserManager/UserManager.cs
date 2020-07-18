@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Utility;
 
 namespace FastCommerce.Business.UserManager
 {
@@ -28,8 +29,9 @@ namespace FastCommerce.Business.UserManager
             
         public void UpdatePassword (User user)
         {
-            _context.Users.Where(w => w.UserID == user.UserID).SingleOrDefault().Password = user.Password;
+            _context.Users.Where(w => w.UserID == user.UserID).SingleOrDefault().Password = Cryptography.Encrypt(user.Password);
         }
         
+
     }
 }
