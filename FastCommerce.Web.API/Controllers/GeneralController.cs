@@ -18,9 +18,9 @@ namespace FastCommerce.Web.API.Controllers
     [ApiController]
     public class GeneralController : ControllerBase
     {
-        private readonly ProductContext _context;
+        private readonly dbContext _context;
 
-        public GeneralController(IDistributedCache distributedCache,ProductContext context)
+        public GeneralController(IDistributedCache distributedCache, dbContext context)
         {
             _context = context;
             this.distributedCache = distributedCache;

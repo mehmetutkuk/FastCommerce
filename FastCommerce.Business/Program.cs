@@ -9,4 +9,5 @@ namespace FastCommerce.Business
             Console.WriteLine("Hello World!");
         }
     }
+
 }

@@ -23,7 +23,7 @@ namespace FastCommerce.Web.API
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<ProductContext>();
+                    var context = services.GetRequiredService<dbContext>();
                     context.Database.Migrate();
                     DbInitializer.Initialize(context);
                 }

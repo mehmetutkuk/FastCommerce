@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FastCommerce.Business.UserManager;
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using Microsoft.AspNetCore.Builder;
@@ -33,12 +34,7 @@ namespace FastCommerce.Web.API
         {
             services.AddControllers();
             services.AddElasticsearch(Configuration);
-
-            var ConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-            services.AddDbContext<ProductContext>(options =>
-
-            options.UseNpgsql(ConnectionString));
-
+            services.AddDomainDataServices();
             services.AddMemoryCache();
 
             services.AddStackExchangeRedisCache(options =>
@@ -98,6 +94,14 @@ namespace FastCommerce.Web.API
             });
         }
 
+    }
+    public static class YourDomainDIExtensions
+    {
+        public static void AddDomainDataServices(this IServiceCollection services)
+        {
+            services.AddDbContext<dbContext>(options => options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")));
+            services.AddTransient<UserManager>();
+        }
     }
     public static class ElasticsearchExtensions
     {

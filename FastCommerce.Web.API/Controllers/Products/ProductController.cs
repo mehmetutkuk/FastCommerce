@@ -34,6 +34,6 @@ namespace FastCommerce.Web.API.Controllers.Products
             return httpResponse;
         }    
     
-    
+  
     }
 }

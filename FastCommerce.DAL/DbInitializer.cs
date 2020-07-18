@@ -8,7 +8,7 @@ namespace FastCommerce.DAL
 {
     public static class DbInitializer
     {
-        public static void Initialize(ProductContext context)
+        public static void Initialize(dbContext context)
         {
             context.Database.EnsureCreated();
 

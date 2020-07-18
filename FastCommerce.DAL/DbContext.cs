@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using FastCommerce.Entities.Entities;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FastCommerce.DAL
 {
-    public class ProductContext : DbContext
+    public class dbContext : DbContext
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<Property> Propertys { get; set; }
@@ -17,11 +17,12 @@ namespace FastCommerce.DAL
         public DbSet<User> Users { get; set; }
 
 
-        public ProductContext(DbContextOptions options) : base(options)
+        public dbContext(DbContextOptions options) : base(options)
         {
 
         }
     }
 
+   
 
 }

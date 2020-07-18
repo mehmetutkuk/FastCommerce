@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
-    [DbContext(typeof(ProductContext))]
+    [DbContext(typeof(dbContext))]
     [Migration("20200621152910_Initial")]
     partial class Initial
     {
