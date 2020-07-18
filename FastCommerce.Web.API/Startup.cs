@@ -39,8 +39,6 @@ namespace FastCommerce.Web.API
 
             options.UseNpgsql(ConnectionString));
 
-            //            services.AddElasticsearch(Configuration);
-
             services.AddMemoryCache();
 
             services.AddStackExchangeRedisCache(options =>
@@ -83,8 +81,9 @@ namespace FastCommerce.Web.API
 
             app.UseSwaggerUI(c =>
             {
+
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FastCommerce API V1");
-                c.RoutePrefix = string.Empty;
+
             });
 
             app.UseHttpsRedirection();
