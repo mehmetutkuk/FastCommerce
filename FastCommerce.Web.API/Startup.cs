@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FastCommerce.Business.UserManager;
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
+using FastCommerce.Web.API.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +36,8 @@ namespace FastCommerce.Web.API
             services.AddControllers();
             services.AddElasticsearch(Configuration);
             services.AddDomainDataServices();
+            services.AddTransient<IUserManager,UserManager>();
+
             services.AddMemoryCache();
 
             services.AddStackExchangeRedisCache(options =>

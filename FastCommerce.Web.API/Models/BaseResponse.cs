@@ -13,4 +13,11 @@ namespace FastCommerce.Web.API.Models
             public bool ErrorState { get; set; }
             public bool RequestState { get; set; }
     }
+
+    public interface IBaseResponse
+    {
+        public List<Exception> Errors { get; set; }
+        public bool ErrorState { get; set; }
+        public bool RequestState { get; set; }
+    }
 }

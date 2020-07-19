@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FastCommerce.Business.ProductManager;
+using FastCommerce.Entities.Entities;
 using FastCommerce.Web.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,8 +19,8 @@ namespace FastCommerce.Web.API.Controllers.Products
 
         [ActionName("Save"), Route("Save")]
         [HttpPost]
-        public async Task<HttpResponseMessage> SaveAsync(Entities.Entities.Product product) {
-            Response<int> httpResponse = new Response<int>();
+        public async Task<HttpResponseMessage> SaveAsync(Product product) {
+            Response<Product> httpResponse = new Response<Product>();
             try
             {
                 httpResponse.RequestState= true;
