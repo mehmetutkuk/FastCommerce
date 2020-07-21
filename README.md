@@ -18,5 +18,6 @@ Short Info Here
  -N-Tier 
  -EntityFrameworkCore 
  -Multilayer
+ -redis
 
 
