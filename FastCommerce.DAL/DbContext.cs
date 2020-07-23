@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using FastCommerce.Entities.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FastCommerce.DAL
@@ -21,8 +24,21 @@ namespace FastCommerce.DAL
         {
 
         }
+
     }
 
-   
+
+    public class DesignTimeDbContextFactory :  IDesignTimeDbContextFactory<dbContext>
+    {
+        public dbContext CreateDbContext(string[] args)
+        {
+            DbContextOptionsBuilder<dbContext> builder = new DbContextOptionsBuilder<dbContext>();
+            string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            //var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
+            builder.UseNpgsql(connectionString);
+            Console.WriteLine($"Running DesignTime DB context. ({connectionString})");
+            return new dbContext(builder.Options);
+        }
+    }
 
 }

@@ -35,15 +35,28 @@ namespace FastCommerce.Business.UserManager
 
         public Login Login(Login login)
         {
-            var fetchedUser = _context.Users.Where(w => w.UserID == login.UserID).FirstOrDefault();
-            login.LoggedIn = (fetchedUser.Password == Cryptography.Encrypt(login.Password));
+            User fetchedUser = _context.Users.Where(w => (w.Username == login.Username) || (w.Email == login.Email)).SingleOrDefault();
+            if (fetchedUser != null)
+                login.LoggedIn = (fetchedUser.Password == Cryptography.Encrypt(login.Password));
             return login;
+        }
+
+        public Register Register(Register register)
+        {
+            _context.Users.AddAsync(register);
+            register.SuccessfullyRegistered = true;
+            return register;
+        }
+
+        public Activated Activated(Activated activated)
+        {
+
         }
     }
 
     public interface IUserManager
     {
-        public User AddUser(User user);
         public Login Login(Login login);
+        public Register Register(Register register);
     }
 }

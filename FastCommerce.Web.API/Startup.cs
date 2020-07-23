@@ -37,7 +37,6 @@ namespace FastCommerce.Web.API
             services.AddElasticsearch(Configuration);
             services.AddDomainDataServices();
             services.AddTransient<IUserManager,UserManager>();
-
             services.AddMemoryCache();
 
             services.AddStackExchangeRedisCache(options =>
@@ -102,7 +101,8 @@ namespace FastCommerce.Web.API
     {
         public static void AddDomainDataServices(this IServiceCollection services)
         {
-            services.AddDbContext<dbContext>(options => options.UseNpgsql(Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")));
+            string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            services.AddDbContext<dbContext>(options => options.UseNpgsql(connectionString, y=> y.MigrationsAssembly("FastCommerce.DAL")));
             services.AddTransient<UserManager>();
         }
     }

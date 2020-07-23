@@ -20,7 +20,7 @@ services:
   postgres_image:
     image: postgres:latest
     ports:
-      - "5432"
+      - "5432:5432"
     restart: always
     environment:
       POSTGRES_USER: "postgres"
@@ -31,7 +31,7 @@ services:
   redis_image:
     image: redis:latest
     ports:
-      - "6379"
+      - "6379:6379"
     restart: always
     networks:
       - dockerapi-dev
@@ -57,7 +57,23 @@ services:
       - dockerapi-dev
     depends_on:
       - elasticsearch
+  pgadmin: 
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+    - "8080:80"
+    environment:
+        PGADMIN_DEFAULT_EMAIL: m.utkukul@gmail.com
+        PGADMIN_DEFAULT_PASSWORD: BigSecret
+        PGADMIN_LISTEN_PORT: 80
+    volumes:
+    - pgadmin-data:/var/lib/pgadmin
+    links:
+    - "postgres_image:pgsql-server"
+    networks:
+      - dockerapi-dev
 volumes:
   esdata:
      driver: local
   database-data:
+  pgadmin-data:
