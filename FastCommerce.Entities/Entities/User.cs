@@ -17,7 +17,6 @@ namespace FastCommerce.Entities.Entities
         public string Name { get; set; }
         [Required]
         public string Surname { get; set; }
-        
         public string ProfilePhoto { get; set; }
         [Required]
         [DefaultValue("")]
@@ -29,6 +28,5 @@ namespace FastCommerce.Entities.Entities
         public DateTime LastLoginDate { get; set; }
         [DefaultValue(false)]
         public bool Active { get; set; }
-
     }
 }

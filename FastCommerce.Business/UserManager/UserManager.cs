@@ -44,13 +44,40 @@ namespace FastCommerce.Business.UserManager
         public Register Register(Register register)
         {
             _context.Users.AddAsync(register);
+            SetupActivation(register.UserID);
             register.SuccessfullyRegistered = true;
             return register;
         }
 
-        public Activated Activated(Activated activated)
+        private void SetupActivation(int UserID)
         {
 
+            UsersActivation usersActivation = new UsersActivation();
+            usersActivation.user.UserID = UserID;
+            usersActivation.startTime = DateTime.Now;
+            usersActivation.activetioncode = GenerateActivationCode();
+            _context.UsersActivations.Add(usersActivation);
+            _context.SaveChangesAsync();
+        }
+        private bool Activate(int UserID, string Code)
+        {
+            var activation = _context.UsersActivations.Where(s => s.user.UserID == UserID).FirstOrDefault();
+            if (activation != null)
+            { return (activation.activetioncode == Code); }
+            else { return false; }
+        }
+
+        private bool SendActivationEmail(int UserID)
+        {
+            return true;
+        }
+
+
+        private string GenerateActivationCode()
+        {
+            Random generator = new Random();
+            String code = generator.Next(0, 999999).ToString("D6");
+            return code;
         }
     }
 
