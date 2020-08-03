@@ -5,16 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Utility;
+using Utility.Cryptography;
+using Utility.MailServices;
 
 namespace FastCommerce.Business.UserManager
 {
-    public class UserManager : IUserManager
+    public class UserManager :IUserManager
     {
+        
         private readonly dbContext _context;
-        public UserManager(dbContext context)
+        private IEmailService _mailService;
+        public UserManager(dbContext context, IEmailService mailService)
         {
             _context = context;
+            _mailService = mailService;
         }
 
         public User AddUser(User user)
@@ -44,21 +48,34 @@ namespace FastCommerce.Business.UserManager
         public Register Register(Register register)
         {
             _context.Users.AddAsync(register);
-            SetupActivation(register.UserID);
             register.SuccessfullyRegistered = true;
+            _context.SaveChanges();
+            SetupActivation(register);
             return register;
         }
 
-        private void SetupActivation(int UserID)
+        private void SetupActivation(Register user)
         {
 
             UsersActivation usersActivation = new UsersActivation();
-            usersActivation.user.UserID = UserID;
+            usersActivation.user = user;
             usersActivation.startTime = DateTime.Now;
             usersActivation.activetioncode = GenerateActivationCode();
+            _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
+            _mailService.SendEmailAsync(EmailType.activationCode);
             _context.UsersActivations.Add(usersActivation);
             _context.SaveChangesAsync();
         }
+
+
+        private string[] ConvertUserToMailBoxesArray(Register user)
+        {
+            string[] userNameMail = new string[2];
+            userNameMail[0] = user.Name + " " + user.Surname;
+            userNameMail[1] = user.Email;
+            return userNameMail;
+        }
+
         private bool Activate(int UserID, string Code)
         {
             var activation = _context.UsersActivations.Where(s => s.user.UserID == UserID).FirstOrDefault();
