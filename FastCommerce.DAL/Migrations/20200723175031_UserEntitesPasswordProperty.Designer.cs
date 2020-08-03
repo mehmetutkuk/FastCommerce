@@ -3,15 +3,17 @@ using System;
 using FastCommerce.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20200723175031_UserEntitesPasswordProperty")]
+    partial class UserEntitesPasswordProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,42 +182,6 @@ namespace FastCommerce.DAL.Migrations
                     b.HasKey("UserID");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("FastCommerce.Entities.Entities.UsersActivation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<bool>("SuccelyActivated")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("UserID")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("activationTpye")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("activetioncode")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("startTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("UsersActivations");
-                });
-
-            modelBuilder.Entity("FastCommerce.Entities.Entities.UsersActivation", b =>
-                {
-                    b.HasOne("FastCommerce.Entities.Entities.User", "user")
-                        .WithMany()
-                        .HasForeignKey("UserID");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using FastCommerce.Entities.Entities;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FastCommerce.DAL
 {
-    public class ProductContext : DbContext
+    public class dbContext : DbContext
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<Property> Propertys { get; set; }
@@ -14,15 +18,26 @@ namespace FastCommerce.DAL
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleObject> RoleObjects { get; set; }
         public DbSet<User> Users { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=fastCommerce;Username=postgres;Password=123");
-
-
-        public ProductContext(DbContextOptions options) : base(options)
+        public DbSet<UsersActivation> UsersActivations { get; set; }
+        public dbContext(DbContextOptions options) : base(options)
         {
+
         }
+
     }
 
+
+    public class DesignTimeDbContextFactory :  IDesignTimeDbContextFactory<dbContext>
+    {
+        public dbContext CreateDbContext(string[] args)
+        {
+            DbContextOptionsBuilder<dbContext> builder = new DbContextOptionsBuilder<dbContext>();
+            string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            //var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
+            builder.UseNpgsql(connectionString);
+            Console.WriteLine($"Running DesignTime DB context. ({connectionString})");
+            return new dbContext(builder.Options);
+        }
+    }
 
 }
