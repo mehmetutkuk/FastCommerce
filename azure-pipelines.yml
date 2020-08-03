@@ -33,5 +33,5 @@ stages:
         containerregistrytype: 'Azure Container Registry'
         azureSubscription: 'Free Trial(154b2920-a416-4985-9cdf-f9afa887a627)'
         azureContainerRegistry: '{"loginServer":"mutkukulregistry.azurecr.io", "id" : "/subscriptions/154b2920-a416-4985-9cdf-f9afa887a627/resourceGroups/MutkukulRegistry-dev-rg/providers/Microsoft.ContainerRegistry/registries/MutkukulRegistry"}'
-        dockerComposeFile: '**/docker-compose.yml'
+        dockerComposeFile: '/docker-compose.yml'
         action: 'Run a Docker Compose command'
