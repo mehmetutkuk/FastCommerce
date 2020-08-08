@@ -39,6 +39,7 @@ namespace FastCommerce.Web.API
             services.AddDomainDataServices();
             services.AddTransient<IUserManager, UserManager>();
             services.AddMemoryCache();
+            services.AddSwaggerGenNewtonsoftSupport();
 
             services.AddEmailSender(Configuration);
 
