@@ -39,7 +39,7 @@ namespace FastCommerce.Web.API
             services.AddDomainDataServices();
             services.AddTransient<IUserManager, UserManager>();
             services.AddMemoryCache();
-            services.AddSwaggerGenNewtonsoftSupport();
+
 
             services.AddEmailSender(Configuration);
 
@@ -70,6 +70,7 @@ namespace FastCommerce.Web.API
                     }
                 });
             });
+            services.AddSwaggerGenNewtonsoftSupport();
 
 
             //services.AddLocalization(opt => opt.ResourcesPath = "Resources");
