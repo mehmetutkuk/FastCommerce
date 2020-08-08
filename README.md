@@ -1,5 +1,5 @@
 # FastCommerce
-![.NET Core](https://github.com/mehmetutkuk/FastCommerce/workflows/.NET%20Core/badge.svg)
+[![Build Status](https://dev.azure.com/fastCom/fastCommerce/_apis/build/status/mehmetutkuk.FastCommerce?branchName=master)](https://dev.azure.com/fastCom/fastCommerce/_build/latest?definitionId=1&branchName=master)
 
 Short Info Here
 
