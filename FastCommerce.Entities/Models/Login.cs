@@ -11,5 +11,6 @@ namespace FastCommerce.Entities.Models
     {
         [DefaultValue(false)]
         public bool LoggedIn { get; set; }
+        public string Token { get; set; }
     }
 }
