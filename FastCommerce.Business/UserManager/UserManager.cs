@@ -1,24 +1,30 @@
 ﻿using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using Utility.Cryptography;
 using Utility.MailServices;
 
 namespace FastCommerce.Business.UserManager
 {
-    public class UserManager :IUserManager
+    public class UserManager : IUserManager
     {
-        
+        private readonly TokenModel _tokenManagement;
         private readonly dbContext _context;
         private IEmailService _mailService;
-        public UserManager(dbContext context, IEmailService mailService)
+        public UserManager(dbContext context, IEmailService mailService, IOptions<TokenModel> tokenManagement)
         {
             _context = context;
             _mailService = mailService;
+    
+            _tokenManagement = tokenManagement.Value;
         }
 
         public User AddUser(User user)
@@ -26,6 +32,8 @@ namespace FastCommerce.Business.UserManager
             _context.Users.Add(user);
             return user;
         }
+
+
 
         public void PasiveUser(User user)
         {
@@ -39,9 +47,17 @@ namespace FastCommerce.Business.UserManager
 
         public Login Login(Login login)
         {
-            User fetchedUser = _context.Users.Where(w => (w.Username == login.Username) || (w.Email == login.Email)).SingleOrDefault();
+            User fetchedUser = _context.Users.Where(w => w.Email == login.Email).SingleOrDefault();
             if (fetchedUser != null)
+            {
                 login.LoggedIn = (fetchedUser.Password == Cryptography.Encrypt(login.Password));
+                if (login.LoggedIn) {
+                    IsAuthenticated(login, out string token);
+                    login.Token = token;
+                }
+                    
+            }
+                
             return login;
         }
 
@@ -95,6 +111,27 @@ namespace FastCommerce.Business.UserManager
             Random generator = new Random();
             String code = generator.Next(0, 999999).ToString("D6");
             return code;
+        }
+
+        private bool IsAuthenticated(Login request, out string token)
+        {
+            token = string.Empty;
+            var claim = new[]
+            {
+                new Claim(ClaimTypes.Name, request.Email)
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenManagement.Secret));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var jwtToken = new JwtSecurityToken(
+                          _tokenManagement.Issuer,
+                          _tokenManagement.Audience,
+                          claim,
+                          expires: DateTime.Now.AddMinutes(_tokenManagement.AccessExpiration),
+                          signingCredentials: credentials
+                      );
+
+            token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+            return true;
         }
     }
 
