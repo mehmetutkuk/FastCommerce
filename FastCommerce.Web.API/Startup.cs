@@ -44,6 +44,7 @@ namespace FastCommerce.Web.API
             services.AddDomainDataServices();
             services.AddTransient<IUserManager, UserManager>();
             services.AddMemoryCache();
+            services.AddCors();
 
 
             services.AddEmailSender(Configuration);
@@ -160,6 +161,12 @@ namespace FastCommerce.Web.API
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FastCommerce API V1");
 
             });
+
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true)
+                .AllowCredentials());
 
             app.UseHttpsRedirection();
 
