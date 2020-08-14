@@ -10,6 +10,7 @@ using FastCommerce.Web.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -33,7 +34,6 @@ namespace FastCommerce.Web.API
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -129,7 +129,7 @@ namespace FastCommerce.Web.API
                     IssuerSigningKey = new SymmetricSecurityKey(secret),
                 };
             });
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //services.AddLocalization(opt => opt.ResourcesPath = "Resources");
             //services.Configure<RequestLocalizationOptions>(
             //    opt =>
@@ -202,7 +202,7 @@ namespace FastCommerce.Web.API
     {
         public static void AddEmailSender(this IServiceCollection services, IConfiguration configuration)
         {
-            var config = configuration.GetSection("Email").Get<EmailConfig>();
+        //    var config = configuration.GetSection("Email").Get<EmailConfig>();
             services.Configure<EmailConfig>(configuration.GetSection("Email"));
             services.AddTransient<IEmailService, EmailService>();
         }

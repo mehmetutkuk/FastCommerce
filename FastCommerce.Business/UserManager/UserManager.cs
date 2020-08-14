@@ -1,6 +1,8 @@
 ﻿using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -19,11 +21,13 @@ namespace FastCommerce.Business.UserManager
         private readonly TokenModel _tokenManagement;
         private readonly dbContext _context;
         private IEmailService _mailService;
-        public UserManager(dbContext context, IEmailService mailService, IOptions<TokenModel> tokenManagement)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UserManager(dbContext context, IEmailService mailService, IOptions<TokenModel> tokenManagement, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mailService = mailService;
-    
+            _httpContextAccessor = httpContextAccessor;
             _tokenManagement = tokenManagement.Value;
         }
 
@@ -51,13 +55,14 @@ namespace FastCommerce.Business.UserManager
             if (fetchedUser != null)
             {
                 login.LoggedIn = (fetchedUser.Password == Cryptography.Encrypt(login.Password));
-                if (login.LoggedIn) {
+                if (login.LoggedIn)
+                {
                     IsAuthenticated(login, out string token);
                     login.Token = token;
                 }
-                    
+
             }
-                
+
             return login;
         }
 
@@ -77,6 +82,8 @@ namespace FastCommerce.Business.UserManager
             usersActivation.user = user;
             usersActivation.startTime = DateTime.Now;
             usersActivation.activetioncode = GenerateActivationCode();
+            _mailService.activation.ActivationCode = usersActivation.activetioncode;
+            _mailService.activation.ActivationURL = _httpContextAccessor.HttpContext.Request.Host.Value;
             _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
             _mailService.SendEmailAsync(EmailType.activationCode);
             _context.UsersActivations.Add(usersActivation);
@@ -133,11 +140,25 @@ namespace FastCommerce.Business.UserManager
             token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
             return true;
         }
+
+        public UsersActivation ActivateUser(string code)
+        {
+            UsersActivation UserAction = _context.UsersActivations
+                .Where(p => p.activetioncode == code
+                && p.startTime < DateTime.Now.AddDays(1) && p.user.Active == false)
+                .Select(s => s).FirstOrDefault();
+            //user'a buradan gitmiyor.
+            UserAction.user.Active = true;
+            UserAction.SuccelyActivated = true;
+            UserAction.activationTpye = UsersActivation.ActivationTpye.Email;
+            return UserAction;
+        }
     }
 
     public interface IUserManager
     {
         public Login Login(Login login);
         public Register Register(Register register);
+        public UsersActivation ActivateUser(string code);
     }
 }

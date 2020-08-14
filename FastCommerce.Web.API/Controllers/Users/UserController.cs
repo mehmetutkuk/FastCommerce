@@ -80,5 +80,33 @@ namespace FastCommerce.Web.API.Controllers.Users
         }
 
 
+
+
+        [HttpGet("ActivationBackLink")]
+        public Response<UsersActivation> ActivationBackLink(string code)
+        {
+            Response<UsersActivation> _response = new Response<UsersActivation>();
+            try
+            {
+                _response.RequestState = true;
+                if (ModelState.IsValid)
+                {
+                    _response.Data = _userManager.ActivateUser(code);
+                }
+                else
+                {
+                    _response.ErrorState = true;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorState = true;
+                _response.Errors.Add(ex);
+            }
+            return _response;
+        }
     }
+
 }
