@@ -202,7 +202,7 @@ namespace FastCommerce.Web.API
     {
         public static void AddEmailSender(this IServiceCollection services, IConfiguration configuration)
         {
-            var config = configuration.GetSection("Email");
+            var config = configuration.GetSection("Email").Get<EmailConfig>();
             services.Configure<EmailConfig>(configuration.GetSection("Email"));
             services.AddTransient<IEmailService, EmailService>();
         }
