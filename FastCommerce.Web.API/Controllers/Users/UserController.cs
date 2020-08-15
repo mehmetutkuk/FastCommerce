@@ -81,6 +81,15 @@ namespace FastCommerce.Web.API.Controllers.Users
 
 
 
+        /// <summary>
+        /// User Activation Method
+        /// </summary>
+        /// <param name="code">
+        /// Activation Key 
+        /// </param>
+        /// <returns>
+        /// <paramref name="response<UsersActivation>"/>
+        /// </returns>
 
         [HttpGet("ActivationBackLink")]
         public Response<UsersActivation> ActivationBackLink(string code)

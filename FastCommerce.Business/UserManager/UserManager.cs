@@ -143,14 +143,13 @@ namespace FastCommerce.Business.UserManager
 
         public UsersActivation ActivateUser(string code)
         {
-            UsersActivation UserAction = _context.UsersActivations
-                .Where(p => p.activetioncode == code
-                && p.startTime < DateTime.Now.AddDays(1) && p.user.Active == false)
+            UsersActivation UserAction = _context.UsersActivations.Include(x=> x.user)
+                .Where(p => p.activetioncode == code)
                 .Select(s => s).FirstOrDefault();
-            //user'a buradan gitmiyor.
             UserAction.user.Active = true;
             UserAction.SuccelyActivated = true;
             UserAction.activationTpye = UsersActivation.ActivationTpye.Email;
+            _context.SaveChangesAsync();
             return UserAction;
         }
     }
