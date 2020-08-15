@@ -37,8 +37,6 @@ namespace FastCommerce.Business.UserManager
             return user;
         }
 
-
-
         public void PasiveUser(User user)
         {
             _context.Users.Where(u => u.UserID == user.UserID).FirstOrDefault().Active = false;
@@ -97,14 +95,6 @@ namespace FastCommerce.Business.UserManager
             userNameMail[0] = user.Name + " " + user.Surname;
             userNameMail[1] = user.Email;
             return userNameMail;
-        }
-
-        private bool Activate(int UserID, string Code)
-        {
-            var activation = _context.UsersActivations.Where(s => s.user.UserID == UserID).FirstOrDefault();
-            if (activation != null)
-            { return (activation.activetioncode == Code); }
-            else { return false; }
         }
 
         private bool SendActivationEmail(int UserID)
