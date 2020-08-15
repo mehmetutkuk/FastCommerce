@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace FastCommerce.Entities.Models
@@ -14,7 +15,7 @@ namespace FastCommerce.Entities.Models
         public bool ValidForRegister()
         {
             bool valid = true;
-            if (Username == null || (Email == null || PhoneNumber == null))
+            if (Email == null || PhoneNumber == null)
                 valid = false;
             if (Password == null)
                 valid = false;
@@ -22,6 +23,12 @@ namespace FastCommerce.Entities.Models
                 valid = false;
             return valid;
         }
+        [Required]
+        public override string Name { get; set; }
+        [Required]
+        public override string Surname { get; set; }
+        [Required]
+        public virtual string PhoneNumber { get; set; }
 
     }
 }

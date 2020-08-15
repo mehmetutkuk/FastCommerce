@@ -42,7 +42,7 @@ namespace FastCommerce.Web.API.Controllers.Users
             catch (Exception ex)
             {
                 _response.ErrorState = true;
-                _response.Errors.Add(ex);
+                _response.ErrorList.Add(ex);
             }
             return _response;
         }
@@ -74,7 +74,7 @@ namespace FastCommerce.Web.API.Controllers.Users
             catch (Exception ex)
             {
                 _response.ErrorState = true;
-                _response.Errors.Add(ex);
+                _response.ErrorList.Add(ex);
             }
             return _response;
         }
@@ -92,9 +92,9 @@ namespace FastCommerce.Web.API.Controllers.Users
         /// </returns>
 
         [HttpGet("ActivationBackLink")]
-        public Response<UsersActivation> ActivationBackLink(string code)
+        public Response<UserActivation> ActivationBackLink(string code)
         {
-            Response<UsersActivation> _response = new Response<UsersActivation>();
+            Response<UserActivation> _response = new Response<UserActivation>();
             try
             {
                 _response.RequestState = true;
@@ -112,7 +112,7 @@ namespace FastCommerce.Web.API.Controllers.Users
             catch (Exception ex)
             {
                 _response.ErrorState = true;
-                _response.Errors.Add(ex);
+                _response.ErrorList.Add(ex);
             }
             return _response;
         }

@@ -37,6 +37,8 @@ namespace FastCommerce.Business.UserManager
             return user;
         }
 
+
+
         public void PasiveUser(User user)
         {
             _context.Users.Where(u => u.UserID == user.UserID).FirstOrDefault().Active = false;
@@ -76,15 +78,15 @@ namespace FastCommerce.Business.UserManager
         private void SetupActivation(Register user)
         {
 
-            UsersActivation usersActivation = new UsersActivation();
-            usersActivation.user = user;
-            usersActivation.startTime = DateTime.Now;
-            usersActivation.activetioncode = GenerateActivationCode();
-            _mailService.activation.ActivationCode = usersActivation.activetioncode;
+            UserActivation usersActivation = new UserActivation();
+            usersActivation.User = user;
+            usersActivation.StartTime = DateTime.Now;
+            usersActivation.ActivationCode = GenerateActivationCode();
+            _mailService.activation.ActivationCode = usersActivation.ActivationCode;
             _mailService.activation.ActivationURL = _httpContextAccessor.HttpContext.Request.Host.Value;
             _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
             _mailService.SendEmailAsync(EmailType.activationCode);
-            _context.UsersActivations.Add(usersActivation);
+            _context.UserActivations.Add(usersActivation);
             _context.SaveChangesAsync();
         }
 
@@ -95,6 +97,14 @@ namespace FastCommerce.Business.UserManager
             userNameMail[0] = user.Name + " " + user.Surname;
             userNameMail[1] = user.Email;
             return userNameMail;
+        }
+
+        private bool Activate(int UserID, string Code)
+        {
+            var activation = _context.UserActivations.Where(s => s.User.UserID == UserID).FirstOrDefault();
+            if (activation != null)
+            { return (activation.ActivationCode == Code); }
+            else { return false; }
         }
 
         private bool SendActivationEmail(int UserID)
@@ -131,14 +141,14 @@ namespace FastCommerce.Business.UserManager
             return true;
         }
 
-        public UsersActivation ActivateUser(string code)
+        public UserActivation ActivateUser(string code)
         {
-            UsersActivation UserAction = _context.UsersActivations.Include(x=> x.user)
-                .Where(p => p.activetioncode == code)
+            UserActivation UserAction = _context.UserActivations.Include(x=> x.User)
+                .Where(p => p.ActivationCode == code)
                 .Select(s => s).FirstOrDefault();
-            UserAction.user.Active = true;
-            UserAction.SuccelyActivated = true;
-            UserAction.activationTpye = UsersActivation.ActivationTpye.Email;
+            UserAction.User.Active = true;
+            UserAction.isActivated  = true;
+            UserAction.ActivationType = ActivationType.Email;
             _context.SaveChangesAsync();
             return UserAction;
         }
@@ -148,6 +158,6 @@ namespace FastCommerce.Business.UserManager
     {
         public Login Login(Login login);
         public Register Register(Register register);
-        public UsersActivation ActivateUser(string code);
+        public UserActivation ActivateUser(string code);
     }
 }

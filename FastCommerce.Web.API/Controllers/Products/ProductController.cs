@@ -32,7 +32,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             catch (Exception ex)
             {
                 httpResponse.ErrorState = true;
-                httpResponse.Errors.Add(ex);
+                httpResponse.ErrorList.Add(ex);
             }
             return httpResponse;
         }    

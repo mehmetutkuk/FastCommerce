@@ -22,7 +22,6 @@ namespace FastCommerce.DAL
             var users = new User[]
             {
                 new User{
-                  Username= "ArturoAnand",
                   Email= "Arturo.Anand@gmail.com",
                   Name= "Arturo",
                   Surname= "Anand",
@@ -34,7 +33,6 @@ namespace FastCommerce.DAL
                   Active= true
                 },
                 new User{
-                  Username= "MeredithAlonso",
                   Email= "Meredith.Alonso@gmail.com",
                   Name= "Meredith",
                   Surname= "Alonso",
@@ -46,7 +44,6 @@ namespace FastCommerce.DAL
                   Active= true
                 },
                 new User{
-                  Username= "GytisBarzdukas",
                   Email= "Gytis.Barzdukas@gmail.com",
                   Name= "Gytis",
                   Surname= "Barzdukas",
@@ -58,7 +55,6 @@ namespace FastCommerce.DAL
                   Active= true
                 },
                 new User{
-                  Username= "YanLi",
                   Email= "Yan.Li@gmail.com",
                   Name= "Yan",
                   Surname= "Li",
@@ -71,7 +67,6 @@ namespace FastCommerce.DAL
                 },
 
                 new User{
-                  Username= "PeggyJustice",
                   Email= "Peggy.Justice@gmail.com",
                   Name= "Peggy",
                   Surname= "Justice",
@@ -83,7 +78,6 @@ namespace FastCommerce.DAL
                   Active= true
                 },
                 new User{
-                  Username= "MikePence",
                   Email= "Mike.Pence@gmail.com",
                   Name= "Mike",
                   Surname= "Pence",

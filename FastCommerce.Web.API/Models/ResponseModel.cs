@@ -10,11 +10,10 @@ namespace FastCommerce.Web.API.Models
 
         public T Data { get; set; }
         public List<T> DataList { get; set; }
-        public int EntitiesCount { get; set; }
-        public List<Exception> Errors { get; set; }
+        public int EntityCount { get; set; }
         public Response()
         {
-            Errors = new List<Exception>();
+            ErrorList = new List<Exception>();
             DataList = new List<T>();
         }
 
@@ -25,8 +24,7 @@ namespace FastCommerce.Web.API.Models
 
         public T Data { get; set; }
         public List<T> DataList { get; set; }
-        public int EntitiesCount { get; set; }
-        public List<Exception> Errors { get; set; }
+        public int EntityCount { get; set; }
     }
 
 }
