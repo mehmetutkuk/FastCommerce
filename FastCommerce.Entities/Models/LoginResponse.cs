@@ -2,15 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FastCommerce.Entities.Models
 {
-    public class Register : User
+    public class LoginResponse
     {
         [DefaultValue(false)]
-        public bool SuccessfullyRegistered { get; set; }
-
+        public bool LoggedIn { get; set; }
+        public string Token { get; set; }
     }
 }

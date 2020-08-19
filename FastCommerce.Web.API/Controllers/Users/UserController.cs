@@ -31,9 +31,9 @@ namespace FastCommerce.Web.API.Controllers.Users
         /// <returns></returns>
 
         [HttpPost("Login")]
-        public Response<Login> Login(Login login)
+        public Response<LoginResponse> Login(Login login)
         {
-            Response<Login> _response = new Response<Login>();
+            Response<LoginResponse> _response = new Response<LoginResponse>();
             try
             {
                 _response.RequestState = true;
@@ -54,21 +54,13 @@ namespace FastCommerce.Web.API.Controllers.Users
         /// <returns></returns>
 
         [HttpPost("Register")]
-        public Response<Register> Register(Register register)
+        public Response<RegisterResponse> Register(Register register)
         {
-            Response<Register> _response = new Response<Register>();
+            Response<RegisterResponse> _response = new Response<RegisterResponse>();
             try
             {
                 _response.RequestState = true;
-                if (register.ValidForRegister())
-                {
-                    _response.Data = _userManager.Register(register);
-                }
-                else
-                {
-                    _response.ErrorState = true;
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                }
+                _response.Data = _userManager.Register(register);
                     
             }
             catch (Exception ex)
