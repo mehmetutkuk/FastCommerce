@@ -7,6 +7,7 @@ using FastCommerce.Business.UserManager;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using FastCommerce.Web.API.Models;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,7 +43,7 @@ namespace FastCommerce.Web.API.Controllers.Users
             catch (Exception ex)
             {
                 _response.ErrorState = true;
-                _response.ErrorList.Add(ex);
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
             }
             return _response;
         }
@@ -66,7 +67,7 @@ namespace FastCommerce.Web.API.Controllers.Users
             catch (Exception ex)
             {
                 _response.ErrorState = true;
-                _response.ErrorList.Add(ex);
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
             }
             return _response;
         }
@@ -104,7 +105,7 @@ namespace FastCommerce.Web.API.Controllers.Users
             catch (Exception ex)
             {
                 _response.ErrorState = true;
-                _response.ErrorList.Add(ex);
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
             }
             return _response;
         }
