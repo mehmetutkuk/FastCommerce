@@ -1,4 +1,4 @@
-using FastCommerce.DAL;
+﻿using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using Mapster;
@@ -143,16 +143,16 @@ namespace FastCommerce.Business.UserManager
             return true;
         }
 
-        public UserActivation ActivateUser(string code)
+        public ActivationResponse ActivateUser(ActivationRequest req)
         {
             UserActivation UserAction = _context.UserActivations.Include(x=> x.User)
-                .Where(p => p.ActivationCode == code)
+                .Where(p => p.User.Email == req.Email && p.ActivationCode == req.ActivationCode)
                 .Select(s => s).FirstOrDefault();
             UserAction.User.Active = true;
             UserAction.isActivated  = true;
             UserAction.ActivationType = ActivationType.Email;
             _context.SaveChangesAsync();
-            return UserAction;
+            return UserAction.Adapt<ActivationResponse>();
         }
     }
 
@@ -160,6 +160,6 @@ namespace FastCommerce.Business.UserManager
     {
         public LoginResponse Login(Login login);
         public RegisterResponse Register(Register register);
-        public UserActivation ActivateUser(string code);
+        public ActivationResponse ActivateUser(ActivationRequest req);
     }
 }
