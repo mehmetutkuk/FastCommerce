@@ -1,4 +1,4 @@
-﻿using FastCommerce.DAL;
+using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using Mapster;
@@ -69,6 +69,7 @@ namespace FastCommerce.Business.UserManager
 
         public RegisterResponse Register(Register register)
         {
+            register.Password = Cryptography.Encrypt(register.Password);
             _context.Users.AddAsync(register);
             register.SuccessfullyRegistered = true;
             _context.SaveChanges();
