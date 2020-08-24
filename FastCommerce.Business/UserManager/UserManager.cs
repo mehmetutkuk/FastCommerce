@@ -1,14 +1,12 @@
-using FastCommerce.DAL;
+﻿using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -24,15 +22,13 @@ namespace FastCommerce.Business.UserManager
         private readonly dbContext _context;
         private IEmailService _mailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IConfiguration _configuration;
 
-        public UserManager(dbContext context, IConfiguration configuration, IEmailService mailService, IOptions<TokenModel> tokenManagement, IHttpContextAccessor httpContextAccessor)
+        public UserManager(dbContext context, IEmailService mailService, IOptions<TokenModel> tokenManagement, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mailService = mailService;
             _httpContextAccessor = httpContextAccessor;
             _tokenManagement = tokenManagement.Value;
-            _configuration = configuration;
         }
 
         public User AddUser(User user)
@@ -86,7 +82,7 @@ namespace FastCommerce.Business.UserManager
             usersActivation.StartTime = DateTime.Now;
             usersActivation.ActivationCode = GenerateActivationCode();
             _mailService.activation.ActivationCode = usersActivation.ActivationCode;
-            _mailService.activation.ActivationURL = _configuration.GetSection("Frontend").Get<FrontendConfig>().Url;
+            _mailService.activation.ActivationURL = _httpContextAccessor.HttpContext.Request.Host.Value;
             _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
             _mailService.SendEmailAsync(EmailType.activationCode);
             _context.UserActivations.Add(usersActivation);
