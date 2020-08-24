@@ -45,8 +45,8 @@ namespace FastCommerce.Web.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddElasticsearch(Configuration);
             services.AddDomainDataServices();
+            services.AddElasticsearch(Configuration);
             services.AddTransient<IUserManager, UserManager>();
             services.AddMemoryCache();
             services.AddCors();
@@ -214,7 +214,7 @@ namespace FastCommerce.Web.API
     {
         public static void AddEmailSender(this IServiceCollection services, IConfiguration configuration)
         {
-        //    var config = configuration.GetSection("Email").Get<EmailConfig>();
+            //    var config = configuration.GetSection("Email").Get<EmailConfig>();
             services.Configure<EmailConfig>(configuration.GetSection("Email"));
             services.AddTransient<IEmailService, EmailService>();
         }
@@ -246,15 +246,19 @@ namespace FastCommerce.Web.API
             .Ignore(p => p.Price)
             .Ignore(p => p.Quantity)
             .Ignore(p => p.Rating)
+            .Ignore(p => p.Category)
+            .Ignore(p => p.LastModified)
+            .Ignore(p => p.ViewCount)
             );
         }
 
         private static void CreateIndex(IElasticClient client, string indexName)
         {
             var createIndexResponse = client.Indices.Create(indexName,
-            index => index.Map<Product>(x => x.AutoMap())
+            index => index.Map<Product>(x => x.AutoMap()).Aliases(a => a.Alias("product_alias"))
             );
         }
+
     }
 
 }

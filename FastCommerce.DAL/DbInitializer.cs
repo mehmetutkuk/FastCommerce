@@ -13,12 +13,6 @@ namespace FastCommerce.DAL
         {
             context.Database.EnsureCreated();
 
-            // Look for any students.
-            if (context.Users.Any())
-            {
-                return;   // DB has been seeded
-            }
-
             var users = new User[]
             {
                 new User{
@@ -101,9 +95,50 @@ namespace FastCommerce.DAL
                 }
             };
 
-            foreach (User s in users)
+            var properties = new Property[]
             {
-                context.Users.Add(s);
+                new Property
+                {
+                    PropertyName ="Genişlik",
+                    PropertyValue = "1-4"
+                },
+                 new Property
+                {
+                    PropertyName ="Renk",
+                    PropertyValue = "Beyaz"
+                }
+
+            };
+
+            var categories = new Category[]
+            {
+                new Category
+                {
+
+                    Categoryname ="Altın Yüzükler",
+                    Properties= properties.ToList()
+
+                }
+
+            };
+
+            var products = new Product[]
+            {
+                new Product
+                {
+                    ProductName ="Altın XYZ Model Yüzük",
+                    Category = categories[0]
+
+                }
+
+            };
+
+            if (!context.Properties.Any())
+            {
+                foreach (Property p in properties)
+                {
+                    context.Properties.Add(p);
+                }
             }
             var products = new Product[]
             {
@@ -157,6 +192,31 @@ namespace FastCommerce.DAL
             {
                 context.Products.Add(s);
             }
+
+            if (!context.Category.Any())
+            {
+                foreach (Category c in categories)
+                {
+                    context.Category.Add(c);
+                }
+            }
+
+            if (!context.Products.Any())
+            {
+                foreach (Product p in products)
+                {
+                    context.Products.Add(p);
+                }
+            }
+
+            if (!context.Users.Any())
+            {
+                foreach (User u in users)
+                {
+                    context.Users.Add(u);
+                }
+            }
+
             context.SaveChanges();
         }
     }

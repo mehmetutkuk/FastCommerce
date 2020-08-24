@@ -3,15 +3,17 @@ using System;
 using FastCommerce.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20200816154738_ProductAndCategoryUpdate2")]
+    partial class ProductAndCategoryUpdate2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +38,7 @@ namespace FastCommerce.DAL.Migrations
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.Product", b =>
                 {
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProductID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
@@ -46,9 +48,6 @@ namespace FastCommerce.DAL.Migrations
 
                     b.Property<DateTime>("LastModified")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<int[]>("PlacementIds")
-                        .HasColumnType("integer[]");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
@@ -66,7 +65,7 @@ namespace FastCommerce.DAL.Migrations
                     b.Property<int>("ViewCount")
                         .HasColumnType("integer");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("ProductID");
 
                     b.HasIndex("CategoryID");
 
@@ -190,9 +189,6 @@ namespace FastCommerce.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("ActivationChannelType")
-                        .HasColumnType("integer");
 
                     b.Property<string>("ActivationCode")
                         .HasColumnType("text");

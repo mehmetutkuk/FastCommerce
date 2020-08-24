@@ -13,7 +13,6 @@ namespace FastCommerce.DAL
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<Property> Properties { get; set; }
-        public DbSet<PropertyDetail> PropertyDetails { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleObject> RoleObjects { get; set; }
