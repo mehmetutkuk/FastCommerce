@@ -6,7 +6,7 @@ namespace FastCommerce.Entities.Models
 {
     public enum ActivationType
     {
-        Phone,
-        Email
+        PasswordReset,
+        UserActivation
     }
 }

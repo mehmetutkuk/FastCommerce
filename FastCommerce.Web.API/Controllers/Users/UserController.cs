@@ -109,6 +109,56 @@ namespace FastCommerce.Web.API.Controllers.Users
             }
             return _response;
         }
+        [HttpPost("ResetPassword")]
+        public Response<ResetPasswordResponse> ResetPassword(ResetPasswordRequest req)
+        {
+            Response<ResetPasswordResponse> _response = new Response<ResetPasswordResponse>();
+            try
+            {
+                _response.RequestState = true;
+                if (ModelState.IsValid)
+                {
+                    _response.Data = _userManager.SendResetPasswordMail(req);
+                }
+                else
+                {
+                    _response.ErrorState = true;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorState = true;
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return _response;
+        }
+        [HttpPost("ResetPasswordBacklink")]
+        public Response<ActivationResponse> ResetPasswordBacklink(ResetPasswordRequest req)
+        {
+            Response<ActivationResponse> _response = new Response<ActivationResponse>();
+            try
+            {
+                _response.RequestState = true;
+                if (ModelState.IsValid)
+                {
+                    _response.Data = _userManager.ResetPassword(req);
+                }
+                else
+                {
+                    _response.ErrorState = true;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorState = true;
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return _response;
+        }
     }
 
 }

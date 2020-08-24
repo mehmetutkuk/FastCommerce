@@ -13,7 +13,7 @@ namespace FastCommerce.Entities.Models
         public bool isActivated { get; set; }
         public string ActivationCode { get; set; }
         public DateTime StartTime { get; set; }
-        [DefaultValue(ActivationType.Email)]
-        public ActivationType ActivationType { get; set; }
+        [DefaultValue(ActivationChannelType.Email)]
+        public ActivationChannelType ActivationType { get; set; }
     }
 }

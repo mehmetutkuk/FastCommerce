@@ -14,7 +14,9 @@ namespace FastCommerce.Entities.Entities
         public string ActivationCode { get; set; }
         public DateTime StartTime { get; set; }
 
-        [DefaultValue(ActivationType.Email)]
+        [DefaultValue(ActivationChannelType.Email)]
+        public ActivationChannelType ActivationChannelType { get; set; }
         public ActivationType ActivationType { get; set; }
+
     }
 }
