@@ -1,6 +1,7 @@
-﻿using FastCommerce.DAL;
+using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -49,7 +50,7 @@ namespace FastCommerce.Business.UserManager
             _context.Users.Where(w => w.UserID == user.UserID).SingleOrDefault().Password = Cryptography.Encrypt(user.Password);
         }
 
-        public Login Login(Login login)
+        public LoginResponse Login(Login login)
         {
             User fetchedUser = _context.Users.Where(w => w.Email == login.Email).SingleOrDefault();
             if (fetchedUser != null)
@@ -63,16 +64,17 @@ namespace FastCommerce.Business.UserManager
 
             }
 
-            return login;
+            return login.Adapt<LoginResponse>();
         }
 
-        public Register Register(Register register)
+        public RegisterResponse Register(Register register)
         {
+            register.Password = Cryptography.Encrypt(register.Password);
             _context.Users.AddAsync(register);
             register.SuccessfullyRegistered = true;
             _context.SaveChanges();
             SetupActivation(register);
-            return register;
+            return register.Adapt<RegisterResponse>();
         }
 
         private void SetupActivation(Register user)
@@ -156,8 +158,8 @@ namespace FastCommerce.Business.UserManager
 
     public interface IUserManager
     {
-        public Login Login(Login login);
-        public Register Register(Register register);
+        public LoginResponse Login(Login login);
+        public RegisterResponse Register(Register register);
         public UserActivation ActivateUser(string code);
     }
 }

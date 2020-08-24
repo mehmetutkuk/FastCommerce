@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace FastCommerce.Web.API.Models
 {
-    public class SenderEmailModel
+    public class ApiException
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
-
+        public string Message { get; set; }
+        public string Detail { get; set; }
     }
 }

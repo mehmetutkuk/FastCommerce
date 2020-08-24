@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 using FastCommerce.Business.UserManager;
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
+using FastCommerce.Web.API.Infrastructure;
+using FastCommerce.Web.API.Interfaces;
 using FastCommerce.Web.API.Models;
+using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -130,6 +134,13 @@ namespace FastCommerce.Web.API
                 };
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<IMapsterProfile, MapsterProfile>();
+
+            var sp = services.BuildServiceProvider();
+            var mapsterProfile = sp.GetService<IMapsterProfile>();
+            mapsterProfile.Configure();
+
             //services.AddLocalization(opt => opt.ResourcesPath = "Resources");
             //services.Configure<RequestLocalizationOptions>(
             //    opt =>
@@ -169,7 +180,7 @@ namespace FastCommerce.Web.API
                 .AllowCredentials());
 
             app.UseHttpsRedirection();
-
+            TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetEntryAssembly());
             app.UseAuthentication();
 
             app.UseRouting();
@@ -180,7 +191,6 @@ namespace FastCommerce.Web.API
             {
                 endpoints.MapControllers();
             });
-
             app.UseStaticFiles();
 
             //var localizeOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();

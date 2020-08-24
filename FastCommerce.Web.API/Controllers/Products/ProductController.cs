@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FastCommerce.Business.ProductManager;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Web.API.Models;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +33,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             catch (Exception ex)
             {
                 httpResponse.ErrorState = true;
-                httpResponse.ErrorList.Add(ex);
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
             }
             return httpResponse;
         }    
