@@ -1,9 +1,10 @@
-﻿using FastCommerce.DAL;
+using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -23,13 +24,15 @@ namespace FastCommerce.Business.UserManager
         private readonly dbContext _context;
         private IEmailService _mailService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
 
-        public UserManager(dbContext context, IEmailService mailService, IOptions<TokenModel> tokenManagement, IHttpContextAccessor httpContextAccessor)
+        public UserManager(dbContext context, IConfiguration configuration, IEmailService mailService, IOptions<TokenModel> tokenManagement, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mailService = mailService;
             _httpContextAccessor = httpContextAccessor;
             _tokenManagement = tokenManagement.Value;
+            _configuration = configuration;
         }
 
         public User AddUser(User user)
@@ -38,9 +41,7 @@ namespace FastCommerce.Business.UserManager
             return user;
         }
 
-
-
-        public void PasiveUser(User user)
+        public void DisableUser(User user)
         {
             _context.Users.Where(u => u.UserID == user.UserID).FirstOrDefault().Active = false;
         }
@@ -85,7 +86,7 @@ namespace FastCommerce.Business.UserManager
             usersActivation.StartTime = DateTime.Now;
             usersActivation.ActivationCode = GenerateActivationCode();
             _mailService.activation.ActivationCode = usersActivation.ActivationCode;
-            _mailService.activation.ActivationURL = _httpContextAccessor.HttpContext.Request.Host.Value;
+            _mailService.activation.ActivationURL = _configuration.GetSection("Frontend").Get<FrontendConfig>().Url;
             _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
             _mailService.SendEmailAsync(EmailType.activationCode);
             _context.UserActivations.Add(usersActivation);
@@ -145,8 +146,9 @@ namespace FastCommerce.Business.UserManager
 
         public ActivationResponse ActivateUser(ActivationRequest req)
         {
+            req.ActivationCode = Cryptography.Decrypt(req.ActivationCode);
             UserActivation UserAction = _context.UserActivations.Include(x=> x.User)
-                .Where(p => p.User.Email == req.Email && p.ActivationCode == req.ActivationCode)
+                .Where(p => p.ActivationCode == req.ActivationCode)
                 .Select(s => s).FirstOrDefault();
             UserAction.User.Active = true;
             UserAction.isActivated  = true;
@@ -161,5 +163,8 @@ namespace FastCommerce.Business.UserManager
         public LoginResponse Login(Login login);
         public RegisterResponse Register(Register register);
         public ActivationResponse ActivateUser(ActivationRequest req);
+        public void UpdatePassword(User user);
+        public void DisableUser(User user);
+        public User AddUser(User user);
     }
 }

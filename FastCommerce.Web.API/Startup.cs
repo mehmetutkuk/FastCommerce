@@ -135,7 +135,7 @@ namespace FastCommerce.Web.API
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddSingleton<IMapsterProfile, MapsterProfile>();
+            services.AddTransient<IMapsterProfile, MapsterProfile>();
 
             var sp = services.BuildServiceProvider();
             var mapsterProfile = sp.GetService<IMapsterProfile>();

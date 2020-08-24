@@ -9,6 +9,5 @@ namespace FastCommerce.Entities.Models
     {
         [Required]
         public string ActivationCode { get; set; }
-        public string Email { get; set; }
     }
 }
