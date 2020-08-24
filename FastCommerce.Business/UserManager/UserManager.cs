@@ -177,7 +177,7 @@ namespace FastCommerce.Business.UserManager
             UserActivation UserAction = _context.UserActivations.Include(x => x.User)
                 .Where(p => p.ActivationCode == req.ActivationCode && p.ActivationType==ActivationType.PasswordReset)
                 .Select(s => s).FirstOrDefault();
-            UserAction.User.Password = Cryptography.Decrypt(req.Password);
+            UserAction.User.Password = Cryptography.Encrypt(req.Password);
             UserAction.User.Active = true;
             UserAction.isActivated = true;
             UserAction.ActivationChannelType = ActivationChannelType.Email;
