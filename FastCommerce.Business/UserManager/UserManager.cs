@@ -1,4 +1,4 @@
-using FastCommerce.DAL;
+﻿using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using Mapster;
@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -38,9 +37,7 @@ namespace FastCommerce.Business.UserManager
             return user;
         }
 
-
-
-        public void PasiveUser(User user)
+        public void DisableUser(User user)
         {
             _context.Users.Where(u => u.UserID == user.UserID).FirstOrDefault().Active = false;
         }
@@ -143,16 +140,17 @@ namespace FastCommerce.Business.UserManager
             return true;
         }
 
-        public UserActivation ActivateUser(string code)
+        public ActivationResponse ActivateUser(ActivationRequest req)
         {
+            req.ActivationCode = Cryptography.Decrypt(req.ActivationCode);
             UserActivation UserAction = _context.UserActivations.Include(x=> x.User)
-                .Where(p => p.ActivationCode == code)
+                .Where(p => p.ActivationCode == req.ActivationCode)
                 .Select(s => s).FirstOrDefault();
             UserAction.User.Active = true;
             UserAction.isActivated  = true;
             UserAction.ActivationType = ActivationType.Email;
             _context.SaveChangesAsync();
-            return UserAction;
+            return UserAction.Adapt<ActivationResponse>();
         }
     }
 
@@ -160,6 +158,9 @@ namespace FastCommerce.Business.UserManager
     {
         public LoginResponse Login(Login login);
         public RegisterResponse Register(Register register);
-        public UserActivation ActivateUser(string code);
+        public ActivationResponse ActivateUser(ActivationRequest req);
+        public void UpdatePassword(User user);
+        public void DisableUser(User user);
+        public User AddUser(User user);
     }
 }

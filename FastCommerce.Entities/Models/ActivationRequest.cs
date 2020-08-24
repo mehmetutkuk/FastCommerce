@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FastCommerce.Entities.Models
 {
-    public class ActivationModel
+    public class ActivationRequest
     {
         [Required]
         public string ActivationCode { get; set; }

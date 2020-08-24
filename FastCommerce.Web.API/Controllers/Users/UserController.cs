@@ -84,16 +84,16 @@ namespace FastCommerce.Web.API.Controllers.Users
         /// <paramref name="response<UsersActivation>"/>
         /// </returns>
 
-        [HttpGet("ActivationBackLink")]
-        public Response<UserActivation> ActivationBackLink(string code)
+        [HttpPost("ActivationBackLink")]
+        public Response<ActivationResponse> ActivationBackLink(ActivationRequest req)
         {
-            Response<UserActivation> _response = new Response<UserActivation>();
+            Response<ActivationResponse> _response = new Response<ActivationResponse>();
             try
             {
                 _response.RequestState = true;
                 if (ModelState.IsValid)
                 {
-                    _response.Data = _userManager.ActivateUser(code);
+                    _response.Data = _userManager.ActivateUser(req);
                 }
                 else
                 {
