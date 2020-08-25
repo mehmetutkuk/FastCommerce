@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Text;
 using Utility.Cryptography;
 using Utility.MailServices;
+using Utility.Models;
 
 namespace FastCommerce.Business.UserManager
 {
@@ -82,10 +83,11 @@ namespace FastCommerce.Business.UserManager
             usersActivation.StartTime = DateTime.Now;
             usersActivation.ActivationCode = GenerateActivationCode();
             usersActivation.ActivationType = ActivationType.UserActivation;
-            _mailService.activation.ActivationCode = usersActivation.ActivationCode;
-            _mailService.activation.ActivationURL = _httpContextAccessor.HttpContext.Request.Host.Value;
+            _mailService.SetActivation(usersActivation.Adapt<Activation>());
+            _mailService.SetEmailType(EmailType.UserActivation);
             _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
-            _mailService.SendEmailAsync(EmailType.UserActivation);
+            _mailService.SetEmailMessage();
+            _mailService.SendEmailAsync();
             _context.UserActivations.Add(usersActivation);
             _context.SaveChangesAsync();
         }
@@ -155,16 +157,18 @@ namespace FastCommerce.Business.UserManager
         }
         public ResetPasswordResponse SendResetPasswordMail(ResetPasswordRequest req)
         {
-            User user = _context.Users.Where(p => p.Email == req.Email)
+            User user = _context.Users.Where(p => p.Email == req.Email && p.Active)
                 .Select(s => s).FirstOrDefault();
             UserActivation usersActivation = new UserActivation();
             usersActivation.User = user;
             usersActivation.StartTime = DateTime.Now;
             usersActivation.ActivationCode = GenerateActivationCode();
             usersActivation.ActivationType = ActivationType.PasswordReset;
-            _mailService.activation.ActivationCode = usersActivation.ActivationCode;
+            _mailService.SetActivation(usersActivation.Adapt<Activation>());
+            _mailService.SetEmailType(EmailType.PasswordReset);
             _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
-            _mailService.SendEmailAsync(EmailType.PasswordReset);
+            _mailService.SetEmailMessage();
+            _mailService.SendEmailAsync();
             _context.UserActivations.Add(usersActivation);
             _context.SaveChangesAsync();
             ResetPasswordResponse res = new ResetPasswordResponse();
