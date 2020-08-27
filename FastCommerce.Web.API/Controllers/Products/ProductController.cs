@@ -16,10 +16,13 @@ namespace FastCommerce.Web.API.Controllers.Products
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class ProductController : ControllerBase
     {
-
+        public IProductManager _productManager;
+        public ProductController(IProductManager productManager)
+        {
+            _productManager = productManager;
+        }
         [ActionName("Save"), Route("Save")]
         [HttpPost]
         public async Task<HttpResponseMessage> SaveAsync(Product product) {
@@ -36,8 +39,24 @@ namespace FastCommerce.Web.API.Controllers.Products
                 httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
             }
             return httpResponse;
-        }    
-    
-  
+        }
+        [HttpGet("GetProducts")]
+        public async Task<HttpResponseMessage> GetProducts()
+        {
+            Response<Product> httpResponse = new Response<Product>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = _productManager.GetProducts();
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+
     }
 }

@@ -105,6 +105,53 @@ namespace FastCommerce.DAL
             {
                 context.Users.Add(s);
             }
+            var products = new Product[]
+            {
+                new Product{
+                  ProductID=1,
+                  ProductName="Golden Ring w/ Topaz 22k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=6,
+                  Rating=3,
+                  Price=350.5
+                },
+                new Product{
+                  ProductID=2,
+                  ProductName="Golden Ring w/ Diamond 24k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=3,
+                  Rating=3,
+                  Price=750.5
+                },
+                new Product{
+                  ProductID=3,
+                  ProductName="Golden Ring w/ Ruby 22k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=20,
+                  Rating=4,
+                  Price=550.5
+                },
+                new Product{
+                  ProductID=4,
+                  ProductName="Silver Ring w/ Emerald 22k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=15,
+                  Rating=4,
+                  Price=200
+                },
+                new Product{
+                  ProductID=5,
+                  ProductName="Silver Ring w/ Amethyst 22k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=33,
+                  Rating=2,
+                  Price=250
+                },
+            };
+            foreach (Product s in products)
+            {
+                context.Products.Add(s);
+            }
             context.SaveChanges();
         }
     }
