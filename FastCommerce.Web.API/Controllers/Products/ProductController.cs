@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FastCommerce.Business.ProductManager;
 using FastCommerce.Entities.Entities;
+using FastCommerce.Entities.Models;
 using FastCommerce.Web.API.Models;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
@@ -40,14 +41,48 @@ namespace FastCommerce.Web.API.Controllers.Products
             }
             return httpResponse;
         }
-        [HttpGet("GetProducts")]
-        public async Task<HttpResponseMessage> GetProducts()
+        [HttpGet("Get")]
+        public async Task<HttpResponseMessage> Get()
         {
             Response<Product> httpResponse = new Response<Product>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.DataList = _productManager.GetProducts();
+                httpResponse.DataList = _productManager.Get();
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        [HttpGet("GetByPlaces")]
+        public async Task<HttpResponseMessage> GetByPlaces([FromBody]GetByPlacesRequest req)
+        {
+            Response<Product> httpResponse = new Response<Product>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = _productManager.GetByPlaces(req);
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        [HttpPost("SetPlaces")]
+        public async Task<HttpResponseMessage> SetPlaces([FromBody]SetPlacesRequest req)
+        {
+            Response<Product> httpResponse = new Response<Product>();
+            try
+            {
+                httpResponse.RequestState = true;
+                _productManager.SetPlaces(req);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)

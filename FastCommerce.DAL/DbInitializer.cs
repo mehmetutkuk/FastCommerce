@@ -108,44 +108,49 @@ namespace FastCommerce.DAL
             var products = new Product[]
             {
                 new Product{
-                  ProductID=1,
+                  ProductId=1,
                   ProductName="Golden Ring w/ Topaz 22k",
                   LastModified=DateTime.UtcNow,
                   Quantity=6,
                   Rating=3,
-                  Price=350.5
+                  Price=350.5,
+                  PlacementIds=new int[]{1,2,3}
                 },
                 new Product{
-                  ProductID=2,
+                  ProductId=2,
                   ProductName="Golden Ring w/ Diamond 24k",
                   LastModified=DateTime.UtcNow,
                   Quantity=3,
                   Rating=3,
-                  Price=750.5
+                  Price=750.5,
+                  PlacementIds=new int[]{3}
                 },
                 new Product{
-                  ProductID=3,
+                  ProductId=3,
                   ProductName="Golden Ring w/ Ruby 22k",
                   LastModified=DateTime.UtcNow,
                   Quantity=20,
                   Rating=4,
-                  Price=550.5
+                  Price=550.5,
+                  PlacementIds=new int[]{1}
                 },
                 new Product{
-                  ProductID=4,
+                  ProductId=4,
                   ProductName="Silver Ring w/ Emerald 22k",
                   LastModified=DateTime.UtcNow,
                   Quantity=15,
                   Rating=4,
-                  Price=200
+                  Price=200,
+                  PlacementIds=new int[]{5}
                 },
                 new Product{
-                  ProductID=5,
+                  ProductId=5,
                   ProductName="Silver Ring w/ Amethyst 22k",
                   LastModified=DateTime.UtcNow,
                   Quantity=33,
                   Rating=2,
-                  Price=250
+                  Price=250,
+                  PlacementIds=new int[]{2,5}
                 },
             };
             foreach (Product s in products)
