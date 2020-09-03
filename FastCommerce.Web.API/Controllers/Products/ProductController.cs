@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FastCommerce.Business.ObjectDtos.Product;
 using FastCommerce.Business.ProductManager;
+using FastCommerce.Business.ProductManager.Abstract;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using FastCommerce.Web.API.Models;
@@ -19,19 +21,21 @@ namespace FastCommerce.Web.API.Controllers.Products
     [ApiController]
     public class ProductController : ControllerBase
     {
-        public IProductManager _productManager;
-        public ProductController(IProductManager productManager)
+        private readonly IProductManager _productManager;
+
+        public ProductController(IProductManager ProductManager)
         {
-            _productManager = productManager;
+            _productManager = ProductManager;
         }
-        [ActionName("Save"), Route("Save")]
+        [ActionName("CreateIndexs"), Route("CreateIndexs")]
         [HttpPost]
-        public async Task<HttpResponseMessage> SaveAsync(Product product) {
+        public async Task<HttpResponseMessage> CreateIndexs(ProductElasticIndexDto productElasticIndexDto)
+        {
             Response<Product> httpResponse = new Response<Product>();
             try
             {
-                httpResponse.RequestState= true;
-           //     await ProductManager.SaveProduct(product);
+                httpResponse.RequestState = true;
+                _productManager.CreateIndexes(productElasticIndexDto);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)
