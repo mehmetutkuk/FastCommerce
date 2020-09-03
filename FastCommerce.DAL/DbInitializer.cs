@@ -88,6 +88,17 @@ namespace FastCommerce.DAL
                   LastLoginDate= DateTime.UtcNow,
                   Active= true
                 },
+                new User{
+                  Email= "mehmetburakeker@gmail.com",
+                  Name= "Burak",
+                  Surname= "Eker",
+                  ProfilePhoto= "",
+                  Password= Cryptography.Encrypt("test26"),
+                  PhoneNumber= "5300615200",
+                  RegisterDate= DateTime.UtcNow,
+                  LastLoginDate= DateTime.UtcNow,
+                  Active= true
+                }
             };
 
             foreach (User s in users)

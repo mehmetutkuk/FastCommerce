@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Text;
 using Utility.Cryptography;
 using Utility.MailServices;
+using Utility.Models;
 
 namespace FastCommerce.Business.UserManager
 {
@@ -81,16 +82,18 @@ namespace FastCommerce.Business.UserManager
             usersActivation.User = user;
             usersActivation.StartTime = DateTime.Now;
             usersActivation.ActivationCode = GenerateActivationCode();
-            _mailService.activation.ActivationCode = usersActivation.ActivationCode;
-            _mailService.activation.ActivationURL = _httpContextAccessor.HttpContext.Request.Host.Value;
+            usersActivation.ActivationType = ActivationType.UserActivation;
+            _mailService.SetActivation(usersActivation.Adapt<Activation>());
+            _mailService.SetEmailType(EmailType.UserActivation);
             _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
-            _mailService.SendEmailAsync(EmailType.activationCode);
+            _mailService.SetEmailMessage();
+            _mailService.SendEmailAsync();
             _context.UserActivations.Add(usersActivation);
             _context.SaveChangesAsync();
         }
 
 
-        private string[] ConvertUserToMailBoxesArray(Register user)
+        private string[] ConvertUserToMailBoxesArray(User user)
         {
             string[] userNameMail = new string[2];
             userNameMail[0] = user.Name + " " + user.Surname;
@@ -144,11 +147,44 @@ namespace FastCommerce.Business.UserManager
         {
             req.ActivationCode = Cryptography.Decrypt(req.ActivationCode);
             UserActivation UserAction = _context.UserActivations.Include(x=> x.User)
-                .Where(p => p.ActivationCode == req.ActivationCode)
+                .Where(p => p.ActivationCode == req.ActivationCode && p.ActivationType == ActivationType.UserActivation)
                 .Select(s => s).FirstOrDefault();
             UserAction.User.Active = true;
             UserAction.isActivated  = true;
-            UserAction.ActivationType = ActivationType.Email;
+            UserAction.ActivationChannelType = ActivationChannelType.Email;
+            _context.SaveChangesAsync();
+            return UserAction.Adapt<ActivationResponse>();
+        }
+        public ResetPasswordResponse SendResetPasswordMail(ResetPasswordRequest req)
+        {
+            User user = _context.Users.Where(p => p.Email == req.Email && p.Active)
+                .Select(s => s).FirstOrDefault();
+            UserActivation usersActivation = new UserActivation();
+            usersActivation.User = user;
+            usersActivation.StartTime = DateTime.Now;
+            usersActivation.ActivationCode = GenerateActivationCode();
+            usersActivation.ActivationType = ActivationType.PasswordReset;
+            _mailService.SetActivation(usersActivation.Adapt<Activation>());
+            _mailService.SetEmailType(EmailType.PasswordReset);
+            _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
+            _mailService.SetEmailMessage();
+            _mailService.SendEmailAsync();
+            _context.UserActivations.Add(usersActivation);
+            _context.SaveChangesAsync();
+            ResetPasswordResponse res = new ResetPasswordResponse();
+            res.isResetMailSent = true;
+            return res;
+        }
+        public ActivationResponse ResetPassword(ResetPasswordRequest req)
+        {
+            req.ActivationCode = Cryptography.Decrypt(req.ActivationCode);
+            UserActivation UserAction = _context.UserActivations.Include(x => x.User)
+                .Where(p => p.ActivationCode == req.ActivationCode && p.ActivationType==ActivationType.PasswordReset)
+                .Select(s => s).FirstOrDefault();
+            UserAction.User.Password = Cryptography.Encrypt(req.Password);
+            UserAction.User.Active = true;
+            UserAction.isActivated = true;
+            UserAction.ActivationChannelType = ActivationChannelType.Email;
             _context.SaveChangesAsync();
             return UserAction.Adapt<ActivationResponse>();
         }
@@ -159,6 +195,8 @@ namespace FastCommerce.Business.UserManager
         public LoginResponse Login(Login login);
         public RegisterResponse Register(Register register);
         public ActivationResponse ActivateUser(ActivationRequest req);
+        public ResetPasswordResponse SendResetPasswordMail(ResetPasswordRequest req);
+        public ActivationResponse ResetPassword(ResetPasswordRequest req);
         public void UpdatePassword(User user);
         public void DisableUser(User user);
         public User AddUser(User user);
