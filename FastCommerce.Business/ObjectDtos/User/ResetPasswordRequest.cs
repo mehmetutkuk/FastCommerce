@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace FastCommerce.Entities.Models
+namespace FastCommerce.Business.ObjectDtos.User
 {
-    public class ActivationRequest
+    public class ResetPasswordRequest
     {
-        [Required]
+        public string Email { get; set; }
+        public string Password { get; set; }
         public string ActivationCode { get; set; }
     }
 }

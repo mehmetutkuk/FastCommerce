@@ -8,8 +8,13 @@ namespace FastCommerce.Business.UserManager.Abstract
 {
     public interface IUserManager
     {
-        public Login Login(Login login);
-        public Register Register(Register register);
-        public UserActivation ActivateUser(string code);
+        public LoginResponse Login(Login login);
+        public RegisterResponse Register(Register register);
+        public ActivationResponse ActivateUser(ActivationRequest req);
+        public ResetPasswordResponse SendResetPasswordMail(ResetPasswordRequest req);
+        public ActivationResponse ResetPassword(ResetPasswordRequest req);
+        public void UpdatePassword(User user);
+        public void DisableUser(User user);
+        public User AddUser(User user);
     }
 }

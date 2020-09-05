@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FastCommerce.Entities.Models
+namespace FastCommerce.Business.ObjectDtos.User
 {
     public class LoginResponse
     {

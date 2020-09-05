@@ -35,7 +35,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             try
             {
                 httpResponse.RequestState = true;
-                _productManager.CreateIndexes(productElasticIndexDto);
+                await _productManager.CreateIndexes(productElasticIndexDto);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)
@@ -52,7 +52,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.DataList = _productManager.Get();
+                httpResponse.DataList = await _productManager.Get();
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)
@@ -69,24 +69,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.DataList = _productManager.GetByCategories(req);
-                httpResponse.ErrorState = false;
-            }
-            catch (Exception ex)
-            {
-                httpResponse.ErrorState = true;
-                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
-            }
-            return httpResponse;
-        }
-        [HttpPost("SetPlaces")]
-        public async Task<HttpResponseMessage> SetPlaces([FromBody]SetPlacesRequest req)
-        {
-            Response<Product> httpResponse = new Response<Product>();
-            try
-            {
-                httpResponse.RequestState = true;
-                _productManager.SetPlaces(req);
+                httpResponse.DataList = await _productManager.GetByCategories(req);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)

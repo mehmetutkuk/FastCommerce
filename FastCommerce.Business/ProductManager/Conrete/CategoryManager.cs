@@ -32,16 +32,18 @@ namespace FastCommerce.Business.ProductManager.Conrete
 
         public bool DeleteCategory(Category category)
         {
-             _context.Remove<Category>(category);
+            _context.Remove<Category>(category);
             _context.SaveChanges();
             return true;
         }
 
         public bool UpdateCategory(Category category)
         {
-           var result =  _context.Category.Select(s => s).Where(w => w.CategoryID == category.CategoryID);
-            cate
-
+            var result =  _context.Category.Select(s => s).Where(w => w.CategoryID == category.CategoryID).FirstOrDefault();
+            result.CategoryName = category.CategoryName;
+            result.Properties = category.Properties;
+            _context.SaveChanges();
+            return true;
         }
 
 
