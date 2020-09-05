@@ -1,4 +1,5 @@
-﻿using FastCommerce.Entities.Entities;
+﻿using FastCommerce.Business.ObjectDtos.User;
+using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using System;
 using System.Collections.Generic;

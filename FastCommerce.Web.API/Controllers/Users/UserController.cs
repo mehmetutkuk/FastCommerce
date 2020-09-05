@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using FastCommerce.Business.ObjectDtos.User;
 using FastCommerce.Business.UserManager;
 using FastCommerce.Business.UserManager.Abstract;
 using FastCommerce.Entities.Entities;
