@@ -43,7 +43,7 @@ namespace FastCommerce.Business.UserManager.Conrete
 
 
 
-        public void PasiveUser(User user)
+        public void DisableUser(User user)
         {
             _context.Users.Where(u => u.UserID == user.UserID).FirstOrDefault().Active = false;
         }
@@ -98,7 +98,7 @@ namespace FastCommerce.Business.UserManager.Conrete
         }
 
 
-        private string[] ConvertUserToMailBoxesArray(Register user)
+        private string[] ConvertUserToMailBoxesArray(User user)
         {
             string[] userNameMail = new string[2];
             userNameMail[0] = user.Name + " " + user.Surname;
@@ -154,6 +154,39 @@ namespace FastCommerce.Business.UserManager.Conrete
             UserActivation UserAction = _context.UserActivations.Include(x => x.User)
                 .Where(p => p.ActivationCode == req.ActivationCode && p.ActivationType == ActivationType.UserActivation)
                 .Select(s => s).FirstOrDefault();
+            UserAction.User.Active = true;
+            UserAction.isActivated = true;
+            UserAction.ActivationChannelType = ActivationChannelType.Email;
+            _context.SaveChangesAsync();
+            return UserAction.Adapt<ActivationResponse>();
+        }
+        public ResetPasswordResponse SendResetPasswordMail(ResetPasswordRequest req)
+        {
+            User user = _context.Users.Where(p => p.Email == req.Email && p.Active)
+                .Select(s => s).FirstOrDefault();
+            UserActivation usersActivation = new UserActivation();
+            usersActivation.User = user;
+            usersActivation.StartTime = DateTime.Now;
+            usersActivation.ActivationCode = GenerateActivationCode();
+            usersActivation.ActivationType = ActivationType.PasswordReset;
+            _mailService.SetActivation(usersActivation.Adapt<Activation>());
+            _mailService.SetEmailType(EmailType.PasswordReset);
+            _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
+            _mailService.SetEmailMessage();
+            _mailService.SendEmailAsync();
+            _context.UserActivations.Add(usersActivation);
+            _context.SaveChangesAsync();
+            ResetPasswordResponse res = new ResetPasswordResponse();
+            res.isResetMailSent = true;
+            return res;
+        }
+        public ActivationResponse ResetPassword(ResetPasswordRequest req)
+        {
+            req.ActivationCode = Cryptography.Decrypt(req.ActivationCode);
+            UserActivation UserAction = _context.UserActivations.Include(x => x.User)
+                .Where(p => p.ActivationCode == req.ActivationCode && p.ActivationType == ActivationType.PasswordReset)
+                .Select(s => s).FirstOrDefault();
+            UserAction.User.Password = Cryptography.Encrypt(req.Password);
             UserAction.User.Active = true;
             UserAction.isActivated = true;
             UserAction.ActivationChannelType = ActivationChannelType.Email;
