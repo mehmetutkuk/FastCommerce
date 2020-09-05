@@ -114,7 +114,7 @@ namespace FastCommerce.DAL
                   Quantity=6,
                   Rating=3,
                   Price=350.5,
-                  PlacementIds=new int[]{1,2,3}
+                  Categories=new List<Category>(){ new Category() {CategoryID= 1,CategoryName="Top Section" }}
                 },
                 new Product{
                   ProductId=2,
@@ -123,7 +123,7 @@ namespace FastCommerce.DAL
                   Quantity=3,
                   Rating=3,
                   Price=750.5,
-                  PlacementIds=new int[]{3}
+                  Categories=new List<Category>(){}
                 },
                 new Product{
                   ProductId=3,
@@ -132,7 +132,7 @@ namespace FastCommerce.DAL
                   Quantity=20,
                   Rating=4,
                   Price=550.5,
-                  PlacementIds=new int[]{1}
+                  Categories=new List<Category>(){}
                 },
                 new Product{
                   ProductId=4,
@@ -141,7 +141,7 @@ namespace FastCommerce.DAL
                   Quantity=15,
                   Rating=4,
                   Price=200,
-                  PlacementIds=new int[]{5}
+                  Categories=new List<Category>(){}
                 },
                 new Product{
                   ProductId=5,
@@ -150,7 +150,7 @@ namespace FastCommerce.DAL
                   Quantity=33,
                   Rating=2,
                   Price=250,
-                  PlacementIds=new int[]{2,5}
+                  Categories=new List<Category>(){}
                 },
             };
             foreach (Product s in products)

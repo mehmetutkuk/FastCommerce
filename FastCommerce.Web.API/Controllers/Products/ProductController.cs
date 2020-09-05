@@ -58,14 +58,14 @@ namespace FastCommerce.Web.API.Controllers.Products
             }
             return httpResponse;
         }
-        [HttpGet("GetByPlaces")]
-        public async Task<HttpResponseMessage> GetByPlaces([FromBody]GetByPlacesRequest req)
+        [HttpGet("GetByPlace")]
+        public async Task<HttpResponseMessage> GetByCategories([FromBody]GetByCategoriesRequest req)
         {
             Response<Product> httpResponse = new Response<Product>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.DataList = _productManager.GetByPlaces(req);
+                httpResponse.DataList = _productManager.GetByCategories(req);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)

@@ -23,24 +23,22 @@ namespace FastCommerce.Business.ProductManager
         {
             return _context.Products.ToList();
         }
-
         public void SetPlaces(SetPlacesRequest req)
         {
             Product product = _context.Products
                 .Where(p => p.ProductId == req.ProductId).FirstOrDefault();
-            product.PlacementIds = req.PlacementIds;
             _context.SaveChangesAsync();
         }
-        public List<Product> GetByPlaces(GetByPlacesRequest req)
+        public List<Product> GetByCategories(GetByCategoriesRequest req)
         {
-            List<Product> products = _context.Products.Where(w => w.PlacementIds.All(q => req.PlacementIds.Contains(q))).ToList();
-            return products;
+            return _context.Products
+                .Where(p => p.Categories.All(item => req.Categories.Contains(item))).ToList();
         }
     }
     public interface IProductManager
     {
         List<Product> Get();
         void SetPlaces(SetPlacesRequest req);
-        List<Product> GetByPlaces(GetByPlacesRequest req);
+        List<Product> GetByCategories(GetByCategoriesRequest req);
     }
 }
