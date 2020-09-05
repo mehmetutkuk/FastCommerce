@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using FastCommerce.Business.ElasticSearch.Abstract;
+using FastCommerce.Business.ElasticSearch.Conrete;
 using FastCommerce.Business.ProductManager;
+using FastCommerce.Business.ProductManager.Abstract;
+using FastCommerce.Business.ProductManager.Conrete;
 using FastCommerce.Business.UserManager;
 using FastCommerce.Business.UserManager.Abstract;
 using FastCommerce.Business.UserManager.Conrete;
@@ -46,6 +50,8 @@ namespace FastCommerce.Web.API
             services.AddScoped<IElasticSearchConfigration, ElasticSearchConfigration>();
             services.AddTransient<IUserManager, UserManager>();
             services.AddTransient<IProductManager, ProductManager>();
+            services.AddTransient<ICategoryManager, CategoryManager>();
+
             services.AddMemoryCache();
             services.AddCors();
 

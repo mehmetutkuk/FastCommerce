@@ -1,7 +1,9 @@
-﻿using FastCommerce.Business.UserManager.Abstract;
+﻿using FastCommerce.Business.ObjectDtos.User;
+using FastCommerce.Business.UserManager.Abstract;
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -14,6 +16,7 @@ using System.Security.Claims;
 using System.Text;
 using Utility.Cryptography;
 using Utility.MailServices;
+using Utility.Models;
 
 namespace FastCommerce.Business.UserManager.Conrete
 {

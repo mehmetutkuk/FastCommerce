@@ -115,19 +115,8 @@ namespace FastCommerce.DAL
                 new Category
                 {
 
-                    Categoryname ="Altın Yüzükler",
+                    CategoryName ="Altın Yüzükler",
                     Properties= properties.ToList()
-
-                }
-
-            };
-
-            var products = new Product[]
-            {
-                new Product
-                {
-                    ProductName ="Altın XYZ Model Yüzük",
-                    Category = categories[0]
 
                 }
 
