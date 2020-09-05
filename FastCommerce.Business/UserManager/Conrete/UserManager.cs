@@ -50,7 +50,7 @@ namespace FastCommerce.Business.UserManager.Conrete
             _context.Users.Where(w => w.UserID == user.UserID).SingleOrDefault().Password = Cryptography.Encrypt(user.Password);
         }
 
-        public Login Login(Login login)
+        public LoginResponse Login(Login login)
         {
             User fetchedUser = _context.Users.Where(w => w.Email == login.Email).SingleOrDefault();
             if (fetchedUser != null)
@@ -64,16 +64,17 @@ namespace FastCommerce.Business.UserManager.Conrete
 
             }
 
-            return login;
+            return login.Adapt<LoginResponse>();
         }
 
-        public Register Register(Register register)
+        public RegisterResponse Register(Register register)
         {
+            register.Password = Cryptography.Encrypt(register.Password);
             _context.Users.AddAsync(register);
             register.SuccessfullyRegistered = true;
             _context.SaveChanges();
             SetupActivation(register);
-            return register;
+            return register.Adapt<RegisterResponse>();
         }
 
         private void SetupActivation(Register user)
@@ -83,10 +84,12 @@ namespace FastCommerce.Business.UserManager.Conrete
             usersActivation.User = user;
             usersActivation.StartTime = DateTime.Now;
             usersActivation.ActivationCode = GenerateActivationCode();
-            _mailService.activation.ActivationCode = usersActivation.ActivationCode;
-            _mailService.activation.ActivationURL = _httpContextAccessor.HttpContext.Request.Host.Value;
+            usersActivation.ActivationType = ActivationType.UserActivation;
+            _mailService.SetActivation(usersActivation.Adapt<Activation>());
+            _mailService.SetEmailType(EmailType.UserActivation);
             _mailService.SetMailBoxes = ConvertUserToMailBoxesArray(user);
-            _mailService.SendEmailAsync(EmailType.activationCode);
+            _mailService.SetEmailMessage();
+            _mailService.SendEmailAsync();
             _context.UserActivations.Add(usersActivation);
             _context.SaveChangesAsync();
         }
@@ -142,16 +145,17 @@ namespace FastCommerce.Business.UserManager.Conrete
             return true;
         }
 
-        public UserActivation ActivateUser(string code)
+        public ActivationResponse ActivateUser(ActivationRequest req)
         {
-            UserActivation UserAction = _context.UserActivations.Include(x=> x.User)
-                .Where(p => p.ActivationCode == code)
+            req.ActivationCode = Cryptography.Decrypt(req.ActivationCode);
+            UserActivation UserAction = _context.UserActivations.Include(x => x.User)
+                .Where(p => p.ActivationCode == req.ActivationCode && p.ActivationType == ActivationType.UserActivation)
                 .Select(s => s).FirstOrDefault();
             UserAction.User.Active = true;
-            UserAction.isActivated  = true;
-            UserAction.ActivationType = ActivationType.Email;
+            UserAction.isActivated = true;
+            UserAction.ActivationChannelType = ActivationChannelType.Email;
             _context.SaveChangesAsync();
-            return UserAction;
+            return UserAction.Adapt<ActivationResponse>();
         }
     }
 

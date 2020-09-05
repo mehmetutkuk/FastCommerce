@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FastCommerce.Entities.Models
+namespace FastCommerce.Business.ObjectDtos.Product
 {
     public class SetPlacesRequest
     {

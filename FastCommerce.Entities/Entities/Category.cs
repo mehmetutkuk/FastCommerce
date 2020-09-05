@@ -9,7 +9,7 @@ namespace FastCommerce.Entities.Entities
     {
         [Key]
         public int CategoryID { get; set; }
-        public string Categoryname { get; set; }
+        public string CategoryName { get; set; }
         [Required]
         public virtual List<Property> Properties { get; set; }
 
