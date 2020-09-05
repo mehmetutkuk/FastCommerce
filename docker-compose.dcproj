@@ -5,7 +5,7 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>4d540dfc-82ff-41e2-b4ee-16f79bd7d3f3</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/General</DockerServiceUrl>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>fastcommerce.web.api</DockerServiceName>
     <UserSecretsId>4d8c2fa4-edb8-42a7-ba74-e76a13acf33e</UserSecretsId>
   </PropertyGroup>

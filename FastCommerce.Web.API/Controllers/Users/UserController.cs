@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using FastCommerce.Business.UserManager;
+using FastCommerce.Business.UserManager.Abstract;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using FastCommerce.Web.API.Models;
