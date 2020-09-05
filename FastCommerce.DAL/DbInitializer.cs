@@ -105,6 +105,58 @@ namespace FastCommerce.DAL
             {
                 context.Users.Add(s);
             }
+            var products = new Product[]
+            {
+                new Product{
+                  ProductId=1,
+                  ProductName="Golden Ring w/ Topaz 22k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=6,
+                  Rating=3,
+                  Price=350.5,
+                  Categories=new List<Category>(){ new Category() {CategoryID= 1,CategoryName="Top Section" }}
+                },
+                new Product{
+                  ProductId=2,
+                  ProductName="Golden Ring w/ Diamond 24k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=3,
+                  Rating=3,
+                  Price=750.5,
+                  Categories=new List<Category>(){}
+                },
+                new Product{
+                  ProductId=3,
+                  ProductName="Golden Ring w/ Ruby 22k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=20,
+                  Rating=4,
+                  Price=550.5,
+                  Categories=new List<Category>(){}
+                },
+                new Product{
+                  ProductId=4,
+                  ProductName="Silver Ring w/ Emerald 22k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=15,
+                  Rating=4,
+                  Price=200,
+                  Categories=new List<Category>(){}
+                },
+                new Product{
+                  ProductId=5,
+                  ProductName="Silver Ring w/ Amethyst 22k",
+                  LastModified=DateTime.UtcNow,
+                  Quantity=33,
+                  Rating=2,
+                  Price=250,
+                  Categories=new List<Category>(){}
+                },
+            };
+            foreach (Product s in products)
+            {
+                context.Products.Add(s);
+            }
             context.SaveChanges();
         }
     }

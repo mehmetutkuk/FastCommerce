@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using FastCommerce.Business.ProductManager;
 using FastCommerce.Business.UserManager;
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
@@ -206,6 +207,7 @@ namespace FastCommerce.Web.API
             //var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
             services.AddDbContext<dbContext>(options => options.UseNpgsql(connectionString, y => y.MigrationsAssembly("FastCommerce.DAL")));
             services.AddTransient<UserManager>();
+            services.AddTransient<IProductManager,ProductManager>();
         }
     }
     public static class EmailExtensions
