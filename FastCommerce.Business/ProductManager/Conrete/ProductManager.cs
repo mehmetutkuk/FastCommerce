@@ -42,9 +42,12 @@ namespace FastCommerce.Business.ProductManager.Conrete
 
         }
 
-
+        public async Task<bool> AddProduct(Product product)
+        {
+            await _context.AddAsync<Product>(product);
+            await _context.SaveChangesAsync();
+            return await Task.FromResult<bool>(true);
+        }
     }
-
-
 }
 
