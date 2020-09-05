@@ -46,6 +46,11 @@ namespace FastCommerce.Business.ProductManager.Conrete
             return true;
         }
 
+        public List<Category> GetCategories()
+        {
+            return _context.Category.Select(s => s).ToList();
+        }
+
 
 
     }
