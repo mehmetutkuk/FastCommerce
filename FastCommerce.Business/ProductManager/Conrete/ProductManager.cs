@@ -12,6 +12,7 @@ using FastCommerce.Business.ElasticSearch.Abstract;
 using FastCommerce.Business.ObjectDtos.Product;
 using FastCommerce.Business.Core;
 using FastCommerce.Business.ProductManager.Abstract;
+using Mapster;
 
 namespace FastCommerce.Business.ProductManager.Conrete
 {
@@ -54,6 +55,9 @@ namespace FastCommerce.Business.ProductManager.Conrete
         {
             await _context.AddAsync<Product>(product);
             await _context.SaveChangesAsync();
+            ProductElasticIndexDto productElasticIndexDto = new ProductElasticIndexDto();
+            productElasticIndexDto.Adapt(product);
+            await CreateIndexes(productElasticIndexDto);
             return await Task.FromResult<bool>(true);
         }
     }

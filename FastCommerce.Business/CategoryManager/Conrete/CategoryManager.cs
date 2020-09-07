@@ -2,6 +2,7 @@
 using FastCommerce.Business.ProductManager.Abstract;
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
+using Mapster;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace FastCommerce.Business.ProductManager.Conrete
         {
             var result =  _context.Category.Select(s => s).Where(w => w.CategoryID == category.CategoryID).FirstOrDefault();
             result.CategoryName = category.CategoryName;
-            result.Properties = category.Properties;
+            result.Adapt(category);
             _context.SaveChanges();
             return true;
         }
@@ -50,8 +51,6 @@ namespace FastCommerce.Business.ProductManager.Conrete
         {
             return _context.Category.Select(s => s).ToList();
         }
-
-
 
     }
 }
