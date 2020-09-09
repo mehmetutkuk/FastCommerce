@@ -10,10 +10,15 @@ WORKDIR /src
 COPY ["FastCommerce.Web.API/FastCommerce.Web.API.csproj", "FastCommerce.Web.API/"]
 COPY ["FastCommerce.Entities/FastCommerce.Entities.csproj", "FastCommerce.Entities/"]
 COPY ["FastCommerce.DAL/FastCommerce.DAL.csproj", "FastCommerce.DAL/"]
+COPY ["FastCommerce.UnitTests/FastCommerce.UnitTests.csproj", "FastCommerce.UnitTests/"]
 RUN dotnet restore "FastCommerce.Web.API/FastCommerce.Web.API.csproj"
-COPY . .
-WORKDIR "/src/FastCommerce.Web.API"
-RUN dotnet build "FastCommerce.Web.API.csproj" -c Release -o /app/build
+RUN dotnet restore "FastCommerce.UnitTests/FastCommerce.UnitTests.csproj"
+COPY . . 
+RUN dotnet build "FastCommerce.Web.API/FastCommerce.Web.API.csproj" -c Release -o /app/build
+RUN dotnet build "FastCommerce.UnitTests/FastCommerce.UnitTests.csproj" -c Release -o /app/build
+
+RUN dotnet test "FastCommerce.UnitTests/FastCommerce.UnitTests.csproj" --logger "trx;LogFileName=fastcommercelog.trx" 
+
 
 FROM build AS publish
 RUN dotnet publish "FastCommerce.Web.API.csproj" -c Release -o /app/publish
@@ -22,3 +27,5 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "FastCommerce.Web.API.dll"]
+
+

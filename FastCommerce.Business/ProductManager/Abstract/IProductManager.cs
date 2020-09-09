@@ -9,8 +9,10 @@ namespace FastCommerce.Business.ProductManager.Abstract
 {
     public interface IProductManager
     {
-        public  Task<bool> CreateIndexes(ProductElasticIndexDto productElasticIndexDto);
+        Task<bool> CreateIndexes(ProductElasticIndexDto productElasticIndexDto);
         Task<List<Product>> Get();
         Task<List<Product>> GetByCategories(GetByCategoriesRequest req);
+        Task<Product> AddProduct(Product product);
+
     }
 }

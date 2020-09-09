@@ -27,6 +27,7 @@ namespace FastCommerce.Web.API.Controllers.Products
         {
             _productManager = ProductManager;
         }
+
         [ActionName("CreateIndexs"), Route("CreateIndexs")]
         [HttpPost]
         public async Task<HttpResponseMessage> CreateIndexs(ProductElasticIndexDto productElasticIndexDto)
@@ -46,7 +47,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             return httpResponse;
         }
         [HttpGet("Get")]
-        public async Task<HttpResponseMessage> Get()
+        public async Task<Response<Product>> Get()
         {
             Response<Product> httpResponse = new Response<Product>();
             try
@@ -62,6 +63,25 @@ namespace FastCommerce.Web.API.Controllers.Products
             }
             return httpResponse;
         }
+
+        [HttpPost("AddProduct")]
+        public async Task<Response<Product>> AddProduct(Product product)
+        {
+            Response<Product> httpResponse = new Response<Product>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.Data = await _productManager.AddProduct(product);
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+
         [HttpGet("GetByPlace")]
         public async Task<HttpResponseMessage> GetByCategories([FromBody]GetByCategoriesRequest req)
         {
