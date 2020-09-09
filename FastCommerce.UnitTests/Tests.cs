@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Reflection;
+using FastCommerce.Business.ObjectDtos.Product;
+using Mapster;
 
 namespace FastCommerce.UnitTests
 {
@@ -23,7 +26,7 @@ namespace FastCommerce.UnitTests
         public async Task GetProducts()
         {
 
-            var products = GetFakeData(26);
+            var products = GetFakeProductData(26);
 
             var mockedService = new Mock<IProductManager>();
             mockedService.Setup(x => x.Get()).Returns(products);
@@ -38,6 +41,22 @@ namespace FastCommerce.UnitTests
             Assert.IsInstanceOf<List<Product>>(result.DataList);
             Assert.AreEqual(26, result.DataList.Count);
 
+        }
+        [Test]
+        public async Task GetByCategories()
+        {
+            var products = GetFakeProductData(5);
+            var categories = GetFakeCategoryData(2);
+            GetByCategoriesRequest getByCategoriesRequest = new GetByCategoriesRequest();
+            getByCategoriesRequest.Categories.Adapt(categories);
+
+            var mockedService = new Mock<IProductManager>();
+            mockedService.Setup(x => x.GetByCategories(getByCategoriesRequest)).Returns(products);
+            var controller = new ProductController(mockedService.Object);
+
+            var result = await controller.GetByCategories(getByCategoriesRequest);
+
+            Assert.AreEqual(5, result.DataList.Count);
         }
 
 
@@ -55,7 +74,14 @@ namespace FastCommerce.UnitTests
 
         }
 
-        private async Task<List<Product>> GetFakeData(int count)
+        private List<Category> GetFakeCategoryData(int count)
+        {
+            var i = 1;
+            var categories= A.ListOf<Category>(count);
+            categories.ForEach(x => x.CategoryID = i++);
+            return categories.Select(_ => _).ToList();
+        }
+        private async Task<List<Product>> GetFakeProductData(int count)
         {
             var i = 1;
             var persons = A.ListOf<Product>(count);

@@ -83,7 +83,7 @@ namespace FastCommerce.Web.API.Controllers.Products
         }
 
         [HttpGet("GetByPlace")]
-        public async Task<HttpResponseMessage> GetByCategories([FromBody]GetByCategoriesRequest req)
+        public async Task<Response<Product>> GetByCategories([FromBody]GetByCategoriesRequest req)
         {
             Response<Product> httpResponse = new Response<Product>();
             try
