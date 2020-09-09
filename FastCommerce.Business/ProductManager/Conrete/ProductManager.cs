@@ -51,14 +51,14 @@ namespace FastCommerce.Business.ProductManager.Conrete
         {
             return await _context.Products.ToListAsync();
         }
-        public async Task<bool> AddProduct(Product product)
+        public async Task<Product> AddProduct(Product product)
         {
             await _context.AddAsync<Product>(product);
             await _context.SaveChangesAsync();
             ProductElasticIndexDto productElasticIndexDto = new ProductElasticIndexDto();
             productElasticIndexDto.Adapt(product);
             await CreateIndexes(productElasticIndexDto);
-            return await Task.FromResult<bool>(true);
+            return await Task.FromResult<Product>(product);
         }
     }
 }
