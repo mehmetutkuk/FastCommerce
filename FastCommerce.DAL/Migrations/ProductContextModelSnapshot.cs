@@ -36,27 +36,39 @@ namespace FastCommerce.DAL.Migrations
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.Product", b =>
                 {
-                    b.Property<int>("ProductID")
+                    b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("LastModified")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<int[]>("PlacementIds")
+                        .HasColumnType("integer[]");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
 
                     b.Property<string>("ProductName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Rating")
+                    b.Property<double>("Rating")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("ViewCount")
                         .HasColumnType("integer");
 
-                    b.HasKey("ProductID");
+                    b.HasKey("ProductId");
+
+                    b.HasIndex("CategoryID");
 
                     b.ToTable("Products");
                 });
@@ -68,27 +80,22 @@ namespace FastCommerce.DAL.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int?>("CategoryID")
+                        .HasColumnType("integer");
+
                     b.Property<string>("PropertyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PropertyValue")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("PropertyID");
 
-                    b.ToTable("Propertys");
-                });
+                    b.HasIndex("CategoryID");
 
-            modelBuilder.Entity("FastCommerce.Entities.Entities.PropertyDetail", b =>
-                {
-                    b.Property<int>("PropertyDetailID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("PropertyDetailName")
-                        .HasColumnType("text");
-
-                    b.HasKey("PropertyDetailID");
-
-                    b.ToTable("PropertyDetails");
+                    b.ToTable("Properties");
                 });
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.Role", b =>
@@ -147,13 +154,13 @@ namespace FastCommerce.DAL.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("LastLoginDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
@@ -161,7 +168,6 @@ namespace FastCommerce.DAL.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ProfilePhoto")
@@ -171,10 +177,6 @@ namespace FastCommerce.DAL.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Username")
                         .HasColumnType("text");
 
                     b.HasKey("UserID");
@@ -182,38 +184,57 @@ namespace FastCommerce.DAL.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("FastCommerce.Entities.Entities.UsersActivation", b =>
+            modelBuilder.Entity("FastCommerce.Entities.Entities.UserActivation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<bool>("SuccelyActivated")
-                        .HasColumnType("boolean");
+                    b.Property<int>("ActivationChannelType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ActivationCode")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ActivationType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("UserID")
                         .HasColumnType("integer");
 
-                    b.Property<int>("activationTpye")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("activetioncode")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("startTime")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<bool>("isActivated")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("UsersActivations");
+                    b.ToTable("UserActivations");
                 });
 
-            modelBuilder.Entity("FastCommerce.Entities.Entities.UsersActivation", b =>
+            modelBuilder.Entity("FastCommerce.Entities.Entities.Product", b =>
                 {
-                    b.HasOne("FastCommerce.Entities.Entities.User", "user")
+                    b.HasOne("FastCommerce.Entities.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FastCommerce.Entities.Entities.Property", b =>
+                {
+                    b.HasOne("FastCommerce.Entities.Entities.Category", null)
+                        .WithMany("Properties")
+                        .HasForeignKey("CategoryID");
+                });
+
+            modelBuilder.Entity("FastCommerce.Entities.Entities.UserActivation", b =>
+                {
+                    b.HasOne("FastCommerce.Entities.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserID");
                 });

@@ -11,19 +11,16 @@ namespace FastCommerce.Entities.Entities
     public class User
     {
         public int UserID { get; set; }
-        public string Username { get; set; }
+        [Required]
         public string Email { get; set; }
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public string Surname { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string Surname { get; set; }
         public string ProfilePhoto { get; set; }
         [Required]
         [DefaultValue("")]
         [NotNull]
         public string Password { get; set; }
-        [Required]
-        public string PhoneNumber { get; set; }
+        public virtual string PhoneNumber { get; set; }
         public DateTime RegisterDate { get; set; }
         public DateTime LastLoginDate { get; set; }
         [DefaultValue(false)]

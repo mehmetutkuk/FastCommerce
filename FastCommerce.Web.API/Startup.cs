@@ -1,26 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
+using FastCommerce.Business.ElasticSearch.Abstract;
+using FastCommerce.Business.ElasticSearch.Conrete;
+using FastCommerce.Business.ProductManager;
+using FastCommerce.Business.ProductManager.Abstract;
+using FastCommerce.Business.ProductManager.Conrete;
 using FastCommerce.Business.UserManager;
+using FastCommerce.Business.UserManager.Abstract;
+using FastCommerce.Business.UserManager.Conrete;
 using FastCommerce.DAL;
-using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
+using FastCommerce.Web.API.Infrastructure;
+using FastCommerce.Web.API.Interfaces;
 using FastCommerce.Web.API.Models;
+using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Localization.Routing;
-using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Nest;
 using Utility.MailServices;
 using Utility.Models;
 
@@ -28,21 +34,24 @@ namespace FastCommerce.Web.API
 {
     public class Startup
     {
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+       
         }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddElasticsearch(Configuration);
             services.AddDomainDataServices();
+            services.AddScoped<IElasticSearchService, ElasticSearchManager>();
+            services.AddScoped<IElasticSearchConfigration, ElasticSearchConfigration>();
             services.AddTransient<IUserManager, UserManager>();
+            services.AddTransient<IProductManager, ProductManager>();
+            services.AddTransient<ICategoryManager, CategoryManager>();
+
             services.AddMemoryCache();
             services.AddCors();
 
@@ -129,21 +138,11 @@ namespace FastCommerce.Web.API
                     IssuerSigningKey = new SymmetricSecurityKey(secret),
                 };
             });
-
-            //services.AddLocalization(opt => opt.ResourcesPath = "Resources");
-            //services.Configure<RequestLocalizationOptions>(
-            //    opt =>
-            //    {
-            //        var supportCultures = new List<CultureInfo>
-            //        {
-            //            new CultureInfo("en-US"),
-            //            new CultureInfo("tr-TR")
-            //        };
-            //        opt.DefaultRequestCulture = new RequestCulture(culture: "en-TR", uiCulture: "en-EN");
-            //        opt.SupportedCultures = supportCultures;
-            //        opt.SupportedUICultures = supportCultures;
-            //        opt.RequestCultureProviders = new[] { new RouteDataRequestCultureProvider { RouteDataStringKey = "en-EN", UIRouteDataStringKey = "en-EN" } };
-            //    });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IMapsterProfile, MapsterProfile>();
+            var sp = services.BuildServiceProvider();
+            var mapsterProfile = sp.GetService<IMapsterProfile>();
+            mapsterProfile.Configure();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -169,7 +168,7 @@ namespace FastCommerce.Web.API
                 .AllowCredentials());
 
             app.UseHttpsRedirection();
-
+            TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetEntryAssembly());
             app.UseAuthentication();
 
             app.UseRouting();
@@ -180,7 +179,6 @@ namespace FastCommerce.Web.API
             {
                 endpoints.MapControllers();
             });
-
             app.UseStaticFiles();
 
             //var localizeOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
@@ -196,52 +194,16 @@ namespace FastCommerce.Web.API
             //var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
             services.AddDbContext<dbContext>(options => options.UseNpgsql(connectionString, y => y.MigrationsAssembly("FastCommerce.DAL")));
             services.AddTransient<UserManager>();
+            services.AddTransient<IProductManager,ProductManager>();
         }
     }
     public static class EmailExtensions
     {
         public static void AddEmailSender(this IServiceCollection services, IConfiguration configuration)
         {
-            var config = configuration.GetSection("Email");
+            //    var config = configuration.GetSection("Email").Get<EmailConfig>();
             services.Configure<EmailConfig>(configuration.GetSection("Email"));
             services.AddTransient<IEmailService, EmailService>();
-        }
-    }
-    public static class ElasticsearchExtensions
-    {
-        public static void AddElasticsearch(this IServiceCollection services, IConfiguration configuration)
-        {
-            var url = configuration["elasticsearch:url"];
-            var defaultIndex = configuration["elasticsearch:index"];
-
-            var settings = new ConnectionSettings(new Uri(url))
-
-            .DefaultIndex(defaultIndex);
-
-            AddDefaultMappings(settings);
-
-            var client = new ElasticClient(settings);
-
-            services.AddSingleton(client);
-
-            CreateIndex(client, defaultIndex);
-        }
-
-        private static void AddDefaultMappings(ConnectionSettings settings)
-        {
-            settings.
-            DefaultMappingFor<Product>(m => m
-            .Ignore(p => p.Price)
-            .Ignore(p => p.Quantity)
-            .Ignore(p => p.Rating)
-            );
-        }
-
-        private static void CreateIndex(IElasticClient client, string indexName)
-        {
-            var createIndexResponse = client.Indices.Create(indexName,
-            index => index.Map<Product>(x => x.AutoMap())
-            );
         }
     }
 

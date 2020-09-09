@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace FastCommerce.Entities.Entities
 {
     public class Product
     {
-        public int ProductID { get; set; }
+        [Key]
+        public int ProductId { get; set; }
+        [Required]
         public string ProductName { get; set; }
+        public List<Category> Categories { get; set; }
         public DateTime LastModified { get; set; }
         public int Quantity { get; set; }
-        public int Rating { get; set; }
+        public double Rating { get; set; }
         public double Price { get; set; }
+        public int ViewCount { get; set; }
+        [Required]
+        public virtual Category Category { get; set; }
 
-        
     }
 }

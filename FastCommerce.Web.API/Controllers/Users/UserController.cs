@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using FastCommerce.Business.ObjectDtos.User;
 using FastCommerce.Business.UserManager;
+using FastCommerce.Business.UserManager.Abstract;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using FastCommerce.Web.API.Models;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,9 +34,9 @@ namespace FastCommerce.Web.API.Controllers.Users
         /// <returns></returns>
 
         [HttpPost("Login")]
-        public Response<Login> Login(Login login)
+        public Response<LoginResponse> Login(Login login)
         {
-            Response<Login> _response = new Response<Login>();
+            Response<LoginResponse> _response = new Response<LoginResponse>();
             try
             {
                 _response.RequestState = true;
@@ -42,7 +45,7 @@ namespace FastCommerce.Web.API.Controllers.Users
             catch (Exception ex)
             {
                 _response.ErrorState = true;
-                _response.Errors.Add(ex);
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
             }
             return _response;
         }
@@ -54,31 +57,110 @@ namespace FastCommerce.Web.API.Controllers.Users
         /// <returns></returns>
 
         [HttpPost("Register")]
-        public Response<Register> Register(Register register)
+        public Response<RegisterResponse> Register(Register register)
         {
-            Response<Register> _response = new Response<Register>();
+            Response<RegisterResponse> _response = new Response<RegisterResponse>();
             try
             {
                 _response.RequestState = true;
-                if (register.ValidForRegister())
+                _response.Data = _userManager.Register(register);
+                    
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorState = true;
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return _response;
+        }
+
+
+
+        /// <summary>
+        /// User Activation Method
+        /// </summary>
+        /// <param name="code">
+        /// Activation Key 
+        /// </param>
+        /// <returns>
+        /// <paramref name="response<UsersActivation>"/>
+        /// </returns>
+
+        [HttpPost("ActivationBackLink")]
+        public Response<ActivationResponse> ActivationBackLink(ActivationRequest req)
+        {
+            Response<ActivationResponse> _response = new Response<ActivationResponse>();
+            try
+            {
+                _response.RequestState = true;
+                if (ModelState.IsValid)
                 {
-                    _response.Data = _userManager.Register(register);
+                    _response.Data = _userManager.ActivateUser(req);
                 }
                 else
                 {
                     _response.ErrorState = true;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                 }
-                    
+
             }
             catch (Exception ex)
             {
                 _response.ErrorState = true;
-                _response.Errors.Add(ex);
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
             }
             return _response;
         }
+        [HttpPost("ResetPassword")]
+        public Response<ResetPasswordResponse> ResetPassword(ResetPasswordRequest req)
+        {
+            Response<ResetPasswordResponse> _response = new Response<ResetPasswordResponse>();
+            try
+            {
+                _response.RequestState = true;
+                if (ModelState.IsValid)
+                {
+                    _response.Data = _userManager.SendResetPasswordMail(req);
+                }
+                else
+                {
+                    _response.ErrorState = true;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                }
 
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorState = true;
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return _response;
+        }
+        [HttpPost("ResetPasswordBacklink")]
+        public Response<ActivationResponse> ResetPasswordBacklink(ResetPasswordRequest req)
+        {
+            Response<ActivationResponse> _response = new Response<ActivationResponse>();
+            try
+            {
+                _response.RequestState = true;
+                if (ModelState.IsValid)
+                {
+                    _response.Data = _userManager.ResetPassword(req);
+                }
+                else
+                {
+                    _response.ErrorState = true;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                }
 
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorState = true;
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return _response;
+        }
     }
+
 }

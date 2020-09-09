@@ -9,15 +9,9 @@ namespace FastCommerce.Web.API.Models
 {
     public abstract class BaseResponse : HttpResponseMessage
     {
-            public List<Exception> Errors { get; set; }
+            public List<ApiException> ErrorList { get; set; }
             public bool ErrorState { get; set; }
             public bool RequestState { get; set; }
     }
-
-    public interface IBaseResponse
-    {
-        public List<Exception> Errors { get; set; }
-        public bool ErrorState { get; set; }
-        public bool RequestState { get; set; }
-    }
+    
 }

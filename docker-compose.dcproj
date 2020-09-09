@@ -1,12 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>4d540dfc-82ff-41e2-b4ee-16f79bd7d3f3</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/General</DockerServiceUrl>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>fastcommerce.web.api</DockerServiceName>
+    <UserSecretsId>4d8c2fa4-edb8-42a7-ba74-e76a13acf33e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

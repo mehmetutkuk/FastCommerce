@@ -6,7 +6,7 @@ networks:
 
 services:
   fastcommerce.web.api:
-    image: mutkukulregistry.azurecr.io/fastcommercewebapi:latest
+    image: ${DOCKER_REGISTRY-}fastcommercewebapi
     depends_on:
       - "postgres_image"
       - "redis_image"
