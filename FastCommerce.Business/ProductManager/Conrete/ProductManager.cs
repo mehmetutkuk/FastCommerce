@@ -30,9 +30,7 @@ namespace FastCommerce.Business.ProductManager.Conrete
         {
             try
             {
-                // Her ekleme işleminde daha önce Index oluşturulup oluşturulmadığını kontrol ediyoruz.
                 await _elasticSearchService.CreateIndexAsync<ProductElasticIndexDto, int>(ElasticSearchItemsConst.ProductIndexName);
-                // Yeni bir elasticindex kayıt ekliyoruz(Document)
                 await _elasticSearchService.AddOrUpdateAsync<ProductElasticIndexDto, int>(ElasticSearchItemsConst.ProductIndexName, productElasticIndexDto);
                 return await Task.FromResult<bool>(true);
             }
