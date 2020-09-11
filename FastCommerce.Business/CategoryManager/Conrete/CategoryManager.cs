@@ -31,25 +31,24 @@ namespace FastCommerce.Business.ProductManager.Conrete
         }
 
 
-        public bool DeleteCategory(Category category)
+        public async Task<bool> DeleteCategory(Category category)
         {
-            _context.Remove<Category>(category);
+            _context.Category.Remove(category);
             _context.SaveChanges();
-            return true;
+            return await Task.FromResult<bool>(true); 
         }
 
-        public bool UpdateCategory(Category category)
+        public async Task<bool> UpdateCategory(Category category)
         {
             var result =  _context.Category.Select(s => s).Where(w => w.CategoryID == category.CategoryID).FirstOrDefault();
-            result.CategoryName = category.CategoryName;
             result.Adapt(category);
             _context.SaveChanges();
-            return true;
+            return await Task.FromResult<bool>(true); 
         }
 
-        public List<Category> GetCategories()
+        public async Task<List<Category>> GetCategories()
         {
-            return _context.Category.Select(s => s).ToList();
+            return await Task.FromResult<List<Category>>(_context.Category.Select(s => s).ToList());
         }
 
     }

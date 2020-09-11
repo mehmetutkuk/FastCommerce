@@ -20,6 +20,7 @@ namespace FastCommerce.UnitTests
         [SetUp]
         public void Setup()
         {
+
         }
 
         [Test]
