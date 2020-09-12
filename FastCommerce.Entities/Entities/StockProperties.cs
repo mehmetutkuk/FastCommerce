@@ -5,13 +5,13 @@ using System.Text;
 
 namespace FastCommerce.Entities.Entities
 {
-    public class Property
+   public class StockProperties
     {
         [Key]
+        public int StockPropertiesId { get; set; }
+        public int StockId { get; set; }
+        public Stock Stock { get; set; }
         public int PropertyID { get; set; }
-        [Required]
-        public string PropertyName { get; set; }
-        public string PropertyValue { get; set; }
-        public ICollection<StockProperties> StockProperties { get; set; }
+        public Property Property { get; set; }
     }
 }

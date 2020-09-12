@@ -43,7 +43,7 @@ namespace FastCommerce.Business.ProductManager.Conrete
         public async Task<List<Product>> GetByCategories(GetByCategoriesRequest req)
         {
             return await _context.Products
-                .Where(p => p.Categories.All(item => req.Categories.Contains(item))).ToListAsync();
+                .Where(p => p.ProductCategories.All(item => req.Categories.Contains(item.Category))).ToListAsync();
         }
         public async Task<List<Product>> Get()
         {

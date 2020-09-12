@@ -35,8 +35,8 @@ namespace FastCommerce.Web.API.Controllers.Category
             try
             {
                 httpResponse.RequestState = true;
-                await _categoryManager.AddCategory(category);
-                httpResponse.ErrorState = false;
+                httpResponse.ErrorState  = !await _categoryManager.AddCategory(category);
+                
             }
             catch (Exception ex)
             {
@@ -59,8 +59,8 @@ namespace FastCommerce.Web.API.Controllers.Category
             try
             {
                 httpResponse.RequestState = true;
-                await _categoryManager.DeleteCategory(category);
-                httpResponse.ErrorState = false;
+                httpResponse.ErrorState = !await _categoryManager.DeleteCategory(category);
+                
             }
             catch (Exception ex)
             {
@@ -84,8 +84,7 @@ namespace FastCommerce.Web.API.Controllers.Category
             try
             {
                 httpResponse.RequestState = true;
-                await _categoryManager.UpdateCategory(category);
-                httpResponse.ErrorState = false;
+                httpResponse.ErrorState = !await _categoryManager.UpdateCategory(category);
             }
             catch (Exception ex)
             {
@@ -102,13 +101,13 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// </returns>
         
         [HttpGet("GetCategories")]
-        public async Task<HttpResponseMessage> GetCategories(Entities.Entities.Category category)
+        public async Task<HttpResponseMessage> GetCategories()
         {
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
             try
             {
                 httpResponse.RequestState = true;
-                await _categoryManager.GetCategories();
+                httpResponse.DataList = await _categoryManager.GetCategories();
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)

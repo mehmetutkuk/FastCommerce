@@ -5,13 +5,14 @@ using System.Text;
 
 namespace FastCommerce.Entities.Entities
 {
-    public class Stock
+    public class ProductCategories
     {
         [Key]
-        public int StockId { get; set; }
+        public int ProductCategoriesId { get; set; }
         public int ProductId { get; set; }
         public Product Product { get; set; }
-        public ICollection<StockProperties> StockProperties { get; set; } 
-        public int Quantity { get; set; }
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
+
     }
 }

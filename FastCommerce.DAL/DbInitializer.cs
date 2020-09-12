@@ -137,7 +137,7 @@ namespace FastCommerce.DAL
                   LastModified=DateTime.UtcNow,
                   Rating=3,
                   Price=350.5,
-                  Categories=new List<Category>(){ new Category() {CategoryID= 1,CategoryName="Top Section" }}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 1}, new ProductCategories() { CategoryId = 2, ProductId = 1 } }
                 },
                 new Product{
                   ProductId=2,
@@ -145,7 +145,7 @@ namespace FastCommerce.DAL
                   LastModified=DateTime.UtcNow,
                   Rating=3,
                   Price=750.5,
-                  Categories=new List<Category>(){}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 2}, new ProductCategories() { CategoryId = 2, ProductId = 2 } }
                 },
                 new Product{
                   ProductId=3,
@@ -153,7 +153,7 @@ namespace FastCommerce.DAL
                   LastModified=DateTime.UtcNow,
                   Rating=4,
                   Price=550.5,
-                  Categories=new List<Category>(){}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 3}, new ProductCategories() { CategoryId = 2, ProductId = 3 } }
                 },
                 new Product{
                   ProductId=4,
@@ -161,7 +161,7 @@ namespace FastCommerce.DAL
                   LastModified=DateTime.UtcNow,
                   Rating=4,
                   Price=200,
-                  Categories=new List<Category>(){}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 4}, new ProductCategories() { CategoryId = 2, ProductId = 4 } }
                 },
                 new Product{
                   ProductId=5,
@@ -169,18 +169,31 @@ namespace FastCommerce.DAL
                   LastModified=DateTime.UtcNow,
                   Rating=2,
                   Price=250,
-                  Categories=new List<Category>(){}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 4}, new ProductCategories() { CategoryId = 2, ProductId = 4 } }
                 },
+            };
+
+            var StockProperties = new StockProperties[]
+            {
+                new StockProperties
+                {
+                    PropertyID = 2,
+                    StockId = 1,
+                },
+                 new StockProperties
+                {
+                    PropertyID = 1,
+                    StockId = 1,
+                }
             };
             var stocks = new Stock[] {
                 new Stock
                 {
-                    Product = products.First(),
-                    Properties = properties.Where(p=> p.PropertyID >= 2).ToList(),
-                    Quantity = 2
+                    ProductId =5,
+                    Quantity = 1,
                 }
             };
-
+         
             if (!context.Stocks.Any())
             {
                 foreach (Stock s in stocks)
@@ -212,6 +225,15 @@ namespace FastCommerce.DAL
                     context.Users.Add(u);
                 }
             }
+            context.SaveChanges();
+            if (!context.StockProperties.Any())
+            {
+                foreach (StockProperties sp in StockProperties)
+                {
+                    context.StockProperties.Add(sp);
+                }
+            }
+
 
             context.SaveChanges();
         }

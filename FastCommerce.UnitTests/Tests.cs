@@ -79,7 +79,7 @@ namespace FastCommerce.UnitTests
         {
             var i = 1;
             var categories= A.ListOf<Category>(count);
-            categories.ForEach(x => x.CategoryID = i++);
+            categories.ForEach(x => x.CategoryId = i++);
             return categories.Select(_ => _).ToList();
         }
         private async Task<List<Product>> GetFakeProductData(int count)
