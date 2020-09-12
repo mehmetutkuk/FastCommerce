@@ -11,7 +11,7 @@ namespace FastCommerce.Entities.Entities
         public int PropertyID { get; set; }
         [Required]
         public string PropertyName { get; set; }
-        [Required]
         public string PropertyValue { get; set; }
+
     }
 }
