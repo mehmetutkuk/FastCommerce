@@ -181,16 +181,12 @@ namespace FastCommerce.DAL
                 }
             };
 
-
-            foreach (Stock s in stocks)
+            if (!context.Stocks.Any())
             {
-                context.Stocks.Add(s);
-            }
-
-
-            foreach (Product s in products)
-            {
-                context.Products.Add(s);
+                foreach (Stock s in stocks)
+                {
+                    context.Stocks.Add(s);
+                }
             }
 
             if (!context.Category.Any())

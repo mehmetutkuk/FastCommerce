@@ -27,8 +27,8 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// <returns>
         /// <paramref name="Task<HttpResponseMessage>"/>
         /// </returns>
-        [ActionName("AddCategory")]
-        [HttpPost]
+        
+        [HttpPost("AddCategory")]
         public async Task<HttpResponseMessage> AddCategory(Entities.Entities.Category category)
         {
             Response<Entities.Entities.Category> httpResponse = new  Response<Entities.Entities.Category>();
@@ -51,8 +51,8 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// <returns>
         /// <paramref name="Task<HttpResponseMessage>"/>
         /// </returns>
-        [ActionName("DeleteCategory")]
-        [HttpPost]
+        
+        [HttpPost("DeleteCategory")]
         public async Task<HttpResponseMessage> DeleteCategory(Entities.Entities.Category category)
         {
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
@@ -76,8 +76,8 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// <returns>
         /// <paramref name="Task<HttpResponseMessage>"/>
         /// </returns>
-        [ActionName("UpdateCategory")]
-        [HttpPost]
+        
+        [HttpPost("UpdateCategory")]
         public async Task<HttpResponseMessage> UpdateCategory(Entities.Entities.Category category)
         {
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
@@ -100,8 +100,8 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// <returns>
         /// <paramref name="Task<HttpResponseMessage>"/>
         /// </returns>
-        [ActionName("GetCategories")]
-        [HttpGet]
+        
+        [HttpGet("GetCategories")]
         public async Task<HttpResponseMessage> GetCategories(Entities.Entities.Category category)
         {
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
