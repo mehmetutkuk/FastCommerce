@@ -21,6 +21,11 @@ namespace FastCommerce.DAL
         public DbSet<RoleObject> RoleObjects { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserActivation> UserActivations { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderProduct> OrderProducts { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Shipment> Shipments { get; set; }
+
         public dbContext(DbContextOptions options) : base(options)
         {
 
