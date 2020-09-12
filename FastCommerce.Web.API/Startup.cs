@@ -7,6 +7,8 @@ using FastCommerce.Business.CategoryManager.Abstract;
 using FastCommerce.Business.CategoryManager.Conrete;
 using FastCommerce.Business.ElasticSearch.Abstract;
 using FastCommerce.Business.ElasticSearch.Conrete;
+using FastCommerce.Business.OrderManager.Abstract;
+using FastCommerce.Business.OrderManager.Conrete;
 using FastCommerce.Business.ProductManager;
 using FastCommerce.Business.ProductManager.Abstract;
 using FastCommerce.Business.ProductManager.Conrete;
@@ -54,6 +56,7 @@ namespace FastCommerce.Web.API
             services.AddTransient<IProductManager, ProductManager>();
             services.AddTransient<ICategoryManager, CategoryManager>();
             services.AddTransient<IPropertyManager, PropertyManager>();
+            services.AddTransient<IOrderManager, OrderManager>();
             services.AddMemoryCache();
             services.AddCors();
 
