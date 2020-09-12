@@ -192,8 +192,8 @@ namespace FastCommerce.Web.API
     {
         public static void AddDomainDataServices(this IServiceCollection services)
         {
-            string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-            //var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
+            //string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
             services.AddDbContext<dbContext>(options => options.UseNpgsql(connectionString, y => y.MigrationsAssembly("FastCommerce.DAL")));
             services.AddTransient<UserManager>();
             services.AddTransient<IProductManager,ProductManager>();

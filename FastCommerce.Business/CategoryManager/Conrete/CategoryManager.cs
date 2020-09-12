@@ -25,7 +25,7 @@ namespace FastCommerce.Business.ProductManager.Conrete
 
         public async Task<bool> AddCategory(Category category)
         {
-            await _context.AddAsync<Category>(category);
+            await _context.Category.AddAsync(category);
             await _context.SaveChangesAsync();
             return await Task.FromResult<bool>(true);
         }
@@ -35,20 +35,23 @@ namespace FastCommerce.Business.ProductManager.Conrete
         {
             _context.Category.Remove(category);
             _context.SaveChanges();
-            return await Task.FromResult<bool>(true); 
+            return await Task.FromResult<bool>(true);
         }
 
         public async Task<bool> UpdateCategory(Category category)
         {
-            var result =  _context.Category.Select(s => s).Where(w => w.CategoryID == category.CategoryID).FirstOrDefault();
+            var result = _context.Category.Select(s => s).Where(w => w.CategoryId == category.CategoryId).FirstOrDefault();
             result.Adapt(category);
             _context.SaveChanges();
-            return await Task.FromResult<bool>(true); 
+            return await Task.FromResult<bool>(true);
         }
 
         public async Task<List<Category>> GetCategories()
         {
-            return await Task.FromResult<List<Category>>(_context.Category.Select(s => s).ToList());
+            List<Category> query = (from cat in _context.Category
+                        select new Category { CategoryId=cat.CategoryId, CategoryName = cat.CategoryName }).ToList();
+
+            return await Task.FromResult(query);
         }
 
     }

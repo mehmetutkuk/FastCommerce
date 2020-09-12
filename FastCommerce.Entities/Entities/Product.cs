@@ -11,14 +11,11 @@ namespace FastCommerce.Entities.Entities
         public int ProductId { get; set; }
         [Required]
         public string ProductName { get; set; }
-        public List<Category> Categories { get; set; }
+        public int ProductCategoriesId { get; set; }
+        public ICollection<ProductCategories> ProductCategories { get; set; }
         public DateTime LastModified { get; set; }
-        public int Quantity { get; set; }
         public double Rating { get; set; }
         public double Price { get; set; }
         public int ViewCount { get; set; }
-        [Required]
-        public virtual Category Category { get; set; }
-
     }
 }

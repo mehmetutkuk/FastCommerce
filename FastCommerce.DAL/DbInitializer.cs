@@ -135,51 +135,71 @@ namespace FastCommerce.DAL
                   ProductId=1,
                   ProductName="Golden Ring w/ Topaz 22k",
                   LastModified=DateTime.UtcNow,
-                  Quantity=6,
                   Rating=3,
                   Price=350.5,
-                  Categories=new List<Category>(){ new Category() {CategoryID= 1,CategoryName="Top Section" }}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 1}, new ProductCategories() { CategoryId = 2, ProductId = 1 } }
                 },
                 new Product{
                   ProductId=2,
                   ProductName="Golden Ring w/ Diamond 24k",
                   LastModified=DateTime.UtcNow,
-                  Quantity=3,
                   Rating=3,
                   Price=750.5,
-                  Categories=new List<Category>(){}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 2}, new ProductCategories() { CategoryId = 2, ProductId = 2 } }
                 },
                 new Product{
                   ProductId=3,
                   ProductName="Golden Ring w/ Ruby 22k",
                   LastModified=DateTime.UtcNow,
-                  Quantity=20,
                   Rating=4,
                   Price=550.5,
-                  Categories=new List<Category>(){}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 3}, new ProductCategories() { CategoryId = 2, ProductId = 3 } }
                 },
                 new Product{
                   ProductId=4,
                   ProductName="Silver Ring w/ Emerald 22k",
                   LastModified=DateTime.UtcNow,
-                  Quantity=15,
                   Rating=4,
                   Price=200,
-                  Categories=new List<Category>(){}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 4}, new ProductCategories() { CategoryId = 2, ProductId = 4 } }
                 },
                 new Product{
                   ProductId=5,
                   ProductName="Silver Ring w/ Amethyst 22k",
                   LastModified=DateTime.UtcNow,
-                  Quantity=33,
                   Rating=2,
                   Price=250,
-                  Categories=new List<Category>(){}
+                  ProductCategories=new List<ProductCategories>(){ new ProductCategories() {CategoryId= 1,ProductId = 4}, new ProductCategories() { CategoryId = 2, ProductId = 4 } }
                 },
             };
-            foreach (Product s in products)
+
+            var StockProperties = new StockProperties[]
             {
-                context.Products.Add(s);
+                new StockProperties
+                {
+                    PropertyID = 2,
+                    StockId = 1,
+                },
+                 new StockProperties
+                {
+                    PropertyID = 1,
+                    StockId = 1,
+                }
+            };
+            var stocks = new Stock[] {
+                new Stock
+                {
+                    ProductId =5,
+                    Quantity = 1,
+                }
+            };
+         
+            if (!context.Stocks.Any())
+            {
+                foreach (Stock s in stocks)
+                {
+                    context.Stocks.Add(s);
+                }
             }
 
             if (!context.Category.Any())
@@ -205,6 +225,15 @@ namespace FastCommerce.DAL
                     context.Users.Add(u);
                 }
             }
+            context.SaveChanges();
+            if (!context.StockProperties.Any())
+            {
+                foreach (StockProperties sp in StockProperties)
+                {
+                    context.StockProperties.Add(sp);
+                }
+            }
+
 
             context.SaveChanges();
         }
