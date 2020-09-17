@@ -28,34 +28,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             _productManager = ProductManager;
         }
 
-        /// <summary>
-        /// CreateIndexs
-        /// </summary>
-        /// <param name="ProductElasticIndexDto">
-        /// Activation Key 
-        /// </param>
-        /// <returns>
-        /// <paramref name="Task<HttpResponseMessage>"/>
-        /// </returns>
 
-        [ActionName("CreateIndexs"), Route("CreateIndexs")]
-        [HttpPost]
-        public async Task<HttpResponseMessage> CreateIndexs(ProductElasticIndexDto productElasticIndexDto)
-        {
-            Response<Product> httpResponse = new Response<Product>();
-            try
-            {
-                httpResponse.RequestState = true;
-                await _productManager.CreateIndexes(productElasticIndexDto);
-                httpResponse.ErrorState = false;
-            }
-            catch (Exception ex)
-            {
-                httpResponse.ErrorState = true;
-                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
-            }
-            return httpResponse;
-        }
         /// <summary>
         /// Get
         /// </summary>
@@ -79,6 +52,62 @@ namespace FastCommerce.Web.API.Controllers.Products
             }
             return httpResponse;
         }
+
+
+
+
+        /// <summary>
+        /// GetProductById
+        /// </summary>
+        /// <returns>
+        /// <paramref name="Task<Response<Product>>"/>
+        /// </returns>
+        [HttpGet("GetProductById")]
+        public Response<Product> GetProductById(int ProductId)
+        {
+            Response<Product> httpResponse = new Response<Product>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.Data =  _productManager.GetProductById(ProductId);
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+
+
+        /// <summary>
+        /// SearchProduct
+        /// </summary>
+        /// <returns>
+        /// <paramref name="Task<Response<Product>>"/>
+        /// </returns>
+        [HttpGet("SearchProduct")]
+        public async Task<Response<ProductElasticIndexDto>> SearchProduct(string search)
+        {
+            Response<ProductElasticIndexDto> httpResponse = new Response<ProductElasticIndexDto>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = await _productManager.SuggestProductSearchAsync(search);
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+
+
+
+
         /// <summary>
         /// AddProduct
         /// </summary>

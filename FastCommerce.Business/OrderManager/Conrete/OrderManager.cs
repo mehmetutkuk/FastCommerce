@@ -41,9 +41,9 @@ namespace FastCommerce.Business.OrderManager.Conrete
             return await Task.FromResult<bool>(true);
         }
 
-        public async Task<List<Order>> GetOrdersByUser(User user)
+        public async Task<List<Order>> GetOrdersByUser(int UserId)
         {
-            List<Order>  orders =  _context.Orders.Where(c => c.UserId == user.UserID).ToList();
+            List<Order>  orders =  _context.Orders.Where(c => c.UserId == UserId).ToList();
             return await Task.FromResult<List<Order>>(orders);
         }
 
@@ -52,9 +52,5 @@ namespace FastCommerce.Business.OrderManager.Conrete
             List<Order> orders = _context.Orders.Select(c => c).ToList();
             return await Task.FromResult<List<Order>>(orders);
         }
-
-
-
-
     }
 }

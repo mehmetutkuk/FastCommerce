@@ -95,13 +95,13 @@ namespace FastCommerce.Web.API.Controllers.Order
         /// <returns></returns>
 
         [HttpGet("GetOrdersByUser")]
-        public async Task<HttpResponseMessage> GetOrdersByUser(Entities.Entities.User user)
+        public async Task<HttpResponseMessage> GetOrdersByUser(int UserId)
         {
             Response<Entities.Entities.Order> _response = new Response<Entities.Entities.Order>();
             try
             {
                 _response.RequestState = true;
-                _response.DataList = await _orderManager.GetOrdersByUser(user);
+                _response.DataList = await _orderManager.GetOrdersByUser(UserId);
                 _response.ErrorState = false;
             }
             catch (Exception ex)
@@ -117,7 +117,7 @@ namespace FastCommerce.Web.API.Controllers.Order
         /// <param name="order"></param>
         /// <returns></returns>
 
-        [HttpGet("GetOrdersByUser")]
+        [HttpGet("GetOrders")]
         public async Task<HttpResponseMessage> GetOrders()
         {
             Response<Entities.Entities.Order> _response = new Response<Entities.Entities.Order>();

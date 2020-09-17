@@ -344,38 +344,5 @@ namespace FastCommerce.Business.ElasticSearch.Conrete
             var jsonQuery = Encoding.UTF8.GetString(stream.ToArray());
             return jsonQuery;
         }
-
-
-
-        public virtual async Task CreateIndexAsync2<T, TKey>(string indexName) where T : ElasticEntity<TKey>
-        {
-            var exis = await ElasticSearchClient.IndexExistsAsync(indexName);
-
-            if (exis.Exists)
-                return;
-            var newName = indexName + DateTime.Now.Ticks;
-            var result = await ElasticSearchClient
-                .CreateIndexAsync(newName,
-                    ss =>
-                        ss.Index(newName)
-                            .Settings(o => o.NumberOfShards(4).NumberOfReplicas(2).Setting("max_result_window", int.MaxValue))
-                            .Mappings(m => 
-                                          m.Map<T>(mm => 
-                                                        mm.AutoMap()
-                                                            .Properties(p => 
-                                                                             p.Text(t => 
-                                                                                         t.Name(n => n.SearchingArea)
-                                                                                   )
-                                                                        )
-                                                   )
-                                      )
-                                 );
-            if (result.Acknowledged)
-            {
-                await ElasticSearchClient.AliasAsync(al => al.Add(add => add.Index(newName).Alias(indexName)));
-                return;
-            }
-            throw new ElasticSearchException($"Create Index {indexName} failed : :" + result.ServerError.Error.Reason);
-        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace FastCommerce.Entities.Entities
@@ -11,6 +12,7 @@ namespace FastCommerce.Entities.Entities
         public int ProductId { get; set; }
         [Required]
         public string ProductName { get; set; }
+        [ForeignKey("ProductCategoriesId")]
         public int ProductCategoriesId { get; set; }
         public ICollection<ProductCategories> ProductCategories { get; set; }
         public DateTime LastModified { get; set; }

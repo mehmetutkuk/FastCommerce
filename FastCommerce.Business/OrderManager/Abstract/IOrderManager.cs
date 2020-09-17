@@ -11,7 +11,7 @@ namespace FastCommerce.Business.OrderManager.Abstract
         Task<bool> AddOrder(Order order);
         Task<bool> DeleteOrder(Order order);
         Task<bool> UpdateOrder(Order order);
-        Task<List<Order>> GetOrdersByUser(User user);
+        Task<List<Order>> GetOrdersByUser(int UserId);
         Task<List<Order>> GetOrders();
     }
 }
