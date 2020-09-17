@@ -10,6 +10,7 @@ namespace FastCommerce.Entities.Entities
 {
     public class User
     {
+        [Key]
         public int UserID { get; set; }
         [Required]
         public string Email { get; set; }
