@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using FastCommerce.Business.ObjectDtos.Product;
+using FastCommerce.Business.DTOs.Product;
 using FastCommerce.Business.ProductManager;
 using FastCommerce.Business.ProductManager.Abstract;
 using FastCommerce.Entities.Entities;
@@ -36,9 +36,9 @@ namespace FastCommerce.Web.API.Controllers.Products
         /// <paramref name="Task<Response<Product>>"/>
         /// </returns>
         [HttpGet("Get")]
-        public async Task<Response<Product>> Get()
+        public async Task<Response<ProductGetDTO>> Get()
         {
-            Response<Product> httpResponse = new Response<Product>();
+            Response<ProductGetDTO> httpResponse = new Response<ProductGetDTO>();
             try
             {
                 httpResponse.RequestState = true;
@@ -62,14 +62,14 @@ namespace FastCommerce.Web.API.Controllers.Products
         /// <returns>
         /// <paramref name="Task<Response<Product>>"/>
         /// </returns>
-        [HttpGet("GetProductById")]
-        public Response<Product> GetProductById(int ProductId)
+        [HttpGet("Get/{id:int}")]
+        public Response<ProductGetDTO> Get(int id)
         {
-            Response<Product> httpResponse = new Response<Product>();
+            Response<ProductGetDTO> httpResponse = new Response<ProductGetDTO>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.Data =  _productManager.GetProductById(ProductId);
+                httpResponse.Data =  _productManager.GetProductById(id);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)

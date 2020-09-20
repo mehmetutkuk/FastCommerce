@@ -1,4 +1,4 @@
-﻿using FastCommerce.Business.ObjectDtos.User;
+﻿using FastCommerce.Business.DTOs.User;
 using FastCommerce.Business.UserManager.Abstract;
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;

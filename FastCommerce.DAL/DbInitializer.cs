@@ -55,8 +55,10 @@ namespace FastCommerce.DAL
         {
             
             context.Database.EnsureCreated();
-            int i = 0;
+            if (context.Products.Any())
+                return;
 
+            int i = 0;
             List<Product> products = FillAllProperties<Product>(5);
 
             List<Category> categories = FillAllProperties<Category>(5);

@@ -2,6 +2,7 @@
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using Mapster;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace FastCommerce.Business.CategoryManager.Conrete
             return await Task.FromResult<bool>(true);
         }
 
-        public async Task<bool> UpdateCategory(Property property)
+        public async Task<bool> UpdateProperty(Property property)
         {
             var result = _context.Properties.Select(s => s).Where(w => w.PropertyID == property.PropertyID).FirstOrDefault();
             result.Adapt(property);
@@ -41,7 +42,17 @@ namespace FastCommerce.Business.CategoryManager.Conrete
             return await Task.FromResult<bool>(true);
         }
 
-        public async Task<List<Property>> GetCategories()
+        public async Task<List<Property>> GetPropertiesByCategoryId(int CategoryId)
+        {
+            List<Property> result = _context.Properties.Where(c => c.CategoryId == CategoryId).ToList();
+            return await Task.FromResult<List<Property>>(result);
+        }
+        public async Task<Property> GetPropertiesById(int Id)
+        {
+            Property result = _context.Properties.Where(c => c.PropertyID == Id).SingleOrDefault();
+            return await Task.FromResult<Property>(result);
+        }
+        public async Task<List<Property>> GetProperties()
         {
             return await Task.FromResult<List<Property>>(_context.Properties.Select(s => s).ToList());
         }

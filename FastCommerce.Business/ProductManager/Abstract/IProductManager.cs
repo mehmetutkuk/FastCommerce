@@ -1,4 +1,4 @@
-﻿using FastCommerce.Business.ObjectDtos.Product;
+﻿using FastCommerce.Business.DTOs.Product;
 using FastCommerce.Entities.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,8 +10,8 @@ namespace FastCommerce.Business.ProductManager.Abstract
     public interface IProductManager
     {
         Task<bool> CreateIndexes(ProductElasticIndexDto productElasticIndexDto);
-        Task<List<Product>> Get();
-        Product GetProductById(int ProdcutId);
+        Task<List<ProductGetDTO>> Get();
+        ProductGetDTO GetProductById(int ProdcutId);
         Task<List<Product>> GetByCategories(GetByCategoriesRequest req);
         Task<Product> AddProduct(Product product);
         Task<List<ProductElasticIndexDto>> SuggestProductSearchAsync(string searchText, int skipItemCount = 0, int maxItemCount = 5);

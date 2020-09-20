@@ -9,7 +9,7 @@ using FastCommerce.DAL;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using FastCommerce.Business.ElasticSearch.Abstract;
-using FastCommerce.Business.ObjectDtos.Product;
+using FastCommerce.Business.DTOs.Product;
 using FastCommerce.Business.Core;
 using FastCommerce.Business.ProductManager.Abstract;
 using Mapster;
@@ -62,17 +62,17 @@ namespace FastCommerce.Business.ProductManager.Conrete
                 var returnData = await _elasticSearchService.SearchAsync<ProductElasticIndexDto, int>(indexName, queryy, 0, 0);
 
                 var data = JsonConvert.SerializeObject(returnData);
-                
+
                 var suggestsList = returnData.Suggest != null ? from suggest in returnData.Suggest["product_suggestions"]
-                                                                  from option in suggest.Options
-                                                                  select new ProductElasticIndexDto
-                                                                  {
-                                                                      Score = option.Score,
-                                                                      CategoryName = option.Source.CategoryName,
-                                                                      ProductName = option.Source.ProductName,
-                                                                      Suggest = option.Source.Suggest,
-                                                                      Id = option.Source.Id
-                                                                  }
+                                                                from option in suggest.Options
+                                                                select new ProductElasticIndexDto
+                                                                {
+                                                                    Score = option.Score,
+                                                                    CategoryName = option.Source.CategoryName,
+                                                                    ProductName = option.Source.ProductName,
+                                                                    Suggest = option.Source.Suggest,
+                                                                    Id = option.Source.Id
+                                                                }
                                                                   : null;
                 return await Task.FromResult(suggestsList.ToList());
             }
@@ -87,14 +87,31 @@ namespace FastCommerce.Business.ProductManager.Conrete
             return await _context.Products
                 .Where(p => p.ProductCategories.All(item => req.Categories.Contains(item.Category))).ToListAsync();
         }
-        public async Task<List<Product>> Get()
+        public async Task<List<ProductGetDTO>> Get()
         {
-            return await _context.Products.ToListAsync();
+            List<ProductGetDTO> products = _context.Products.Select(pr => new ProductGetDTO
+            {
+                ProductId = pr.ProductId,
+                Discount = pr.Discount,
+                Price = pr.Price,
+                ProductName = pr.ProductName,
+                Rating = pr.Rating,
+                ProductImages = _context.ProductImages.Where(c => c.ProductId == pr.ProductId).ToList()
+            }).ToList();
+
+            return products;
+
         }
-        public Product GetProductById(int ProdcutId)
+        public ProductGetDTO GetProductById(int Id) => (_context.Products.Where(wh => wh.ProductId == Id).Select(sel => new ProductGetDTO
         {
-            return _context.Products.Where(c => c.ProductId == ProdcutId).Select(s => s).SingleOrDefault();
+            ProductId = sel.ProductId,
+            Discount = sel.Discount,
+            Price = sel.Price,
+            ProductName = sel.ProductName,
+            Rating = sel.Rating,
+            ProductImages = _context.ProductImages.Where(c => c.ProductId == Id).ToList()
         }
+        ).SingleOrDefault().Adapt<ProductGetDTO>());
 
 
         public async Task<Product> AddProduct(Product product)

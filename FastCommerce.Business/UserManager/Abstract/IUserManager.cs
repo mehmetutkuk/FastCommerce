@@ -1,4 +1,4 @@
-﻿using FastCommerce.Business.ObjectDtos.User;
+﻿using FastCommerce.Business.DTOs.User;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using System;

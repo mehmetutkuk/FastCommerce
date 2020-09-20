@@ -12,8 +12,11 @@ namespace FastCommerce.Business.CategoryManager.Abstract
         Task<bool> AddProperty(Property property);
 
         Task<bool> DeleteProperty(Property property);
-        Task<bool> UpdateCategory(Property property);
-        Task<List<Property>> GetCategories();
+        Task<bool> UpdateProperty(Property property);
+        Task<List<Property>> GetProperties();
+        
+        Task<List<Property>> GetPropertiesByCategoryId(int CategoryId);
 
+        Task<Property> GetPropertiesById(int Id);
     }
 }

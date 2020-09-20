@@ -1,5 +1,5 @@
 ﻿using FastCommerce.Business.ElasticSearch.Abstract;
-using FastCommerce.Business.ObjectDtos.Product;
+using FastCommerce.Business.DTOs.Product;
 using Nest;
 using Newtonsoft.Json;
 using System;
