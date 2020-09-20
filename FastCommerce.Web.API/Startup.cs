@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using FastCommerce.Business.CategoryManager.Abstract;
+using FastCommerce.Business.CategoryManager.Conrete;
 using FastCommerce.Business.ElasticSearch.Abstract;
 using FastCommerce.Business.ElasticSearch.Conrete;
+using FastCommerce.Business.OrderManager.Abstract;
+using FastCommerce.Business.OrderManager.Conrete;
 using FastCommerce.Business.ProductManager;
 using FastCommerce.Business.ProductManager.Abstract;
 using FastCommerce.Business.ProductManager.Conrete;
@@ -51,7 +55,8 @@ namespace FastCommerce.Web.API
             services.AddTransient<IUserManager, UserManager>();
             services.AddTransient<IProductManager, ProductManager>();
             services.AddTransient<ICategoryManager, CategoryManager>();
-
+            services.AddTransient<IPropertyManager, PropertyManager>();
+            services.AddTransient<IOrderManager, OrderManager>();
             services.AddMemoryCache();
             services.AddCors();
 
@@ -190,8 +195,8 @@ namespace FastCommerce.Web.API
     {
         public static void AddDomainDataServices(this IServiceCollection services)
         {
-            string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-            //var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
+            //string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
             services.AddDbContext<dbContext>(options => options.UseNpgsql(connectionString, y => y.MigrationsAssembly("FastCommerce.DAL")));
             services.AddTransient<UserManager>();
             services.AddTransient<IProductManager,ProductManager>();

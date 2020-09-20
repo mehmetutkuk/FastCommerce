@@ -1,211 +1,118 @@
 ﻿using FastCommerce.Entities.Entities;
+using GenFu;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using Utility.Cryptography;
+using System.Reflection;
 
 namespace FastCommerce.DAL
 {
     public static class DbInitializer
     {
-        public static void Initialize(dbContext context)
+        private static List<Product> GetFakeProductData(int count)
         {
+            var i = 1;
+            var results = A.ListOf<Product>(count);
+            results.ForEach(x => x.ProductId = i++);
+            return results.Select(_ => _).ToList();
+        }
+
+
+        private static List<T> FillAllProperties<T>(int count) where T : new()
+        {
+            var results = A.ListOf<T>(count);
+            PropertyInfo[] properties = typeof(T).GetProperties();
+            PropertyInfo PKInfo = null;
+            PropertyInfo FKInfo;
+            int Pk = 0;
+            foreach (var prop in properties)
+            {
+                List<Attribute> attrs = prop.GetCustomAttributes().ToList();
+                foreach (var obj in attrs)
+                {
+                    if (obj.GetType() == typeof(ForeignKey))
+                    {
+                        FKInfo = prop;
+                        break;
+                    }
+                    if (obj.GetType() == typeof(KeyAttribute))
+                    {
+                        PKInfo = prop;
+                        break;
+                    }
+                }
+            }
+            foreach (T row in results)
+            {
+                row.GetType().GetProperty(PKInfo.Name).SetValue(row, Pk += 1);
+            }
+            return results.ToList();
+        }
+
+        public async static void Initialize(dbContext context)
+        {
+            
             context.Database.EnsureCreated();
+            if (context.Products.Any())
+                return;
 
-            var users = new User[]
+            int i = 0;
+            List<Product> products = FillAllProperties<Product>(5);
+
+            List<Category> categories = FillAllProperties<Category>(5);
+
+            List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(5);
+
+            List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
+            
+            foreach (var item in categories)
             {
-                new User{
-                  Email= "Arturo.Anand@gmail.com",
-                  Name= "Arturo",
-                  Surname= "Anand",
-                  ProfilePhoto= "",
-                  Password= Cryptography.Encrypt("Arturo123"),
-                  PhoneNumber= "5300615200",
-                  RegisterDate= DateTime.UtcNow,
-                  LastLoginDate= DateTime.UtcNow,
-                  Active= true
-                },
-                new User{
-                  Email= "Meredith.Alonso@gmail.com",
-                  Name= "Meredith",
-                  Surname= "Alonso",
-                  ProfilePhoto= "",
-                  Password= Cryptography.Encrypt("Meredith123"),
-                  PhoneNumber= "5300615201",
-                  RegisterDate= DateTime.UtcNow,
-                  LastLoginDate= DateTime.UtcNow,
-                  Active= true
-                },
-                new User{
-                  Email= "Gytis.Barzdukas@gmail.com",
-                  Name= "Gytis",
-                  Surname= "Barzdukas",
-                  ProfilePhoto= "",
-                  Password= Cryptography.Encrypt("Gytis123"),
-                  PhoneNumber= "5300615202",
-                  RegisterDate= DateTime.UtcNow,
-                  LastLoginDate= DateTime.UtcNow,
-                  Active= true
-                },
-                new User{
-                  Email= "Yan.Li@gmail.com",
-                  Name= "Yan",
-                  Surname= "Li",
-                  ProfilePhoto= "",
-                  Password=  Cryptography.Encrypt("Yan123"),
-                  PhoneNumber= "5300615203",
-                  RegisterDate= DateTime.UtcNow,
-                  LastLoginDate= DateTime.UtcNow,
-                  Active= true
-                },
-
-                new User{
-                  Email= "Peggy.Justice@gmail.com",
-                  Name= "Peggy",
-                  Surname= "Justice",
-                  ProfilePhoto= "",
-                  Password=  Cryptography.Encrypt("Peggy123"),
-                  PhoneNumber= "5300615204",
-                  RegisterDate= DateTime.UtcNow,
-                  LastLoginDate= DateTime.UtcNow,
-                  Active= true
-                },
-                new User{
-                  Email= "Mike.Pence@gmail.com",
-                  Name= "Mike",
-                  Surname= "Pence",
-                  ProfilePhoto= "",
-                  Password= Cryptography.Encrypt("Mike123"),
-                  PhoneNumber= "5300615200",
-                  RegisterDate= DateTime.UtcNow,
-                  LastLoginDate= DateTime.UtcNow,
-                  Active= true
-                },
-                new User{
-                  Email= "mehmetburakeker@gmail.com",
-                  Name= "Burak",
-                  Surname= "Eker",
-                  ProfilePhoto= "",
-                  Password= Cryptography.Encrypt("test26"),
-                  PhoneNumber= "5300615200",
-                  RegisterDate= DateTime.UtcNow,
-                  LastLoginDate= DateTime.UtcNow,
-                  Active= true
-                }
-            };
-
-            var properties = new Property[]
-            {
-                new Property
-                {
-                    PropertyName ="Genişlik",
-                    PropertyValue = "1-4"
-                },
-                 new Property
-                {
-                    PropertyName ="Renk",
-                    PropertyValue = "Beyaz"
-                }
-
-            };
-
-            var categories = new Category[]
-            {
-                new Category
-                {
-
-                    CategoryName ="Altın Yüzükler",
-                    Properties= properties.ToList()
-
-                }
-
-            };
-
-            if (!context.Properties.Any())
-            {
-                foreach (Property p in properties)
-                {
-                    context.Properties.Add(p);
-                }
-            }
-            var products = new Product[]
-            {
-                new Product{
-                  ProductId=1,
-                  ProductName="Golden Ring w/ Topaz 22k",
-                  LastModified=DateTime.UtcNow,
-                  Quantity=6,
-                  Rating=3,
-                  Price=350.5,
-                  Categories=new List<Category>(){ new Category() {CategoryID= 1,CategoryName="Top Section" }}
-                },
-                new Product{
-                  ProductId=2,
-                  ProductName="Golden Ring w/ Diamond 24k",
-                  LastModified=DateTime.UtcNow,
-                  Quantity=3,
-                  Rating=3,
-                  Price=750.5,
-                  Categories=new List<Category>(){}
-                },
-                new Product{
-                  ProductId=3,
-                  ProductName="Golden Ring w/ Ruby 22k",
-                  LastModified=DateTime.UtcNow,
-                  Quantity=20,
-                  Rating=4,
-                  Price=550.5,
-                  Categories=new List<Category>(){}
-                },
-                new Product{
-                  ProductId=4,
-                  ProductName="Silver Ring w/ Emerald 22k",
-                  LastModified=DateTime.UtcNow,
-                  Quantity=15,
-                  Rating=4,
-                  Price=200,
-                  Categories=new List<Category>(){}
-                },
-                new Product{
-                  ProductId=5,
-                  ProductName="Silver Ring w/ Amethyst 22k",
-                  LastModified=DateTime.UtcNow,
-                  Quantity=33,
-                  Rating=2,
-                  Price=250,
-                  Categories=new List<Category>(){}
-                },
-            };
-            foreach (Product s in products)
-            {
-                context.Products.Add(s);
+                item.Properties = properties.ToList();
             }
 
-            if (!context.Category.Any())
+
+            
+            foreach (var item in productCategories)
             {
-                foreach (Category c in categories)
-                {
-                    context.Category.Add(c);
-                }
+                item.Category = categories.ToList()[i];
+                item.Product = products.ToList()[i];
+                i++;
             }
 
-            if (!context.Products.Any())
+            List<StockProperties> stockProperties = FillAllProperties<StockProperties>(5);
+            List<Stock> stocks = FillAllProperties<Stock>(5);
+            i = 0;
+            foreach (var item in stocks)
             {
-                foreach (Product p in products)
-                {
-                    context.Products.Add(p);
-                }
+                item.Product = products.ToList()[i];
+                i++;
+
             }
 
-            if (!context.Users.Any())
+            i = 0;
+            foreach (var item in stockProperties)
             {
-                foreach (User u in users)
-                {
-                    context.Users.Add(u);
-                }
+                item.Stock = stocks.ToList()[i];
+                item.Property = properties.ToList()[i];
+                i++;
             }
 
+            foreach (var item in properties)
+            {
+                item.StockProperties = stockProperties.ToList();
+            }
+
+
+            await context.AddRangeAsync(FillAllProperties<User>(5));
+
+            await context.AddRangeAsync(productCategories);
+            await context.AddRangeAsync(products);
+            await context.AddRangeAsync(properties);
+            await context.AddRangeAsync(categories);
+            await context.AddRangeAsync(stockProperties);
+            await context.AddRangeAsync(stocks);
             context.SaveChanges();
         }
     }
