@@ -18,7 +18,7 @@ using Utility.Cryptography;
 using Utility.MailServices;
 using Utility.Models;
 
-namespace FastCommerce.Business.UserManager.Conrete
+namespace FastCommerce.Business.UserManager.Concrete
 {
     public class UserManager : IUserManager
     {

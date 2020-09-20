@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace FastCommerce.Business.ElasticSearch.Conrete
+namespace FastCommerce.Business.ElasticSearch.Concrete
 {
     [Serializable]
     public class ElasticSearchException : Exception

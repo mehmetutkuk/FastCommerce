@@ -1,7 +1,7 @@
 ﻿using FastCommerce.Business.ElasticSearch.Abstract;
 using Nest;
 
-namespace FastCommerce.Business.ElasticSearch.Conrete
+namespace FastCommerce.Business.ElasticSearch.Concrete
 {
     public class ElasticEntity<TEntityKey> : IElasticEntity<TEntityKey>
     {
