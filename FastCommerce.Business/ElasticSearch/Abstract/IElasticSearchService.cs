@@ -1,5 +1,5 @@
 ﻿using FastCommerce.Business.ElasticSearch.Conrete;
-using FastCommerce.Business.ObjectDtos.Product;
+using FastCommerce.Business.DTOs.Product;
 using Nest;
 using System.Collections.Generic;
 using System.Threading.Tasks;

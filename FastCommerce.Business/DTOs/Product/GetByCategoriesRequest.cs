@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FastCommerce.Business.ObjectDtos.Product
+namespace FastCommerce.Business.DTOs.Product
 {
     public class GetByCategoriesRequest
     {

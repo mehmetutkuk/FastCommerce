@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FastCommerce.Business.ObjectDtos.User
+namespace FastCommerce.Business.DTOs.User
 {
     public class RegisterResponse
     {

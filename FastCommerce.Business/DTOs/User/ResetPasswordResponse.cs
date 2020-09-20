@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace FastCommerce.Business.ObjectDtos.User
+namespace FastCommerce.Business.DTOs.User
 {
     public class ResetPasswordResponse
     {

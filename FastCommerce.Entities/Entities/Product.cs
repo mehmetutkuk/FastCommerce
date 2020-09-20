@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace FastCommerce.Entities.Entities
 {
@@ -17,7 +16,9 @@ namespace FastCommerce.Entities.Entities
         public ICollection<ProductCategories> ProductCategories { get; set; }
         public DateTime LastModified { get; set; }
         public double Rating { get; set; }
+        public double Discount { get; set; }
         public double Price { get; set; }
         public int ViewCount { get; set; }
+        public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }

@@ -10,8 +10,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Reflection;
-using FastCommerce.Business.ObjectDtos.Product;
+using FastCommerce.Business.DTOs.Product;
 using Mapster;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 
 namespace FastCommerce.UnitTests
 {
@@ -27,7 +29,7 @@ namespace FastCommerce.UnitTests
         public async Task GetProducts()
         {
 
-            var products = GetFakeProductData(26);
+            var products = GenerateFakeData<ProductGetDTO>(26);
 
             var mockedService = new Mock<IProductManager>();
             mockedService.Setup(x => x.Get()).Returns(products);
@@ -46,7 +48,7 @@ namespace FastCommerce.UnitTests
         [Test]
         public async Task GetByCategories()
         {
-            var products = GetFakeProductData(5);
+            var products = GenerateFakeData<Product>(5);
             var categories = GetFakeCategoryData(2);
             GetByCategoriesRequest getByCategoriesRequest = new GetByCategoriesRequest();
             getByCategoriesRequest.Categories.Adapt(categories);
@@ -82,13 +84,22 @@ namespace FastCommerce.UnitTests
             categories.ForEach(x => x.CategoryId = i++);
             return categories.Select(_ => _).ToList();
         }
-        private async Task<List<Product>> GetFakeProductData(int count)
+        private async Task<List<ProductGetDTO>> GetFakeProductData(int count)
         {
             var i = 1;
-            var persons = A.ListOf<Product>(count);
+            var persons = A.ListOf<ProductGetDTO>(count);
             persons.ForEach(x => x.ProductId = i++);
-            List<Product> lists = persons.Select(_ => _).ToList();
+            List<ProductGetDTO> lists = persons.Select(_ => _).ToList();
             return await Task.FromResult(lists);
         }
+
+        private static async Task<List<T>> GenerateFakeData<T>(int count) where T : new()
+        {
+            var results = A.ListOf<T>(count);
+
+            return await Task.FromResult(results);
+            
+        }
+
     }
 }

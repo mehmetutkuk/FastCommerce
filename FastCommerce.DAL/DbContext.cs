@@ -12,6 +12,7 @@ namespace FastCommerce.DAL
     public class dbContext : DbContext
     {
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Property> Properties { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<ProductCategories> ProductCategories { get; set; }

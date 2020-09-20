@@ -3,7 +3,7 @@ using FastCommerce.Business.ElasticSearch.Conrete;
 using System;
 using System.Collections.Generic;
 
-namespace FastCommerce.Business.ObjectDtos.Product
+namespace FastCommerce.Business.DTOs.Product
 {
     public class ProductElasticIndexDto : ElasticEntity<int>, IDto
     {

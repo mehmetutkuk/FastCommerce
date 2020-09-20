@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace FastCommerce.Business.ObjectDtos.User
+namespace FastCommerce.Business.DTOs.User
 {
     public class ActivationRequest
     {
