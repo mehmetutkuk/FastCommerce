@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using FastCommerce.Business.ElasticSearch.Abstract;
 
-namespace FastCommerce.Business.ElasticSearch.Conrete
+namespace FastCommerce.Business.ElasticSearch.Concrete
 {
     public class ElasticSearchConfigration : IElasticSearchConfigration
     {

@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FastCommerce.Business.ProductManager.Conrete
+namespace FastCommerce.Business.ProductManager.Concrete
 {
     public class CategoryManager : ICategoryManager
     {
@@ -40,7 +40,7 @@ namespace FastCommerce.Business.ProductManager.Conrete
 
         public async Task<bool> UpdateCategory(Category category)
         {
-            var result = _context.Category.Select(s => s).Where(w => w.CategoryId == category.CategoryId).FirstOrDefault();
+            var result = _context.Category.Select(s => s).Single(w => w.CategoryId == category.CategoryId);
             result.Adapt(category);
             _context.SaveChanges();
             return await Task.FromResult<bool>(true);
@@ -48,7 +48,7 @@ namespace FastCommerce.Business.ProductManager.Conrete
 
         public async Task<List<Category>> GetCategories()
         {
-            List<Category> query = (from cat in _context.Category
+            var query = (from cat in _context.Category
                         select new Category { CategoryId=cat.CategoryId, CategoryName = cat.CategoryName }).ToList();
 
             return await Task.FromResult(query);

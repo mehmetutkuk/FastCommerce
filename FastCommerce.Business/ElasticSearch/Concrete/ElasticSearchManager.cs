@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FastCommerce.Business.ElasticSearch.Conrete
+namespace FastCommerce.Business.ElasticSearch.Concrete
 {
     public class ElasticSearchManager : IElasticSearchService
     {
