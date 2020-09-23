@@ -38,7 +38,7 @@ namespace FastCommerce.UnitTests
 
             // Assert
             Assert.IsInstanceOf<HttpResponseMessage>(result);
-            Assert.IsInstanceOf<List<Product>>(result.DataList);
+            Assert.IsInstanceOf<List<ProductGetDTO>>(result.DataList);
             Assert.AreEqual(26, result.DataList.Count);
         }
 
@@ -70,7 +70,7 @@ namespace FastCommerce.UnitTests
             var controller = new ProductController(mockedService.Object);
 
             var result = await controller.AddProduct(product);
-            Assert.AreEqual(result.Data, product);
+            Assert.AreEqual(result.ErrorState, false);
 
         }
 
