@@ -28,14 +28,11 @@ namespace FastCommerce.UnitTests
         [Test]
         public async Task GetProducts()
         {
-
             var products = GenerateFakeData<ProductGetDTO>(26);
-
             var mockedService = new Mock<IProductManager>();
             mockedService.Setup(x => x.Get()).Returns(products);
             var controller = new ProductController(mockedService.Object);
             controller.ModelState.AddModelError("error", "some error");
-
             // Act
             var result = await controller.Get();
 
@@ -43,8 +40,8 @@ namespace FastCommerce.UnitTests
             Assert.IsInstanceOf<HttpResponseMessage>(result);
             Assert.IsInstanceOf<List<Product>>(result.DataList);
             Assert.AreEqual(26, result.DataList.Count);
-
         }
+
         [Test]
         public async Task GetByCategories()
         {
@@ -69,7 +66,7 @@ namespace FastCommerce.UnitTests
             var product = A.New<Product>();
 
             var mockedService = new Mock<IProductManager>();
-            mockedService.Setup(x => x.AddProduct(product)).Returns(Task.FromResult(product));
+            mockedService.Setup(x => x.AddProduct(product)).Returns(Task.FromResult(true));
             var controller = new ProductController(mockedService.Object);
 
             var result = await controller.AddProduct(product);
