@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FastCommerce.Business.OrderManager.Conrete
+namespace FastCommerce.Business.OrderManager.Concrete
 {
     public class OrderManager : IOrderManager
     {

@@ -17,6 +17,6 @@ namespace FastCommerce.Business.CategoryManager.Abstract
         
         Task<List<Property>> GetPropertiesByCategoryId(int CategoryId);
 
-        Task<Property> GetPropertiesById(int Id);
+        Task<Property> GetPropertyById(int Id);
     }
 }

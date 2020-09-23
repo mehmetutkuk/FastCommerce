@@ -18,9 +18,11 @@ services:
     networks:
       - dockerapi-dev
     ports:
-      - "80:80"
+      - "5000:443"
+      - "5001:80"
   postgres_image:
     image: postgres:latest
+    container_name: postgres
     ports:
       - "5432:5432"
     restart: always

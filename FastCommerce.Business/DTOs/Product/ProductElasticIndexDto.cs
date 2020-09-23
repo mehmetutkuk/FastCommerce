@@ -1,5 +1,5 @@
 ﻿using FastCommerce.Business.Core;
-using FastCommerce.Business.ElasticSearch.Conrete;
+using FastCommerce.Business.ElasticSearch.Concrete;
 using System;
 using System.Collections.Generic;
 

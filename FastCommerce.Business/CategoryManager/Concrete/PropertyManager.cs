@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FastCommerce.Business.CategoryManager.Conrete
+namespace FastCommerce.Business.CategoryManager.Concrete
 {
    public class PropertyManager: IPropertyManager
     {
@@ -36,7 +36,7 @@ namespace FastCommerce.Business.CategoryManager.Conrete
 
         public async Task<bool> UpdateProperty(Property property)
         {
-            var result = _context.Properties.Select(s => s).Where(w => w.PropertyID == property.PropertyID).FirstOrDefault();
+            var result = _context.Properties.Single(w => w.PropertyID == property.PropertyID);
             result.Adapt(property);
             _context.SaveChanges();
             return await Task.FromResult<bool>(true);
@@ -47,9 +47,9 @@ namespace FastCommerce.Business.CategoryManager.Conrete
             List<Property> result = _context.Properties.Where(c => c.CategoryId == CategoryId).ToList();
             return await Task.FromResult<List<Property>>(result);
         }
-        public async Task<Property> GetPropertiesById(int Id)
+        public async Task<Property> GetPropertyById(int Id)
         {
-            Property result = _context.Properties.Where(c => c.PropertyID == Id).SingleOrDefault();
+            Property result = _context.Properties.Single(c => c.PropertyID == Id);
             return await Task.FromResult<Property>(result);
         }
         public async Task<List<Property>> GetProperties()

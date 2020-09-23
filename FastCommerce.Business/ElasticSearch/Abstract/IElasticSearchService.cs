@@ -1,4 +1,4 @@
-﻿using FastCommerce.Business.ElasticSearch.Conrete;
+﻿using FastCommerce.Business.ElasticSearch.Concrete;
 using FastCommerce.Business.DTOs.Product;
 using Nest;
 using System.Collections.Generic;

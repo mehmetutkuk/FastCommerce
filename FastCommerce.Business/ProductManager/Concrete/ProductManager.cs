@@ -15,7 +15,7 @@ using FastCommerce.Business.ProductManager.Abstract;
 using Mapster;
 using Newtonsoft.Json;
 
-namespace FastCommerce.Business.ProductManager.Conrete
+namespace FastCommerce.Business.ProductManager.Concrete
 {
     public class ProductManager : IProductManager
     {
@@ -41,9 +41,6 @@ namespace FastCommerce.Business.ProductManager.Conrete
             }
 
         }
-
-
-
         public async Task<List<ProductElasticIndexDto>> SuggestProductSearchAsync(string searchText, int skipItemCount = 0, int maxItemCount = 5)
         {
             try
@@ -102,26 +99,26 @@ namespace FastCommerce.Business.ProductManager.Conrete
             return products;
 
         }
-        public ProductGetDTO GetProductById(int Id) => (_context.Products.Where(wh => wh.ProductId == Id).Select(sel => new ProductGetDTO
+        public ProductGetDTO GetProductById(int id) => _context.Products.Where(wh => wh.ProductId == id).Select(sel => new ProductGetDTO
         {
             ProductId = sel.ProductId,
             Discount = sel.Discount,
             Price = sel.Price,
             ProductName = sel.ProductName,
             Rating = sel.Rating,
-            ProductImages = _context.ProductImages.Where(c => c.ProductId == Id).ToList()
+            ProductImages = _context.ProductImages.Where(c => c.ProductId == id).ToList()
         }
-        ).SingleOrDefault().Adapt<ProductGetDTO>());
+        ).SingleOrDefault().Adapt<ProductGetDTO>();
 
 
-        public async Task<Product> AddProduct(Product product)
+        public async Task<bool> AddProduct(Product product)
         {
             await _context.AddAsync<Product>(product);
             await _context.SaveChangesAsync();
             ProductElasticIndexDto productElasticIndexDto = new ProductElasticIndexDto();
             productElasticIndexDto.Adapt(product);
             await CreateIndexes(productElasticIndexDto);
-            return await Task.FromResult<Product>(product);
+            return await Task.FromResult<bool>(true);
         }
     }
 }

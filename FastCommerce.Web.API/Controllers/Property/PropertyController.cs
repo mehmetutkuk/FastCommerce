@@ -28,8 +28,8 @@ namespace FastCommerce.Web.API.Controllers.Property
         /// <paramref name="Task<HttpResponseMessage>"/>
         /// </returns>
 
-        [HttpPost("AddCategory")]
-        public async Task<HttpResponseMessage> AddCategory(Entities.Entities.Property property)
+        [HttpPost("AddProperty")]
+        public async Task<HttpResponseMessage> AddProperty(Entities.Entities.Property property)
         {
             Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
             try
@@ -52,8 +52,8 @@ namespace FastCommerce.Web.API.Controllers.Property
         /// <paramref name="Task<HttpResponseMessage>"/>
         /// </returns>
 
-        [HttpPost("DeleteCategory")]
-        public async Task<HttpResponseMessage> DeleteCategory(Entities.Entities.Property property)
+        [HttpPost("DeleteProperty")]
+        public async Task<HttpResponseMessage> DeleteProperty(Entities.Entities.Property property)
         {
             Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
             try
@@ -77,8 +77,8 @@ namespace FastCommerce.Web.API.Controllers.Property
         /// <paramref name="Task<HttpResponseMessage>"/>
         /// </returns>
 
-        [HttpPost("UpdateCategory")]
-        public async Task<HttpResponseMessage> UpdateCategory(Entities.Entities.Property property)
+        [HttpPost("UpdateProperty")]
+        public async Task<HttpResponseMessage> UpdateProperty(Entities.Entities.Property property)
         {
             Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
             try
@@ -117,14 +117,14 @@ namespace FastCommerce.Web.API.Controllers.Property
             }
             return httpResponse;
         }
-        [HttpGet("GetCategoryById/{id:int}")]
-        public async Task<HttpResponseMessage> GetCategoryById(int id)
+        [HttpGet("Get/{id:int}")]
+        public async Task<HttpResponseMessage> Get(int id)
         {
             Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.Data = await _propertyManager.GetPropertiesById(id);
+                httpResponse.Data = await _propertyManager.GetPropertyById(id);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)
@@ -135,8 +135,8 @@ namespace FastCommerce.Web.API.Controllers.Property
             return httpResponse;
         }
 
-        [HttpGet("GetPropertyByCategoryId/{CategoryId:int}")]
-        public async Task<HttpResponseMessage> GetCategories(int CategoryId)
+        [HttpGet("GetPropertiesByCategoryId/{CategoryId:int}")]
+        public async Task<HttpResponseMessage> GetPropertiesByCategoryId(int CategoryId)
         {
             Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
             try
