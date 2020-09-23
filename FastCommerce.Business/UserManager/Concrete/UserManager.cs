@@ -1,4 +1,4 @@
-﻿using FastCommerce.Business.DTOs.User;
+using FastCommerce.Business.DTOs.User;
 using FastCommerce.Business.UserManager.Abstract;
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
@@ -14,6 +14,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using Utility.Cryptography;
 using Utility.MailServices;
 using Utility.Models;
@@ -193,6 +194,8 @@ namespace FastCommerce.Business.UserManager.Concrete
             _context.SaveChangesAsync();
             return UserAction.Adapt<ActivationResponse>();
         }
+
+        public Task<List<User>> GetUsers() => _context.Users.ToListAsync();
     }
 
   

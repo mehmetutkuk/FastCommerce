@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using FastCommerce.Business.DTOs.User;
 using FastCommerce.Business.UserManager;
@@ -153,6 +154,29 @@ namespace FastCommerce.Web.API.Controllers.Users
                     _response.StatusCode = HttpStatusCode.BadRequest;
                 }
 
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorState = true;
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return _response;
+        }
+
+        /// <summary>
+        /// Get Method
+        /// </summary>
+        /// <param name="users"></param>
+        /// <returns></returns>
+        [HttpGet("Get")]
+        public async Task<HttpResponseMessage> Get()
+        {
+            Response<User> _response = new Response<User>();
+            try
+            {
+                _response.RequestState = true;
+                _response.DataList = await _userManager.GetUsers();
+                _response.ErrorState = false;
             }
             catch (Exception ex)
             {
