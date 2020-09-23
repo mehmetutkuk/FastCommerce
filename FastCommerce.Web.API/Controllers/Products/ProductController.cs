@@ -121,8 +121,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.Data = await _productManager.AddProduct(product);
-                httpResponse.ErrorState = false;
+                httpResponse.ErrorState = !await _productManager.AddProduct(product);
             }
             catch (Exception ex)
             {
