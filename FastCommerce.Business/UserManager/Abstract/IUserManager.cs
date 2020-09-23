@@ -1,9 +1,10 @@
-﻿using FastCommerce.Business.DTOs.User;
+using FastCommerce.Business.DTOs.User;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FastCommerce.Business.UserManager.Abstract
 {
@@ -17,5 +18,6 @@ namespace FastCommerce.Business.UserManager.Abstract
         public void UpdatePassword(User user);
         public void DisableUser(User user);
         public User AddUser(User user);
+        public Task<List<User>> GetUsers();
     }
 }
