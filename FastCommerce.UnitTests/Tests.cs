@@ -4,14 +4,16 @@ using FastCommerce.Web.API.Controllers.Products;
 using GenFu;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Reflection;
-using FastCommerce.Business.DTOs.Product;
 using Mapster;
+using MapsterMapper;
+using FastCommerce.Business.DTOs.Product;
+using FastCommerce.Business.DTOs.Categories;
+using FastCommerce.Web.API.Controllers.Category;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 
@@ -19,7 +21,9 @@ namespace FastCommerce.UnitTests
 {
     public class Tests
     {
-        [SetUp]
+         private readonly IMapper _mapper;
+
+        private readonly ICategoryManager _categoryManager;        [SetUp]
         public void Setup()
         {
 
@@ -75,6 +79,70 @@ namespace FastCommerce.UnitTests
         }
 
         private List<Category> GetFakeCategoryData(int count)
+        {
+            var i = 1;
+            var categories= A.ListOf<Category>(count);
+            categories.ForEach(x => x.CategoryId = i++);
+            return categories.Select(_ => _).ToList();
+        }
+
+
+     
+      [Test]
+      private void GetFakeGetCategories()
+        {
+            
+            int id = 9;
+            var controller = new CategoryController(_categoryManager , _mapper);
+            var data = controller.GetCategories(id);
+            Assert.IsNull(data, " ", false); 
+
+            
+        }
+          [Test]
+        private void GetFakeAddCategory()
+        {
+            
+            
+            CategoryForCreationDto categorie = new CategoryForCreationDto(){
+                CategoryName = "DRAM"
+            };            
+            var controller = new CategoryController(_categoryManager , _mapper);
+            var data = controller.AddCategory(categorie);
+
+
+          Assert.IsNull(false, " ", data); 
+        }
+
+         [Test]
+       private  void GetFakeDeleteCategory()
+        {
+            
+            
+           int id = 9 ;
+                
+            var controller = new CategoryController(_categoryManager , _mapper);
+            var data = controller.DeleteCategory(id);  
+
+            Assert.IsNull(data, " ", false); 
+            
+
+        }
+
+         [Test]
+        private  void  GetFakeUpdateCategory()
+        {
+            CategoryForUpdateDto categorie = new CategoryForUpdateDto(){
+                CategoryName = "Korku"
+            };
+        
+             var controller = new CategoryController(_categoryManager , _mapper);
+             var data = controller.UpdateCategory(15, categorie);
+            Assert.IsNull(data, " ", false); 
+  
+
+        }
+           private List<Category> GetFakeCategoryDtoData(int count)
         {
             var i = 1;
             var categories= A.ListOf<Category>(count);

@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FastCommerce.Business.ProductManager.Abstract;
 using FastCommerce.Entities.Entities;
+using FastCommerce.Business.DTOs.Categories;
 using FastCommerce.Web.API.Models;
 using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
+
 
 namespace FastCommerce.Web.API.Controllers.Category
 {
@@ -16,10 +21,14 @@ namespace FastCommerce.Web.API.Controllers.Category
     [ApiController]
     public class CategoryController : ControllerBase
     {
+        private readonly IMapper _mapper;
+
         private readonly ICategoryManager _categoryManager;
-        public CategoryController(ICategoryManager categoryManager)
+        public CategoryController(ICategoryManager categoryManager, IMapper mapper)
         {
             _categoryManager = categoryManager;
+            _mapper=mapper ??
+                throw new ArgumentNullException(nameof(mapper));;
         }
         /// <summary>
         /// AddCategory
@@ -27,95 +36,103 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// <returns>
         /// <paramref name="Task<HttpResponseMessage>"/>
         /// </returns>
-        
+
         [HttpPost("AddCategory")]
-        public async Task<HttpResponseMessage> AddCategory(Entities.Entities.Category category)
+        public IActionResult AddCategory(CategoryForCreationDto category)
         {
-            Response<Entities.Entities.Category> httpResponse = new  Response<Entities.Entities.Category>();
-            try
-            {
-                httpResponse.RequestState = true;
-                httpResponse.ErrorState  = !await _categoryManager.AddCategory(category);
-                
-            }
-            catch (Exception ex)
-            {
-                httpResponse.ErrorState = true;
-                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
-            }
-            return httpResponse;
-        }
-        /// <summary>
-        /// DeleteCategory
-        /// </summary>
-        /// <returns>
-        /// <paramref name="Task<HttpResponseMessage>"/>
-        /// </returns>
         
-        [HttpPost("DeleteCategory")]
-        public async Task<HttpResponseMessage> DeleteCategory(Entities.Entities.Category category)
-        {
-            Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
-            try
-            {
-                httpResponse.RequestState = true;
-                httpResponse.ErrorState = !await _categoryManager.DeleteCategory(category);
-                
-            }
-            catch (Exception ex)
-            {
-                httpResponse.ErrorState = true;
-                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
-            }
-            return httpResponse;
+                var Categories = _mapper.Map<Entities.Entities.Category>(category);
+                _categoryManager.AddCategory(Categories);
+
+                var categoryDto = _mapper.Map<CategoryDto>(Categories);
+
+
+               CreatedAtRoute("GetCategory",
+                new { categoryDto.CategoryId },
+                categoryDto);
+            
+        
+               
+            
+            
+            return NoContent();
+        
         }
 
-        /// <summary>
-        /// UpdateCategory
-        /// </summary>
-        /// <returns>
-        /// <paramref name="Task<HttpResponseMessage>"/>
-        /// </returns>
+            
+          
         
-        [HttpPost("UpdateCategory")]
-        public async Task<HttpResponseMessage> UpdateCategory(Entities.Entities.Category category)
-        {
-            Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
-            try
+/// <summary>
+/// DeleteCategory
+/// </summary>
+/// <returns>
+/// <paramref name="Task<HttpResponseMessage>"/>
+/// </returns>
+
+[HttpPost("DeleteCategory")]
+public  IActionResult  DeleteCategory(int categoryId)
+{
+   var categories = _categoryManager.GetCategory(categoryId);
+   if(categories==null){
+
+       return NotFound();
+   }
+
+   _categoryManager.DeleteCategory(categories);
+   return Ok(categories);
+}
+
+/// <summary>
+/// UpdateCategory
+/// </summary>
+/// <returns>
+/// <paramref name="Task<HttpResponseMessage>"/>
+/// </returns>
+
+[HttpPost("UpdateCategory")]
+public IActionResult UpdateCategory(int categoryId, CategoryForUpdateDto category)
+{
+
+      var categories = _categoryManager.GetCategory(categoryId);
+
+         if (categories == null)
             {
-                httpResponse.RequestState = true;
-                httpResponse.ErrorState = !await _categoryManager.UpdateCategory(category);
+                return NotFound();
             }
-            catch (Exception ex)
+
+         _mapper.Map(category, categories);
+
+         _categoryManager.UpdateCategory(categories);
+                
+            return NoContent();
+
+    
+}
+/// <summary>
+/// GetCategories
+/// </summary>
+/// <returns>
+/// <paramref name="Task<HttpResponseMessage>"/>
+/// </returns>
+
+[HttpGet("GetCategories")]
+ public ActionResult<CategoryDto> GetCategories(int categoryId){
+   
+  
+
+         var categories = _categoryManager.GetCategories();
+
+         if (categories == null)
             {
-                httpResponse.ErrorState = true;
-                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+                return NotFound();
             }
-            return httpResponse;
-        }
-        /// <summary>
-        /// GetCategories
-        /// </summary>
-        /// <returns>
-        /// <paramref name="Task<HttpResponseMessage>"/>
-        /// </returns>
-        
-        [HttpGet("GetCategories")]
-        public async Task<HttpResponseMessage> GetCategories()
-        {
-            Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
-            try
-            {
-                httpResponse.RequestState = true;
-                httpResponse.DataList = await _categoryManager.GetCategories();
-                httpResponse.ErrorState = false;
-            }
-            catch (Exception ex)
-            {
-                httpResponse.ErrorState = true;
-                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
-            }
-            return httpResponse;
-        }
+
+         var categoriesdto = _mapper.Map<CategoryDto>(categories);
+
+    
+
+    return Ok(categoriesdto);
+
+}
     }
 }

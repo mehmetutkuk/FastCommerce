@@ -31,6 +31,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
         }
 
 
+
         public async Task<bool> DeleteCategory(Category category)
         {
             _context.Category.Remove(category);
@@ -49,10 +50,16 @@ namespace FastCommerce.Business.ProductManager.Concrete
         public async Task<List<Category>> GetCategories()
         {
             var query = (from cat in _context.Category
-                        select new Category { CategoryId=cat.CategoryId, CategoryName = cat.CategoryName }).ToList();
+                        select new Category { CategoryId=cat.CategoryId}).ToList();
 
             return await Task.FromResult(query);
         }
 
+        public  Category GetCategory(int id)
+        {
+            return _context.Category.FirstOrDefault(v => v.CategoryId == id);
+        }
+
+    
     }
 }

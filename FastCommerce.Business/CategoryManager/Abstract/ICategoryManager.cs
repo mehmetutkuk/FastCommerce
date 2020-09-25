@@ -12,6 +12,7 @@ namespace FastCommerce.Business.ProductManager.Abstract
 
         Task<bool> DeleteCategory(Category category);
 
+        Category GetCategory(int id);
         Task<bool> UpdateCategory(Category category);
 
         Task<List<Category>> GetCategories();
