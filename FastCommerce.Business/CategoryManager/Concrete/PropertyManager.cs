@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FastCommerce.Business.DTOs.Property;
 
 namespace FastCommerce.Business.CategoryManager.Concrete
 {
@@ -30,6 +31,23 @@ namespace FastCommerce.Business.CategoryManager.Concrete
         public async Task<bool> AddProperties(List<Property> properties)
         {
             _context.Properties.AddRange(properties);
+            await _context.SaveChangesAsync();
+            return await Task.FromResult<bool>(true);
+        }
+        public async Task<bool> AddPropertyByCategoryName(AddPropertyByCategoryNameDto property)
+        {
+            property.CategoryId = _context.Category.Single(ct => ct.CategoryName == property.CategoryName).CategoryId;
+
+            _context.Properties.AddRange(property.Adapt<Property>());
+            await _context.SaveChangesAsync();
+            return await Task.FromResult<bool>(true);
+        }
+
+        public async Task<bool> AddPropertiesByCategoryName(AddPropertiesByCategoryNameDto properties)
+        {
+            properties.PropertyList.ForEach(prop=>prop.CategoryId=_context.Category.Single(ct=>ct.CategoryName==prop.CategoryName).CategoryId);
+
+            _context.Properties.AddRange(properties.PropertyList.Adapt<List<Property>>());
             await _context.SaveChangesAsync();
             return await Task.FromResult<bool>(true);
         }

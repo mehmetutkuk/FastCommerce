@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using FastCommerce.Business.DTOs.Property;
 
 namespace FastCommerce.Business.CategoryManager.Abstract
 {
@@ -11,6 +12,8 @@ namespace FastCommerce.Business.CategoryManager.Abstract
 
         Task<bool> AddProperty(Property property);
         Task<bool> AddProperties(List<Property> properties);
+        Task<bool> AddPropertiesByCategoryName(AddPropertiesByCategoryNameDto properties);
+        Task<bool> AddPropertyByCategoryName(AddPropertyByCategoryNameDto property);
         Task<bool> DeleteProperty(Property property);
         Task<bool> UpdateProperty(Property property);
         Task<List<Property>> GetProperties();
