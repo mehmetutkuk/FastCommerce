@@ -27,6 +27,12 @@ namespace FastCommerce.Business.CategoryManager.Concrete
             return await Task.FromResult<bool>(true);
         }
 
+        public async Task<bool> AddProperties(List<Property> properties)
+        {
+            _context.Properties.AddRange(properties);
+            await _context.SaveChangesAsync();
+            return await Task.FromResult<bool>(true);
+        }
         public async Task<bool> DeleteProperty(Property property)
         {
             _context.Properties.Remove(property);

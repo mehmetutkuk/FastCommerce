@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FastCommerce.Business.CategoryManager.Abstract;
+using FastCommerce.Business.DTOs.Property;
 using FastCommerce.Web.API.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
@@ -22,20 +23,46 @@ namespace FastCommerce.Web.API.Controllers.Property
         }
 
         /// <summary>
-        /// AddCategory
+        /// AddProperty
         /// </summary>
         /// <returns>
         /// <paramref name="Task<HttpResponseMessage>"/>
         /// </returns>
 
         [HttpPost("AddProperty")]
-        public async Task<HttpResponseMessage> AddProperty(Entities.Entities.Property property)
+        public async Task<HttpResponseMessage> AddProperty(AddPropertyDto property)
         {
             Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.ErrorState = !await _propertyManager.AddProperty(property);
+                httpResponse.ErrorState = !await _propertyManager.AddProperty(property.Adapt<Entities.Entities.Property>());
+
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+
+
+        /// <summary>
+        /// AddProperties
+        /// </summary>
+        /// <returns>
+        /// <paramref name="Task<HttpResponseMessage>"/>
+        /// </returns>
+
+        [HttpPost("AddProperties")]
+        public async Task<HttpResponseMessage> AddProperties(AddPropertiesDto properties)
+        {
+            Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _propertyManager.AddProperties(properties.PropertyList.Adapt<List<Entities.Entities.Property>>());
 
             }
             catch (Exception ex)
