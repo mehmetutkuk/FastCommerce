@@ -79,14 +79,16 @@ namespace FastCommerce.Business.ProductManager.Concrete
             }
         }
 
-        public async Task<List<Product>> GetByCategories(GetByCategoriesRequest req)
-        {
-            return await _context.Products
-                .Where(p => p.ProductCategories.All(item => req.Categories.Contains(item.Category))).ToListAsync();
-        }
+        public async Task<List<ProductGetDTO>> GetProductsByCategoryId(int id) => _context.Products.Where(p => p.ProductCategories.Any(pc => pc.CategoryId == id)).Select(_=>_.Adapt<ProductGetDTO>()).ToList();
+
+        public async Task<List<ProductGetDTO>> GetProductsByCategoryName(string name) => _context.Products.Where(p => p.ProductCategories.Any(pc => pc.Category.CategoryName == name)).Select(_ => _.Adapt<ProductGetDTO>()).ToList();
+
+        //return await _context.Products
+        //    .Where(p => p.ProductCategories.All(item => req.Categories.Contains(item.Category))).ToListAsync();
         public async Task<List<ProductGetDTO>> Get()
         {
-            List<ProductGetDTO> products = _context.Products.Select(pr => new ProductGetDTO
+
+            return _context.Products.Select(pr => new ProductGetDTO
             {
                 ProductId = pr.ProductId,
                 Discount = pr.Discount,
@@ -96,10 +98,8 @@ namespace FastCommerce.Business.ProductManager.Concrete
                 ProductImages = _context.ProductImages.Where(c => c.ProductId == pr.ProductId).ToList()
             }).ToList();
 
-            return products;
-
         }
-        public ProductGetDTO GetProductById(int id) => _context.Products.Where(wh => wh.ProductId == id).Select(sel => new ProductGetDTO
+        public async Task<ProductGetDTO> GetProductById(int id) => _context.Products.Where(wh => wh.ProductId == id).Select(sel => new ProductGetDTO
         {
             ProductId = sel.ProductId,
             Discount = sel.Discount,

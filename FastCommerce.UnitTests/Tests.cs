@@ -43,24 +43,6 @@ namespace FastCommerce.UnitTests
         }
 
         [Test]
-        public async Task GetByCategories()
-        {
-            var products = GenerateFakeData<Product>(5);
-            var categories = GetFakeCategoryData(2);
-            GetByCategoriesRequest getByCategoriesRequest = new GetByCategoriesRequest();
-            getByCategoriesRequest.Categories.Adapt(categories);
-
-            var mockedService = new Mock<IProductManager>();
-            mockedService.Setup(x => x.GetByCategories(getByCategoriesRequest)).Returns(products);
-            var controller = new ProductController(mockedService.Object);
-
-            var result = await controller.GetByCategories(getByCategoriesRequest);
-
-            Assert.AreEqual(5, result.DataList.Count);
-        }
-
-
-        [Test]
         public async Task AddProduct()
         {
             var product = A.New<Product>();
