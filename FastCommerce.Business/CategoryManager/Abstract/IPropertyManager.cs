@@ -15,7 +15,8 @@ namespace FastCommerce.Business.CategoryManager.Abstract
         Task<bool> UpdateProperty(Property property);
         Task<List<Property>> GetProperties();
         
-        Task<List<Property>> GetPropertiesByCategoryId(int CategoryId);
+        Task<List<Property>> GetPropertiesByCategoryId(int categoryId);
+        Task<List<Property>> GetPropertiesByCategoryName(string categoryName);
 
         Task<Property> GetPropertyById(int Id);
     }

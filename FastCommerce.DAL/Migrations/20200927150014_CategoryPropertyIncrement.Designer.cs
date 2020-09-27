@@ -3,15 +3,17 @@ using System;
 using FastCommerce.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20200927150014_CategoryPropertyIncrement")]
+    partial class CategoryPropertyIncrement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,14 +90,17 @@ namespace FastCommerce.DAL.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PropertyId")
+                    b.Property<int>("PropertiesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PropertyID")
                         .HasColumnType("integer");
 
                     b.HasKey("CategoryPropertiesId");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("PropertyId");
+                    b.HasIndex("PropertyID");
 
                     b.ToTable("CategoryProperties");
                 });
@@ -229,9 +234,6 @@ namespace FastCommerce.DAL.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("CategoryId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("CategoryPropertiesId")
                         .HasColumnType("integer");
 
                     b.Property<string>("PropertyName")
@@ -447,10 +449,8 @@ namespace FastCommerce.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("FastCommerce.Entities.Entities.Property", "Property")
-                        .WithMany("CategoryProperties")
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("PropertyID");
                 });
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.Order", b =>
