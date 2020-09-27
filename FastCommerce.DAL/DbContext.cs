@@ -26,7 +26,6 @@ namespace FastCommerce.DAL
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
-        public DbSet<CategoryProperties> CategoryProperties { get; set; }
 
         public dbContext(DbContextOptions options) : base(options)
         {
@@ -52,10 +51,6 @@ namespace FastCommerce.DAL
 
             modelBuilder.Entity<ProductCategories>()
                 .Property(b => b.ProductCategoriesId)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<CategoryProperties>()
-                .Property(b => b.CategoryPropertiesId)
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Stock>()

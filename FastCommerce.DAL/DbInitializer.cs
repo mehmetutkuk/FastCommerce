@@ -65,39 +65,21 @@ namespace FastCommerce.DAL
 
             List<Category> categories = FillAllProperties<Category>(5);
 
-            List<CategoryProperties> categoryProperties = FillAllProperties<CategoryProperties>(countSquare);
-
             List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(countSquare);
 
             List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
             
-            //foreach (var item in categories)
-            //{
-            //    item.Properties = properties.ToList();
-            //}
+            foreach (var item in categories)
+            {
+                item.Properties = properties.ToList();
+            }
 
             for (var j = 0; j < countSquare; j++)
             {
-                productCategories[j].ProductId = products.ToList()[j / count].ProductId;
                 productCategories[j].Product = products.ToList()[j/count];
-                productCategories[j].CategoryId = categories.ToList()[j % 5].CategoryId;
                 productCategories[j].Category = categories.ToList()[j%5];
             }
-            for (var j = 0; j < countSquare; j++)
-            {
-                categoryProperties[j].CategoryId = categories.ToList()[j / count].CategoryId;
-                categoryProperties[j].Category = categories.ToList()[j / count];
-                categoryProperties[j].PropertyId = properties.ToList()[j % 5].PropertyID;
-                categoryProperties[j].Property = properties.ToList()[j % 5];
-            }
 
-            //foreach (var item in categories)
-            //{
-            //    item.ProductCategoriesId = productCategories.Single(pc => pc.CategoryId == item.CategoryId)
-            //        .ProductCategoriesId;
-            //    item.CategoryPropertiesId = categoryProperties.Single(cp => cp.CategoryId == item.CategoryId)
-            //        .CategoryPropertiesId;
-            //}
             List<StockProperties> stockProperties = FillAllProperties<StockProperties>(5);
             List<Stock> stocks = FillAllProperties<Stock>(5);
             i = 0;
@@ -124,7 +106,6 @@ namespace FastCommerce.DAL
 
             await context.AddRangeAsync(FillAllProperties<User>(5));
 
-            await context.AddRangeAsync(categoryProperties);
             await context.AddRangeAsync(productCategories);
             await context.AddRangeAsync(products);
             await context.AddRangeAsync(properties);

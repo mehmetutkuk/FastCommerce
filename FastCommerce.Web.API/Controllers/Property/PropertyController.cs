@@ -135,31 +135,14 @@ namespace FastCommerce.Web.API.Controllers.Property
             return httpResponse;
         }
 
-        [HttpGet("GetPropertiesByCategoryId/{categoryId:int}")]
-        public async Task<HttpResponseMessage> GetPropertiesByCategoryId(int categoryId)
+        [HttpGet("GetPropertiesByCategoryId/{CategoryId:int}")]
+        public async Task<HttpResponseMessage> GetPropertiesByCategoryId(int CategoryId)
         {
             Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.DataList = await _propertyManager.GetPropertiesByCategoryId(categoryId);
-                httpResponse.ErrorState = false;
-            }
-            catch (Exception ex)
-            {
-                httpResponse.ErrorState = true;
-                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
-            }
-            return httpResponse;
-        }
-        [HttpGet("GetPropertiesByCategoryName/{categoryName}")]
-        public async Task<HttpResponseMessage> GetPropertiesByCategoryName(string categoryName)
-        {
-            Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
-            try
-            {
-                httpResponse.RequestState = true;
-                httpResponse.DataList = await _propertyManager.GetPropertiesByCategoryName(categoryName);
+                httpResponse.DataList = await _propertyManager.GetPropertiesByCategoryId(CategoryId);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)

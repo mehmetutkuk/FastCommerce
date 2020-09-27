@@ -15,8 +15,6 @@ namespace FastCommerce.Entities.Entities
         public string PropertyValue { get; set; }
         [ForeignKey("CategoryId")]
         public int CategoryId { get; set; }
-        public int CategoryPropertiesId { get; set; }
-        public ICollection<CategoryProperties> CategoryProperties { get; set; }
         public ICollection<StockProperties> StockProperties { get; set; }
     }
 }
