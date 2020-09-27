@@ -63,13 +63,13 @@ namespace FastCommerce.Web.API.Controllers.Products
         /// <paramref name="Task<Response<Product>>"/>
         /// </returns>
         [HttpGet("Get/{id:int}")]
-        public Response<ProductGetDTO> Get(int id)
+        public async Task<Response<ProductGetDTO>> Get(int id)
         {
             Response<ProductGetDTO> httpResponse = new Response<ProductGetDTO>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.Data =  _productManager.GetProductById(id);
+                httpResponse.Data =  await _productManager.GetProductById(id);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)
@@ -136,14 +136,31 @@ namespace FastCommerce.Web.API.Controllers.Products
         /// <returns>
         /// <paramref name="Task<Response<Product>>"/>
         /// </returns>
-        [HttpGet("GetByPlace")]
-        public async Task<Response<Product>> GetByCategories([FromBody]GetByCategoriesRequest req)
+        [HttpGet("GetProductsByCategoryId/{id:int}")]
+        public async Task<Response<ProductGetDTO>> GetProductsByCategoryId(int id)
         {
-            Response<Product> httpResponse = new Response<Product>();
+            Response<ProductGetDTO> httpResponse = new Response<ProductGetDTO>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.DataList = await _productManager.GetByCategories(req);
+                httpResponse.DataList = await _productManager.GetProductsByCategoryId(id);
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        [HttpGet("GetProductsByCategoryName/{name}")]
+        public async Task<Response<ProductGetDTO>> GetProductsByCategoryName(string name)
+        {
+            Response<ProductGetDTO> httpResponse = new Response<ProductGetDTO>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = await _productManager.GetProductsByCategoryName(name);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)

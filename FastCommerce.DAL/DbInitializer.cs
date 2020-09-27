@@ -59,11 +59,13 @@ namespace FastCommerce.DAL
                 return;
 
             int i = 0;
+            int count = 5;
+            int countSquare = (int) Math.Pow(count, 2);
             List<Product> products = FillAllProperties<Product>(5);
 
             List<Category> categories = FillAllProperties<Category>(5);
 
-            List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(5);
+            List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(countSquare);
 
             List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
             
@@ -72,13 +74,10 @@ namespace FastCommerce.DAL
                 item.Properties = properties.ToList();
             }
 
-
-            
-            foreach (var item in productCategories)
+            for (var j = 0; j < countSquare; j++)
             {
-                item.Category = categories.ToList()[i];
-                item.Product = products.ToList()[i];
-                i++;
+                productCategories[j].Product = products.ToList()[j/count];
+                productCategories[j].Category = categories.ToList()[j%5];
             }
 
             List<StockProperties> stockProperties = FillAllProperties<StockProperties>(5);

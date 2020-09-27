@@ -1,4 +1,5 @@
-﻿using FastCommerce.Entities.Entities;
+﻿using FastCommerce.Business.DTOs.Category;
+using FastCommerce.Entities.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,8 +8,8 @@ using System.Threading.Tasks;
 namespace FastCommerce.Business.ProductManager.Abstract
 {
   public interface ICategoryManager
-    {
-        Task<bool> AddCategory(Category category);
+  {
+        Task<bool> AddCategory(AddCategoryDto req);
 
         Task<bool> DeleteCategory(Category category);
 

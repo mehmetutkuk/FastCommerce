@@ -5,8 +5,9 @@ using System.Text;
 
 namespace FastCommerce.Business.DTOs.Product
 {
-    public class GetByCategoriesRequest
+    public class GetProductsByCategoryIdRequest
     {
-        public List<Category> Categories { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
     }
 }
