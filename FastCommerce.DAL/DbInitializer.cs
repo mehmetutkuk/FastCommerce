@@ -46,7 +46,7 @@ namespace FastCommerce.DAL
             }
             foreach (T row in results)
             {
-                row.GetType().GetProperty(PKInfo.Name).SetValue(row, Pk += 1);
+                row.GetType().GetProperty(PKInfo.Name).SetValue(row,0);
             }
             return results.ToList();
         }

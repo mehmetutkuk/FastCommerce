@@ -31,11 +31,69 @@ namespace FastCommerce.DAL
         {
 
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .Property(b => b.ProductId)
+                .ValueGeneratedOnAdd();
 
+            modelBuilder.Entity<ProductImage>()
+                .Property(b => b.ProductImagesId)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Property>()
+                .Property(b => b.PropertyID)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Category>()
+                .Property(b => b.CategoryId)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<ProductCategories>()
+                .Property(b => b.ProductCategoriesId)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Stock>()
+                .Property(b => b.StockId)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<StockProperties>()
+                .Property(b => b.StockPropertiesId)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Role>()
+                .Property(b => b.RoleID)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<RoleObject>()
+                .Property(b => b.RoleObjectID)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<User>()
+                .Property(b => b.UserID)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<UserActivation>()
+                .Property(b => b.Id)
+                .ValueGeneratedOnAdd();
+
+
+            modelBuilder.Entity<Order>()
+                .Property(b => b.OrderId)
+                .ValueGeneratedOnAdd();
+
+
+            modelBuilder.Entity<Address>()
+                .Property(b => b.AddressId)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Shipment>()
+                .Property(b => b.ShipmentId)
+                .ValueGeneratedOnAdd();
+        }
     }
 
 
-    public class DesignTimeDbContextFactory :  IDesignTimeDbContextFactory<dbContext>
+    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<dbContext>
     {
         public dbContext CreateDbContext(string[] args)
         {
@@ -46,6 +104,7 @@ namespace FastCommerce.DAL
             Console.WriteLine($"Running DesignTime DB context. ({connectionString})");
             return new dbContext(builder.Options);
         }
+
     }
 
 }
