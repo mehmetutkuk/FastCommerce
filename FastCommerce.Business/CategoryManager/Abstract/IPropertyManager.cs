@@ -10,7 +10,7 @@ namespace FastCommerce.Business.CategoryManager.Abstract
     {
 
         Task<bool> AddProperty(Property property);
-
+        Task<bool> AddProperties(List<Property> properties);
         Task<bool> DeleteProperty(Property property);
         Task<bool> UpdateProperty(Property property);
         Task<List<Property>> GetProperties();

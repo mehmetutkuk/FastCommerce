@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using Utility.Cryptography;
 
 namespace FastCommerce.DAL
 {
@@ -103,8 +104,14 @@ namespace FastCommerce.DAL
                 item.StockProperties = stockProperties.ToList();
             }
 
+            List<User> users = FillAllProperties<User>(5);
 
-            await context.AddRangeAsync(FillAllProperties<User>(5));
+            foreach (var user in users)
+            {
+                user.Password = Cryptography.Encrypt(user.Password);
+            }
+
+            await context.AddRangeAsync(users);
 
             await context.AddRangeAsync(productCategories);
             await context.AddRangeAsync(products);
