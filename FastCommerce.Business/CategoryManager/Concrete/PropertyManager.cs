@@ -53,6 +53,11 @@ namespace FastCommerce.Business.CategoryManager.Concrete
             List<Property> result = _context.Properties.Where(c => c.CategoryId == CategoryId).ToList();
             return await Task.FromResult<List<Property>>(result);
         }
+        public async Task<List<Property>> GetPropertiesByCategoryName(string categoryName)
+        {
+            List<Property> result = _context.Properties.Where(p => p.CategoryId == _context.Category.Single(c=>c.CategoryName == categoryName).CategoryId).ToList();
+            return await Task.FromResult<List<Property>>(result);
+        }
         public async Task<Property> GetPropertyById(int Id)
         {
             Property result = _context.Properties.Single(c => c.PropertyID == Id);
