@@ -42,11 +42,19 @@ namespace FastCommerce.Business.CategoryManager.Concrete
             return await Task.FromResult<bool>(true);
         }
 
-        public async Task<List<Property>> GetPropertiesByCategoryId(int CategoryId)
+        public async Task<List<Property>> GetPropertiesByCategoryId(int categoryId)
         {
-            List<Property> result = _context.Properties.Where(c => c.CategoryId == CategoryId).ToList();
+            List<Property> result = _context.Properties.Where(c => c.CategoryId == categoryId).ToList();
             return await Task.FromResult<List<Property>>(result);
         }
+
+        public Task<List<Property>> GetPropertiesByCategoryName(string categoryName)
+        {
+            //throw new NotImplementedException();
+            return Task.FromResult(_context.CategoryProperties.Where(cp => cp.Category.CategoryName == categoryName)
+                .Select(_ => _.Property).ToList());
+        }
+
         public async Task<Property> GetPropertyById(int Id)
         {
             Property result = _context.Properties.Single(c => c.PropertyID == Id);
