@@ -72,6 +72,40 @@ namespace FastCommerce.Web.API.Controllers.Property
             }
             return httpResponse;
         }
+        [HttpPost("AddPropertyByCategoryName")]
+        public async Task<HttpResponseMessage> AddPropertyByCategoryName(AddPropertyByCategoryNameDto property)
+        {
+            Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _propertyManager.AddPropertyByCategoryName(property);
+
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        [HttpPost("AddPropertiesByCategoryName")]
+        public async Task<HttpResponseMessage> AddPropertiesByCategoryName(AddPropertiesByCategoryNameDto properties)
+        {
+            Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _propertyManager.AddPropertiesByCategoryName(properties);
+
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
         /// <summary>
         /// DeleteCategory
         /// </summary>
@@ -170,6 +204,23 @@ namespace FastCommerce.Web.API.Controllers.Property
             {
                 httpResponse.RequestState = true;
                 httpResponse.DataList = await _propertyManager.GetPropertiesByCategoryId(CategoryId);
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        [HttpGet("GetPropertiesByCategoryName/{categoryName}")]
+        public async Task<HttpResponseMessage> GetPropertiesByCategoryName(string categoryName)
+        {
+            Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = await _propertyManager.GetPropertiesByCategoryName(categoryName);
                 httpResponse.ErrorState = false;
             }
             catch (Exception ex)

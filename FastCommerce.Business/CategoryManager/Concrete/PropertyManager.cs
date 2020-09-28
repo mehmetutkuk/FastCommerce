@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FastCommerce.Business.DTOs.Property;
 
 namespace FastCommerce.Business.CategoryManager.Concrete
 {
@@ -33,6 +34,23 @@ namespace FastCommerce.Business.CategoryManager.Concrete
             await _context.SaveChangesAsync();
             return await Task.FromResult<bool>(true);
         }
+        public async Task<bool> AddPropertyByCategoryName(AddPropertyByCategoryNameDto property)
+        {
+            property.CategoryId = _context.Category.Single(ct => ct.CategoryName == property.CategoryName).CategoryId;
+
+            _context.Properties.AddRange(property.Adapt<Property>());
+            await _context.SaveChangesAsync();
+            return await Task.FromResult<bool>(true);
+        }
+
+        public async Task<bool> AddPropertiesByCategoryName(AddPropertiesByCategoryNameDto properties)
+        {
+            properties.PropertyList.ForEach(prop=>prop.CategoryId=_context.Category.Single(ct=>ct.CategoryName==prop.CategoryName).CategoryId);
+
+            _context.Properties.AddRange(properties.PropertyList.Adapt<List<Property>>());
+            await _context.SaveChangesAsync();
+            return await Task.FromResult<bool>(true);
+        }
         public async Task<bool> DeleteProperty(Property property)
         {
             _context.Properties.Remove(property);
@@ -51,6 +69,11 @@ namespace FastCommerce.Business.CategoryManager.Concrete
         public async Task<List<Property>> GetPropertiesByCategoryId(int CategoryId)
         {
             List<Property> result = _context.Properties.Where(c => c.CategoryId == CategoryId).ToList();
+            return await Task.FromResult<List<Property>>(result);
+        }
+        public async Task<List<Property>> GetPropertiesByCategoryName(string categoryName)
+        {
+            List<Property> result = _context.Properties.Where(p => p.CategoryId == _context.Category.Single(c=>c.CategoryName == categoryName).CategoryId).ToList();
             return await Task.FromResult<List<Property>>(result);
         }
         public async Task<Property> GetPropertyById(int Id)
