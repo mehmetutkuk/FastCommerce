@@ -54,13 +54,13 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// </returns>
         
         [HttpPost("DeleteCategory")]
-        public async Task<HttpResponseMessage> DeleteCategory(Entities.Entities.Category category)
+        public async Task<HttpResponseMessage> DeleteCategory(DeleteCategoryDto category)
         {
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.ErrorState = !await _categoryManager.DeleteCategory(category);
+                httpResponse.ErrorState = !await _categoryManager.DeleteCategory(category.Adapt<Entities.Entities.Category>());
                 
             }
             catch (Exception ex)
