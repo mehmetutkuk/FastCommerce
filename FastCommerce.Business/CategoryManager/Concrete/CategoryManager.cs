@@ -42,7 +42,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
         public async Task<bool> UpdateCategory(Category category)
         {
             var result = _context.Category.Select(s => s).Single(w => w.CategoryId == category.CategoryId);
-            result.Adapt(category);
+            result.CategoryName = category.CategoryName;
             _context.SaveChanges();
             return await Task.FromResult<bool>(true);
         }
