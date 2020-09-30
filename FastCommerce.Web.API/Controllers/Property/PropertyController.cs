@@ -37,7 +37,6 @@ namespace FastCommerce.Web.API.Controllers.Property
             {
                 httpResponse.RequestState = true;
                 httpResponse.ErrorState = !await _propertyManager.AddProperty(property.Adapt<Entities.Entities.Property>());
-
             }
             catch (Exception ex)
             {
