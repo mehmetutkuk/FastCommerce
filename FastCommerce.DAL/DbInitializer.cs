@@ -1,4 +1,4 @@
-﻿using FastCommerce.Entities.Entities;
+using FastCommerce.Entities.Entities;
 using GenFu;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
@@ -70,6 +70,7 @@ namespace FastCommerce.DAL
 
             List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
             
+            categories.Add(new Category() { CategoryName = "Trending Products" });
             foreach (var item in categories)
             {
                 item.Properties = properties.ToList();
