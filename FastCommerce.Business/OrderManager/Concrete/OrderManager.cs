@@ -1,11 +1,13 @@
-﻿using FastCommerce.Business.OrderManager.Abstract;
+﻿using FastCommerce.Business.Core;
+using FastCommerce.Business.DTOs.Order;
+using FastCommerce.Business.ElasticSearch.Abstract;
+using FastCommerce.Business.OrderManager.Abstract;
 using FastCommerce.DAL;
 using FastCommerce.Entities.Entities;
 using Mapster;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FastCommerce.Business.OrderManager.Concrete
@@ -13,44 +15,73 @@ namespace FastCommerce.Business.OrderManager.Concrete
     public class OrderManager : IOrderManager
     {
         private readonly dbContext _context;
-        public OrderManager(dbContext context)
+        private readonly IElasticSearchService _elasticSearchService;
+        public OrderManager(dbContext context, IElasticSearchService elasticSearchService)
         {
             _context = context;
+            _elasticSearchService = elasticSearchService;
         }
 
+        public async Task<bool> CreateIndexes(OrderElasticIndexDto orderElasticIndexDto)
+        {
+            try
+            {
+                await _elasticSearchService.CreateIndexAsync<OrderElasticIndexDto, int>(ElasticSearchItemsConst.OrderIndexName);
+                await _elasticSearchService.AddOrUpdateAsync<OrderElasticIndexDto, int>(ElasticSearchItemsConst.OrderIndexName, orderElasticIndexDto);
+                return await Task.FromResult<bool>(true);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromException<bool>(ex);
+            }
+        }
 
         public async Task<bool> AddOrder(Order order)
         {
-            _context.Orders.Add(order);
+            await _context.AddAsync<Order>(order);
+            await _context.SaveChangesAsync();
+            OrderElasticIndexDto orderElasticIndexDto = new OrderElasticIndexDto();
+            orderElasticIndexDto.Adapt(order);
+            await CreateIndexes(orderElasticIndexDto);
+            return await Task.FromResult<bool>(true);
+        }
+
+        public async Task<bool> DeleteOrder(Order OrderId)
+        {
+            Order result = await _context.Orders.FindAsync(OrderId);
+            _context.Orders.Remove(result);
             await _context.SaveChangesAsync();
             return await Task.FromResult<bool>(true);
         }
 
-        public async Task<bool> DeleteOrder(Order order)
+        public Task<bool> UpdateOrder(int OrderId)
         {
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-            return await Task.FromResult<bool>(true);
+            Order result = _context.Orders.Where(o => o.OrderId == OrderId).SingleOrDefault();
+            result.Adapt(OrderId);
+            _context.SaveChangesAsync();
+            return Task.FromResult<bool>(true);
         }
 
-        public async Task<bool> UpdateOrder(Order order)
+        public OrderGetDTO GetOrdersByUser(int UserId) => _context.Orders.Where(wh => wh.UserId == UserId).Select(sel => new OrderGetDTO
         {
-            Order result = _context.Orders.Where(o => o.OrderId == order.OrderId).SingleOrDefault();
-            result.Adapt(order);
-            await _context.SaveChangesAsync();
-            return await Task.FromResult<bool>(true);
-        }
+            OrderId = sel.OrderId,
+            UserId = sel.UserId,
+            Stage = sel.Stage,
+            Shipment = sel.Shipment,
+            OrderProducts = _context.OrderProducts.Where(c => c.Order.UserId == UserId).ToList()
+        }).SingleOrDefault().Adapt<OrderGetDTO>();
 
-        public async Task<List<Order>> GetOrdersByUser(int UserId)
+        public async Task<List<OrderGetDTO>> GetOrders()
         {
-            List<Order>  orders =  _context.Orders.Where(c => c.UserId == UserId).ToList();
-            return await Task.FromResult<List<Order>>(orders);
-        }
-
-        public async Task<List<Order>> GetOrders()
-        {
-            List<Order> orders = _context.Orders.Select(c => c).ToList();
-            return await Task.FromResult<List<Order>>(orders);
+            List<OrderGetDTO> orders = _context.Orders.Select(pr => new OrderGetDTO
+            {
+                OrderId = pr.OrderId,
+                UserId = pr.UserId,
+                Stage = pr.Stage,
+                Shipment = pr.Shipment,
+                OrderProducts = _context.OrderProducts.Where(c => c.OrderId == pr.OrderId).ToList()
+            }).ToList();
+            return orders;
         }
     }
 }
