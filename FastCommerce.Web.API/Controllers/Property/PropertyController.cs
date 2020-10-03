@@ -212,6 +212,27 @@ namespace FastCommerce.Web.API.Controllers.Property
             }
             return httpResponse;
         }
+
+
+
+        [HttpGet("GetGroupedPropertiesByCategoryId/{CategoryId:int}")]
+        public async Task<HttpResponseMessage> GetGroupedPropertiesByCategoryId(int CategoryId)
+        {
+            Response<GroupedPropertyNameDto> httpResponse = new Response<GroupedPropertyNameDto>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = await _propertyManager.GetGroupedPropertiesByCategoryId(CategoryId);
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+
         [HttpGet("GetPropertiesByCategoryName/{categoryName}")]
         public async Task<HttpResponseMessage> GetPropertiesByCategoryName(string categoryName)
         {

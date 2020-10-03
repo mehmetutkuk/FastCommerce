@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using FastCommerce.Business.DTOs.Property;
+using System.Linq;
 
 namespace FastCommerce.Business.CategoryManager.Abstract
 {
@@ -19,6 +20,7 @@ namespace FastCommerce.Business.CategoryManager.Abstract
         Task<List<Property>> GetProperties();
         
         Task<List<Property>> GetPropertiesByCategoryId(int categoryId);
+        Task<List<GroupedPropertyNameDto>> GetGroupedPropertiesByCategoryId(int CategoryId);
         Task<List<Property>> GetPropertiesByCategoryName(string categoryName);
 
         Task<Property> GetPropertyById(int Id);
