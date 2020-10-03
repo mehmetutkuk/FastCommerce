@@ -104,7 +104,5 @@ namespace FastCommerce.DAL
             Console.WriteLine($"Running DesignTime DB context. ({connectionString})");
             return new dbContext(builder.Options);
         }
-
     }
-
 }

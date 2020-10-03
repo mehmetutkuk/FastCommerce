@@ -12,7 +12,7 @@ using FastCommerce.Business.DTOs.Property;
 
 namespace FastCommerce.Business.CategoryManager.Concrete
 {
-   public class PropertyManager: IPropertyManager
+    public class PropertyManager : IPropertyManager
     {
         private readonly dbContext _context;
 
@@ -45,7 +45,7 @@ namespace FastCommerce.Business.CategoryManager.Concrete
 
         public async Task<bool> AddPropertiesByCategoryName(AddPropertiesByCategoryNameDto properties)
         {
-            properties.PropertyList.ForEach(prop=>prop.CategoryId=_context.Category.Single(ct=>ct.CategoryName==prop.CategoryName).CategoryId);
+            properties.PropertyList.ForEach(prop => prop.CategoryId = _context.Category.Single(ct => ct.CategoryName == prop.CategoryName).CategoryId);
 
             _context.Properties.AddRange(properties.PropertyList.Adapt<List<Property>>());
             await _context.SaveChangesAsync();
@@ -71,9 +71,24 @@ namespace FastCommerce.Business.CategoryManager.Concrete
             List<Property> result = _context.Properties.Where(c => c.CategoryId == CategoryId).ToList();
             return await Task.FromResult<List<Property>>(result);
         }
+
+        public async Task<List<GroupedPropertyNameDto>> GetGroupedPropertiesByCategoryId(int CategoryId)
+        {
+            List<GroupedPropertyNameDto> result = (from p in _context.Properties
+                                                   where p.CategoryId == CategoryId
+                                                   group p by p.PropertyName into g
+                                                   select new GroupedPropertyNameDto
+                                                   {
+                                                       PropertyName = g.Key,
+                                                       Count = g.Count()
+                                                   }).ToList();
+
+            return await Task.FromResult<List<GroupedPropertyNameDto>>(result);
+        }
+
         public async Task<List<Property>> GetPropertiesByCategoryName(string categoryName)
         {
-            List<Property> result = _context.Properties.Where(p => p.CategoryId == _context.Category.Single(c=>c.CategoryName == categoryName).CategoryId).ToList();
+            List<Property> result = _context.Properties.Where(p => p.CategoryId == _context.Category.Single(c => c.CategoryName == categoryName).CategoryId).ToList();
             return await Task.FromResult<List<Property>>(result);
         }
         public async Task<Property> GetPropertyById(int Id)

@@ -115,7 +115,7 @@ namespace FastCommerce.Web.API.Controllers.Products
         /// <paramref name="Task<Response<Product>>"/>
         /// </returns>
         [HttpPost("AddProduct")]
-        public async Task<Response<Product>> AddProduct(Product product)
+        public async Task<Response<Product>> AddProduct(AddProductDto product)
         {
             Response<Product> httpResponse = new Response<Product>();
             try
