@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FastCommerce.Business.DTOs.Category;
 using FastCommerce.Business.ProductManager.Abstract;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Web.API.Models;
@@ -29,14 +30,13 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// </returns>
         
         [HttpPost("AddCategory")]
-        public async Task<HttpResponseMessage> AddCategory(Entities.Entities.Category category)
+        public async Task<HttpResponseMessage> AddCategory(AddCategoryDto req)
         {
             Response<Entities.Entities.Category> httpResponse = new  Response<Entities.Entities.Category>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.ErrorState  = !await _categoryManager.AddCategory(category);
-                
+                httpResponse.ErrorState  = !await _categoryManager.AddCategory(req);
             }
             catch (Exception ex)
             {
@@ -53,13 +53,13 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// </returns>
         
         [HttpPost("DeleteCategory")]
-        public async Task<HttpResponseMessage> DeleteCategory(Entities.Entities.Category category)
+        public async Task<HttpResponseMessage> DeleteCategory(DeleteCategoryDto category)
         {
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.ErrorState = !await _categoryManager.DeleteCategory(category);
+                httpResponse.ErrorState = !await _categoryManager.DeleteCategory(category.Adapt<Entities.Entities.Category>());
                 
             }
             catch (Exception ex)
@@ -78,13 +78,13 @@ namespace FastCommerce.Web.API.Controllers.Category
         /// </returns>
         
         [HttpPost("UpdateCategory")]
-        public async Task<HttpResponseMessage> UpdateCategory(Entities.Entities.Category category)
+        public async Task<HttpResponseMessage> UpdateCategory(UpdateCategoryDto category)
         {
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.ErrorState = !await _categoryManager.UpdateCategory(category);
+                httpResponse.ErrorState = !await _categoryManager.UpdateCategory(category.Adapt<Entities.Entities.Category>());
             }
             catch (Exception ex)
             {

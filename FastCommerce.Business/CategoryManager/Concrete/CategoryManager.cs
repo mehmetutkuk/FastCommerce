@@ -10,6 +10,7 @@ using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using FastCommerce.Business.DTOs.Category;
 
 namespace FastCommerce.Business.ProductManager.Concrete
 {
@@ -23,9 +24,9 @@ namespace FastCommerce.Business.ProductManager.Concrete
         }
 
 
-        public async Task<bool> AddCategory(Category category)
+        public async Task<bool> AddCategory(AddCategoryDto req)
         {
-            await _context.Category.AddAsync(category);
+            await _context.Category.AddAsync(req.Adapt<Category>());
             await _context.SaveChangesAsync();
             return await Task.FromResult<bool>(true);
         }
@@ -41,7 +42,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
         public async Task<bool> UpdateCategory(Category category)
         {
             var result = _context.Category.Select(s => s).Single(w => w.CategoryId == category.CategoryId);
-            result.Adapt(category);
+            result.CategoryName = category.CategoryName;
             _context.SaveChanges();
             return await Task.FromResult<bool>(true);
         }

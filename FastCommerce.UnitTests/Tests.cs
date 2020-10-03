@@ -46,6 +46,7 @@ namespace FastCommerce.UnitTests
         }
 
         [Test]
+
         public async Task GetOrders()
         {
             var orders = GenerateFakeData<OrderGetDTO>(26);
@@ -80,6 +81,7 @@ namespace FastCommerce.UnitTests
         }
 
         [Test]
+
         public async Task AddProduct()
         {
             var product = A.New<Product>();

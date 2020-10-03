@@ -1,4 +1,4 @@
-﻿using FastCommerce.Entities.Entities;
+using FastCommerce.Entities.Entities;
 using GenFu;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using Utility.Cryptography;
 
 namespace FastCommerce.DAL
 {
@@ -46,7 +47,7 @@ namespace FastCommerce.DAL
             }
             foreach (T row in results)
             {
-                row.GetType().GetProperty(PKInfo.Name).SetValue(row, Pk += 1);
+                row.GetType().GetProperty(PKInfo.Name).SetValue(row,0);
             }
             return results.ToList();
         }
@@ -59,26 +60,26 @@ namespace FastCommerce.DAL
                 return;
 
             int i = 0;
+            int count = 5;
+            int countSquare = (int) Math.Pow(count, 2);
             List<Product> products = FillAllProperties<Product>(5);
 
             List<Category> categories = FillAllProperties<Category>(5);
 
-            List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(5);
+            List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(countSquare);
 
             List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
             
+            categories.Add(new Category() { CategoryName = "Trending Products" });
             foreach (var item in categories)
             {
                 item.Properties = properties.ToList();
             }
 
-
-            
-            foreach (var item in productCategories)
+            for (var j = 0; j < countSquare; j++)
             {
-                item.Category = categories.ToList()[i];
-                item.Product = products.ToList()[i];
-                i++;
+                productCategories[j].Product = products.ToList()[j/count];
+                productCategories[j].Category = categories.ToList()[j%5];
             }
 
             List<StockProperties> stockProperties = FillAllProperties<StockProperties>(5);
@@ -104,8 +105,14 @@ namespace FastCommerce.DAL
                 item.StockProperties = stockProperties.ToList();
             }
 
+            List<User> users = FillAllProperties<User>(5);
 
-            await context.AddRangeAsync(FillAllProperties<User>(5));
+            foreach (var user in users)
+            {
+                user.Password = Cryptography.Encrypt(user.Password);
+            }
+
+            await context.AddRangeAsync(users);
 
             await context.AddRangeAsync(productCategories);
             await context.AddRangeAsync(products);
