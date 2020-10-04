@@ -13,5 +13,6 @@ namespace FastCommerce.Entities.Entities
         public Shipment Shipment { get; set; }
         public int OrderProductsId { get; set; }
         public ICollection<OrderProduct> OrderProducts { get; set; }
+        public double TotalPrice { get; set; }
     }
 }

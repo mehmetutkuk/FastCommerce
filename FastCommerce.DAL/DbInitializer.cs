@@ -45,9 +45,14 @@ namespace FastCommerce.DAL
                     }
                 }
             }
-            foreach (T row in results)
+
+            if (PKInfo != null)
             {
-                row.GetType().GetProperty(PKInfo.Name).SetValue(row,0);
+                foreach (T row in results)
+                {
+
+                    row.GetType().GetProperty(PKInfo.Name).SetValue(row, 0);
+                }
             }
             return results.ToList();
         }
@@ -67,6 +72,7 @@ namespace FastCommerce.DAL
             List<Category> categories = FillAllProperties<Category>(5);
 
             List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(countSquare);
+            List<Address> addresses = FillAllProperties<Address>(count);
 
             List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
             
@@ -91,6 +97,11 @@ namespace FastCommerce.DAL
                 i++;
 
             }
+            foreach (var item in addresses)
+            {
+                item.UserId = 1;
+
+            }
 
             i = 0;
             foreach (var item in stockProperties)
@@ -107,19 +118,22 @@ namespace FastCommerce.DAL
 
             List<User> users = FillAllProperties<User>(5);
 
+            users.Add(new User(){Email="mehmetburakeker@gmail.com",Password="Burak26",Active = true});
             foreach (var user in users)
             {
                 user.Password = Cryptography.Encrypt(user.Password);
             }
 
             await context.AddRangeAsync(users);
-
+            
             await context.AddRangeAsync(productCategories);
             await context.AddRangeAsync(products);
             await context.AddRangeAsync(properties);
             await context.AddRangeAsync(categories);
             await context.AddRangeAsync(stockProperties);
             await context.AddRangeAsync(stocks);
+            context.SaveChanges();
+            await context.AddRangeAsync(addresses);
             context.SaveChanges();
         }
     }

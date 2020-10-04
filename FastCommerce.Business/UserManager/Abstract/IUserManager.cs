@@ -19,5 +19,6 @@ namespace FastCommerce.Business.UserManager.Abstract
         public void DisableUser(User user);
         public User AddUser(User user);
         public Task<List<User>> GetUsers();
+        public Task<List<Address>> GetAddressesByUserId(int UserId);
     }
 }
