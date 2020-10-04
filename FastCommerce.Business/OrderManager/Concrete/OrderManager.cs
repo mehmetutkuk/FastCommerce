@@ -7,25 +7,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FastCommerce.Business.DTOs.Order;
+using FastCommerce.Business.UserManager.Abstract;
 
 namespace FastCommerce.Business.OrderManager.Concrete
 {
     public class OrderManager : IOrderManager
     {
         private readonly dbContext _context;
-        public OrderManager(dbContext context)
+        public readonly IUserManager _userManager;
+        public OrderManager(dbContext context, IUserManager userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-
-
         public async Task<bool> AddOrder(Order order)
         {
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
             return await Task.FromResult<bool>(true);
         }
-
+        public async Task<bool> CreateOrder(CreateOrderDto order)
+        {
+            var newOrder = new Order();
+            newOrder.UserId = order.UserId;
+            newOrder.OrderProducts = order.Products.Adapt<List<OrderProduct>>();
+            return await Task.FromResult<bool>(true);
+        }
         public async Task<bool> DeleteOrder(Order order)
         {
             _context.Orders.Remove(order);

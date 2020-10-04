@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using FastCommerce.Business.DTOs.Order;
 using FastCommerce.Business.OrderManager.Abstract;
 using FastCommerce.Web.API.Models;
 using Mapster;
@@ -27,14 +29,15 @@ namespace FastCommerce.Web.API.Controllers.Order
         /// <param name="order"></param>
         /// <returns></returns>
 
-        [HttpPost("AddOrder")]
-        public async Task<HttpResponseMessage> AddOrder(Entities.Entities.Order order)
+        [HttpPost("CreateOrder")]
+        public async Task<HttpResponseMessage> CreateOrder(CreateOrderDto order)
         {
             Response<Entities.Entities.Order> _response = new Response<Entities.Entities.Order>();
+            order.UserId = Int32.Parse(HttpContext.User.FindFirstValue("id"));
             try
             {
                 _response.RequestState = true;
-                _response.ErrorState = !await _orderManager.AddOrder(order);
+                _response.ErrorState = !await _orderManager.CreateOrder(order);
             }
             catch (Exception ex)
             {
