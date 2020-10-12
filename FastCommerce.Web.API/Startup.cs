@@ -12,6 +12,8 @@ using FastCommerce.Business.OrderManager.Concrete;
 using FastCommerce.Business.ProductManager;
 using FastCommerce.Business.ProductManager.Abstract;
 using FastCommerce.Business.ProductManager.Concrete;
+using FastCommerce.Business.StockManager.Abstract;
+using FastCommerce.Business.StockManager.Concrete;
 using FastCommerce.Business.UserManager;
 using FastCommerce.Business.UserManager.Abstract;
 using FastCommerce.Business.UserManager.Concrete;
@@ -41,14 +43,16 @@ namespace FastCommerce.Web.API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-       
         }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddDomainDataServices();
             services.AddScoped<IElasticSearchService, ElasticSearchManager>();
             services.AddScoped<IElasticSearchConfigration, ElasticSearchConfigration>();
@@ -57,6 +61,7 @@ namespace FastCommerce.Web.API
             services.AddTransient<ICategoryManager, CategoryManager>();
             services.AddTransient<IPropertyManager, PropertyManager>();
             services.AddTransient<IOrderManager, OrderManager>();
+            services.AddTransient<IStockManager, StockManager>();
             services.AddMemoryCache();
             services.AddCors();
 
@@ -199,7 +204,7 @@ namespace FastCommerce.Web.API
             var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
             services.AddDbContext<dbContext>(options => options.UseNpgsql(connectionString, y => y.MigrationsAssembly("FastCommerce.DAL")));
             services.AddTransient<UserManager>();
-            services.AddTransient<IProductManager,ProductManager>();
+            services.AddTransient<IProductManager, ProductManager>();
         }
     }
     public static class EmailExtensions
