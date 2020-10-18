@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using FastCommerce.Business.DTOs.Order;
 using FastCommerce.Business.OrderManager.Abstract;
+using FastCommerce.Entities.Entities;
 using FastCommerce.Web.API.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
@@ -33,9 +34,9 @@ namespace FastCommerce.Web.API.Controllers.Order
         public async Task<HttpResponseMessage> CreateOrder(CreateOrderDto order)
         {
             Response<Entities.Entities.Order> _response = new Response<Entities.Entities.Order>();
-            order.UserId = Int32.Parse(HttpContext.User.FindFirstValue("id"));
             try
             {
+                order.UserId = int.Parse(HttpContext.User.FindFirstValue("id"));
                 _response.RequestState = true;
                 _response.ErrorState = !await _orderManager.CreateOrder(order);
             }
@@ -129,6 +130,29 @@ namespace FastCommerce.Web.API.Controllers.Order
                 _response.RequestState = true;
                 _response.DataList = await _orderManager.GetOrders();
                 _response.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorState = true;
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return _response;
+        }
+        [HttpGet("GetAddresses")]
+        public async Task<HttpResponseMessage> GetAddresses()
+        {
+            Response<AddressDto> _response = new Response<AddressDto>();
+            try
+            {
+                int userId = int.Parse(HttpContext.User.FindFirstValue("id"));
+                _response.RequestState = true;
+                _response.DataList = await _orderManager.GetAddressesByUser(userId);
+                _response.ErrorState = false;
+            }
+            catch (ArgumentNullException ex)
+            {
+                _response.ErrorState = true;
+                _response.ErrorList.Add(new ApiException(){Message = "Unauthorized Access",Detail="Token is not provided so the userId required for getting the addresses."});
             }
             catch (Exception ex)
             {

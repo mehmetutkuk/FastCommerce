@@ -15,5 +15,6 @@ namespace FastCommerce.Business.OrderManager.Abstract
         Task<bool> UpdateOrder(Order order);
         Task<List<Order>> GetOrdersByUser(int UserId);
         Task<List<Order>> GetOrders();
+        Task<List<AddressDto>> GetAddressesByUser(int UserId);
     }
 }

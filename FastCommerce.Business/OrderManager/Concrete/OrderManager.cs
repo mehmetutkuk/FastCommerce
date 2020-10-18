@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FastCommerce.Business.DTOs.Order;
 using FastCommerce.Business.UserManager.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 namespace FastCommerce.Business.OrderManager.Concrete
 {
@@ -60,5 +61,8 @@ namespace FastCommerce.Business.OrderManager.Concrete
             List<Order> orders = _context.Orders.Select(c => c).ToList();
             return await Task.FromResult<List<Order>>(orders);
         }
+
+        public async Task<List<AddressDto>> GetAddressesByUser(int UserId) =>
+            await _context.Addresses.Where(_ => _.UserId == UserId).Select(_=>_.Adapt<AddressDto>()).ToListAsync();
     }
 }
