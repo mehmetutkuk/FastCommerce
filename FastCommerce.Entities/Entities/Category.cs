@@ -10,10 +10,8 @@ namespace FastCommerce.Entities.Entities
         [Key]
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-
         public int ProductCategoriesId { get; set; }
         public ICollection<ProductCategories> ProductCategories { get; set; }
-        public ICollection <Property> Properties { get; set; }
-
+        public ICollection<Property> Properties { get; set; }
     }
 }

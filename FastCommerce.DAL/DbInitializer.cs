@@ -12,15 +12,6 @@ namespace FastCommerce.DAL
 {
     public static class DbInitializer
     {
-        private static List<Product> GetFakeProductData(int count)
-        {
-            var i = 1;
-            var results = A.ListOf<Product>(count);
-            results.ForEach(x => x.ProductId = i++);
-            return results.Select(_ => _).ToList();
-        }
-
-
         private static List<T> FillAllProperties<T>(int count) where T : new()
         {
             var results = A.ListOf<T>(count);
@@ -47,21 +38,20 @@ namespace FastCommerce.DAL
             }
             foreach (T row in results)
             {
-                row.GetType().GetProperty(PKInfo.Name).SetValue(row,0);
+                row.GetType().GetProperty(PKInfo.Name).SetValue(row, 0);
             }
             return results.ToList();
         }
-
         public async static void Initialize(dbContext context)
         {
-            
+
             context.Database.EnsureCreated();
             if (context.Products.Any())
                 return;
 
             int i = 0;
             int count = 5;
-            int countSquare = (int) Math.Pow(count, 2);
+            int countSquare = (int)Math.Pow(count, 2);
             List<Product> products = FillAllProperties<Product>(5);
 
             List<Category> categories = FillAllProperties<Category>(5);
@@ -69,7 +59,7 @@ namespace FastCommerce.DAL
             List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(countSquare);
 
             List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
-            
+
             categories.Add(new Category() { CategoryName = "Trending Products" });
             foreach (var item in categories)
             {
@@ -78,11 +68,12 @@ namespace FastCommerce.DAL
 
             for (var j = 0; j < countSquare; j++)
             {
-                productCategories[j].Product = products.ToList()[j/count];
-                productCategories[j].Category = categories.ToList()[j%5];
+                productCategories[j].Product = products.ToList()[j / count];
+                productCategories[j].Category = categories.ToList()[j % 5];
             }
 
-            List<StockProperties> stockProperties = FillAllProperties<StockProperties>(5);
+            List<StockPropertyCombination> stockPropertyCombinations = FillAllProperties<StockPropertyCombination>(5);
+            List<PropertyDetail> propertyDetails = FillAllProperties<PropertyDetail>(5);
             List<Stock> stocks = FillAllProperties<Stock>(5);
             i = 0;
             foreach (var item in stocks)
@@ -92,19 +83,16 @@ namespace FastCommerce.DAL
 
             }
 
-            i = 0;
-            foreach (var item in stockProperties)
+            for (int pr = 0; pr < count; pr++)
             {
-                item.Stock = stocks.ToList()[i];
-                item.Property = properties.ToList()[i];
-                i++;
+                propertyDetails[pr].Property = properties[pr];
+                propertyDetails[pr].StockPropertyCombination = stockPropertyCombinations[pr];
             }
 
-            foreach (var item in properties)
+            for (var pt = 0; pt < count; pt++)
             {
-                item.StockProperties = stockProperties.ToList();
+                stockPropertyCombinations[pt].Stock = stocks[pt];
             }
-
             List<User> users = FillAllProperties<User>(5);
 
             foreach (var user in users)
@@ -117,8 +105,9 @@ namespace FastCommerce.DAL
             await context.AddRangeAsync(productCategories);
             await context.AddRangeAsync(products);
             await context.AddRangeAsync(properties);
+            await context.AddRangeAsync(propertyDetails);
             await context.AddRangeAsync(categories);
-            await context.AddRangeAsync(stockProperties);
+            await context.AddRangeAsync(stockPropertyCombinations);
             await context.AddRangeAsync(stocks);
             context.SaveChanges();
         }

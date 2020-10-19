@@ -13,6 +13,7 @@ namespace FastCommerce.Business.CategoryManager.Abstract
 
         Task<bool> AddProperty(Property property);
         Task<bool> AddProperties(List<Property> properties);
+        Task<bool> AddPropertyValues(List<PropertyDetail> values);
         Task<bool> AddPropertiesByCategoryName(AddPropertiesByCategoryNameDto properties);
         Task<bool> AddPropertyByCategoryName(AddPropertyByCategoryNameDto property);
         Task<bool> DeleteProperty(Property property);
@@ -24,5 +25,6 @@ namespace FastCommerce.Business.CategoryManager.Abstract
         Task<List<Property>> GetPropertiesByCategoryName(string categoryName);
 
         Task<Property> GetPropertyById(int Id);
+        Task<List<PropertyDetail>> GetPropertyValuesById(int propertyId);
     }
 }

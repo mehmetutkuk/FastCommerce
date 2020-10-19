@@ -20,9 +20,10 @@ namespace FastCommerce.Business.StockManager.Abstract
             _context = context;
         }
 
-        public async Task<List<StockProperties>> GetStocks(int page)
+        public async Task<List<StockPropertyCombination>> GetStocks(int page)
         {
-            return await Task.FromResult<List<StockProperties>>(_context.StockProperties
+            return await Task.FromResult<List<StockPropertyCombination>>
+                (_context.StockPropertyCombinations
                 .Include("Stock")
                 .Include("Property")
                 .Include("Stock.Product")
@@ -34,31 +35,31 @@ namespace FastCommerce.Business.StockManager.Abstract
             List<GetStocksDto> getStocksDtosList = new List<GetStocksDto>();
 
 
-            List<StockProperties> stockProperties = _context.StockProperties
-                .Include("Stock")
-                .Include("Property")
-                .Include("Stock.Product")
-                .Include("Stock.Product.ProductImages")
-                .Select(s => s).ToList();
+            //List<StockPropertyCombination> stockProperties = _context.StockPropertyCombinations
+            //    .Include("Stock")
+            //    .Include("Property")
+            //    .Include("Stock.Product")
+            //    .Include("Stock.Product.ProductImages")
+            //    .Select(s => s).ToList();
 
-            foreach (var row in stockProperties)
-            {
-                int[] CategoryIds = _context.ProductCategories.Where(w => w.Product.ProductId == row.Stock.ProductId).Select(s => s.CategoryId).ToArray();
+            //foreach (var row in stockProperties)
+            //{
+            //    int[] CategoryIds = _context.ProductCategories.Where(w => w.Product.ProductId == row.Stock.ProductId).Select(s => s.CategoryId).ToArray();
 
-                GetStocksDto getStocksDto = new GetStocksDto();
-                if (CategoryIds.Length > 0)
-                    getStocksDto.properties = _context.Properties.Where(c => CategoryIds.Contains(c.CategoryId)).OrderBy(odr => odr.PropertyName)
-                        .Select(s=>s.Adapt<GetStocksDtoProperty>()).ToList();
+            //    GetStocksDto getStocksDto = new GetStocksDto();
+            //    if (CategoryIds.Length > 0)
+            //        getStocksDto.properties = _context.Properties.Where(c => CategoryIds.Contains(c.CategoryId)).OrderBy(odr => odr.PropertyName)
+            //            .Select(s => s.Adapt<GetStocksDtoProperty>()).ToList();
 
-                getStocksDto.ProductName = row.Stock.Product.ProductName;
-                getStocksDto.ProductId = row.Stock.Product.ProductId;
-                getStocksDto.StockId = row.Stock.StockId;
-                getStocksDto.Quantity = row.Stock.Quantity;
+                //getStocksDto.ProductName = row.Stock.Product.ProductName;
+                //getStocksDto.ProductId = row.Stock.Product.ProductId;
+                //getStocksDto.StockId = row.Stock.StockId;
+                //getStocksDto.Quantity = row.Stock.Quantity;
 
-                getStocksDto.ProductImages = _context.ProductImages.Where(con => con.ProductId == row.Stock.ProductId).ToList();
+            //    getStocksDto.ProductImages = _context.ProductImages.Where(con => con.ProductId == row.Stock.ProductId).ToList();
 
-                getStocksDtosList.Add(getStocksDto);
-            }
+            //    getStocksDtosList.Add(getStocksDto);
+            //}
 
 
             return await Task.FromResult<List<GetStocksDto>>(getStocksDtosList);

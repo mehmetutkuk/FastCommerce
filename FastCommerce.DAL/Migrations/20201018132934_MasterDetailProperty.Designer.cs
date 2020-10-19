@@ -3,15 +3,17 @@ using System;
 using FastCommerce.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20201018132934_MasterDetailProperty")]
+    partial class MasterDetailProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,7 +239,7 @@ namespace FastCommerce.DAL.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("PropertyDetails");
+                    b.ToTable("PropertyDetail");
                 });
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.Role", b =>
@@ -330,7 +332,7 @@ namespace FastCommerce.DAL.Migrations
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.StockPropertyCombination", b =>
                 {
-                    b.Property<int>("StockPropertyCombinationId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
@@ -338,13 +340,17 @@ namespace FastCommerce.DAL.Migrations
                     b.Property<int>("PropertyDetailId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("StockId")
+                    b.Property<int?>("PropertyID")
                         .HasColumnType("integer");
 
-                    b.HasKey("StockPropertyCombinationId");
+                    b.Property<int?>("StockId")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("PropertyDetailId")
-                        .IsUnique();
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyDetailId");
+
+                    b.HasIndex("PropertyID");
 
                     b.HasIndex("StockId");
 
@@ -526,16 +532,18 @@ namespace FastCommerce.DAL.Migrations
             modelBuilder.Entity("FastCommerce.Entities.Entities.StockPropertyCombination", b =>
                 {
                     b.HasOne("FastCommerce.Entities.Entities.PropertyDetail", "PropertyDetail")
-                        .WithOne("StockPropertyCombination")
-                        .HasForeignKey("FastCommerce.Entities.Entities.StockPropertyCombination", "PropertyDetailId")
+                        .WithMany()
+                        .HasForeignKey("PropertyDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FastCommerce.Entities.Entities.Stock", "Stock")
-                        .WithMany("StockPropertyCombinations")
-                        .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("FastCommerce.Entities.Entities.Property", null)
+                        .WithMany("StockProperties")
+                        .HasForeignKey("PropertyID");
+
+                    b.HasOne("FastCommerce.Entities.Entities.Stock", null)
+                        .WithMany("StockProperties")
+                        .HasForeignKey("StockId");
                 });
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.UserActivation", b =>

@@ -16,5 +16,7 @@ namespace FastCommerce.Business.ProductManager.Abstract
         Task<bool> UpdateCategory(Category category);
 
         Task<List<Category>> GetCategories();
+
+
     }
 }

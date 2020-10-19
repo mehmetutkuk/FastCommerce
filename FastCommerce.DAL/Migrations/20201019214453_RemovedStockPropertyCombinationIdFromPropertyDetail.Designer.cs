@@ -3,15 +3,17 @@ using System;
 using FastCommerce.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class ProductContextModelSnapshot : ModelSnapshot
+    [Migration("20201019214453_RemovedStockPropertyCombinationIdFromPropertyDetail")]
+    partial class RemovedStockPropertyCombinationIdFromPropertyDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,9 +235,14 @@ namespace FastCommerce.DAL.Migrations
                     b.Property<string>("PropertyValue")
                         .HasColumnType("text");
 
+                    b.Property<int?>("StockPropertyCombinationId")
+                        .HasColumnType("integer");
+
                     b.HasKey("PropertyDetailId");
 
                     b.HasIndex("PropertyId");
+
+                    b.HasIndex("StockPropertyCombinationId");
 
                     b.ToTable("PropertyDetails");
                 });
@@ -335,16 +342,10 @@ namespace FastCommerce.DAL.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("PropertyDetailId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("StockId")
                         .HasColumnType("integer");
 
                     b.HasKey("StockPropertyCombinationId");
-
-                    b.HasIndex("PropertyDetailId")
-                        .IsUnique();
 
                     b.HasIndex("StockId");
 
@@ -497,6 +498,10 @@ namespace FastCommerce.DAL.Migrations
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("FastCommerce.Entities.Entities.StockPropertyCombination", "StockPropertyCombination")
+                        .WithMany("PropertyDetails")
+                        .HasForeignKey("StockPropertyCombinationId");
                 });
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.Shipment", b =>
@@ -525,12 +530,6 @@ namespace FastCommerce.DAL.Migrations
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.StockPropertyCombination", b =>
                 {
-                    b.HasOne("FastCommerce.Entities.Entities.PropertyDetail", "PropertyDetail")
-                        .WithOne("StockPropertyCombination")
-                        .HasForeignKey("FastCommerce.Entities.Entities.StockPropertyCombination", "PropertyDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FastCommerce.Entities.Entities.Stock", "Stock")
                         .WithMany("StockPropertyCombinations")
                         .HasForeignKey("StockId")

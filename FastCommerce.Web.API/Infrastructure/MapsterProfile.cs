@@ -25,7 +25,7 @@ namespace FastCommerce.Web.API.Infrastructure
             .Map(dest => dest.Detail, src => src.StackTrace);
 
 
-            TypeAdapterConfig<StockProperties, GetStocksDto>.NewConfig().Map(dest => dest.properties, src => src.Property);
+            
         }
     }
 }

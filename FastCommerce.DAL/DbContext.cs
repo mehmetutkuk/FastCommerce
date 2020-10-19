@@ -16,8 +16,9 @@ namespace FastCommerce.DAL
         public DbSet<Property> Properties { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<ProductCategories> ProductCategories { get; set; }
+        public DbSet<PropertyDetail> PropertyDetails { get; set; }
         public DbSet<Stock> Stocks { get; set; }
-        public DbSet<StockProperties> StockProperties { get; set; }
+        public DbSet<StockPropertyCombination> StockPropertyCombinations { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleObject> RoleObjects { get; set; }
         public DbSet<User> Users { get; set; }
@@ -45,6 +46,10 @@ namespace FastCommerce.DAL
                 .Property(b => b.PropertyID)
                 .ValueGeneratedOnAdd();
 
+            modelBuilder.Entity<PropertyDetail>()
+                .Property(b => b.PropertyDetailId)
+                .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<Category>()
                 .Property(b => b.CategoryId)
                 .ValueGeneratedOnAdd();
@@ -56,8 +61,8 @@ namespace FastCommerce.DAL
             modelBuilder.Entity<Stock>()
                 .Property(b => b.StockId)
                 .ValueGeneratedOnAdd();
-            modelBuilder.Entity<StockProperties>()
-                .Property(b => b.StockPropertiesId)
+            modelBuilder.Entity<StockPropertyCombination>()
+                .Property(b => b.StockPropertyCombinationId)
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Role>()

@@ -9,7 +9,7 @@ namespace FastCommerce.Business.StockManager.Concrete
 {
     public interface IStockManager
     {
-        Task<List<StockProperties>> GetStocks(int page);
+        Task<List<StockPropertyCombination>> GetStocks(int page);
         Task<List<GetStocksDto>> GetStocks();
     }
 }

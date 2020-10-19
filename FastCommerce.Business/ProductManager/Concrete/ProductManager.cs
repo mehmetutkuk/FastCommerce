@@ -23,11 +23,13 @@ namespace FastCommerce.Business.ProductManager.Concrete
         private readonly dbContext _context;
         private readonly IElasticSearchService _elasticSearchService;
         private IPropertyManager _propertyManager;
-        public ProductManager(dbContext context, IElasticSearchService elasticSearchService,IPropertyManager propertyManager)
+        private ICategoryManager _categoryManager;
+        public ProductManager(dbContext context, IElasticSearchService elasticSearchService, IPropertyManager propertyManager, ICategoryManager categoryManager)
         {
             _context = context;
             _elasticSearchService = elasticSearchService;
             _propertyManager = propertyManager;
+            _categoryManager = categoryManager;
         }
         public async Task<bool> CreateIndexes(ProductElasticIndexDto productElasticIndexDto)
         {
@@ -81,7 +83,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
             }
         }
 
-        public async Task<List<ProductGetDTO>> GetProductsByCategoryId(int id) => _context.Products.Where(p => p.ProductCategories.Any(pc => pc.CategoryId == id)).Select(_=>_.Adapt<ProductGetDTO>()).ToList();
+        public async Task<List<ProductGetDTO>> GetProductsByCategoryId(int id) => _context.Products.Where(p => p.ProductCategories.Any(pc => pc.CategoryId == id)).Select(_ => _.Adapt<ProductGetDTO>()).ToList();
 
         public async Task<List<ProductGetDTO>> GetProductsByCategoryName(string name) => _context.Products.Where(p => p.ProductCategories.Any(pc => pc.Category.CategoryName == name)).Select(_ => _.Adapt<ProductGetDTO>()).ToList();
 
@@ -97,7 +99,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
                 Price = pr.Price,
                 ProductName = pr.ProductName,
                 Rating = pr.Rating,
-                ProductImages = _context.ProductImages.Where(c => c.ProductId == pr.ProductId).OrderBy(r=> r.ProductImagesId).ToList()
+                ProductImages = _context.ProductImages.Where(c => c.ProductId == pr.ProductId).OrderBy(r => r.ProductImagesId).ToList()
             }).ToList();
 
         }
@@ -118,30 +120,58 @@ namespace FastCommerce.Business.ProductManager.Concrete
             Product adedproduct = productdto.Adapt<Product>();
             await _context.Products.AddAsync(adedproduct);
             await _context.SaveChangesAsync();
-            _propertyManager.AddProperties(productdto.Properties.Adapt<List<Property>>());
-            
 
             ProductCategories productCategories = new ProductCategories();
             productdto.Adapt(productCategories);
             productCategories.ProductId = adedproduct.ProductId;
             await _context.ProductCategories.AddAsync(productCategories);
 
+            List<StockPropertyCombination> stockPropertyCombinations = new List<StockPropertyCombination>();
+            #region GetCateogry
+            List<Property> categoryProperties = await _propertyManager.GetPropertiesByCategoryId(productdto.CategoryId);
 
+            #region CreateStockPropertyCombination
+            foreach (var ctRow in categoryProperties)
+            {
+                List<PropertyDetail> propertyDetails = _context.PropertyDetails
+                      .Where(c => c.PropertyId == ctRow.PropertyID).ToList();
+
+                foreach (var pdRow in propertyDetails)
+                {
+
+                    stockPropertyCombinations.Add(new StockPropertyCombination
+                    {
+                        PropertyDetail = pdRow,
+                        Stock = new Stock
+                        {
+                            Quantity = 0,
+                            Product = adedproduct,
+                        }
+                    });
+
+                }
+            }
+            await _context.StockPropertyCombinations.AddRangeAsync(stockPropertyCombinations);
+
+            #endregion
+            
+            #endregion
             await _context.SaveChangesAsync();
 
+            #region AddProductImages
 
             foreach (var image in productdto.Images)
             {
-                _context.ProductImages.Add(new ProductImage { ImageURL = image.Img, ProductId = adedproduct.ProductId });
+                await _context.ProductImages.AddAsync(new ProductImage { ImageURL = image.Img, ProductId = adedproduct.ProductId });
             }
 
             await _context.SaveChangesAsync();
+            #endregion
 
-            ProductElasticIndexDto productElasticIndexDto = new ProductElasticIndexDto();
-            productElasticIndexDto.Adapt(productdto);
-            await CreateIndexes(productElasticIndexDto);
+            //ProductElasticIndexDto productElasticIndexDto = new ProductElasticIndexDto();
+            //productElasticIndexDto.Adapt(adedproduct);
+            //await CreateIndexes(productElasticIndexDto);
             return await Task.FromResult<bool>(true);
         }
     }
 }
-

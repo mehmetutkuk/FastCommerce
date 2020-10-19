@@ -100,6 +100,16 @@ namespace FastCommerce.Business.CategoryManager.Concrete
         {
             return await Task.FromResult<List<Property>>(_context.Properties.Select(s => s).ToList());
         }
+        public async Task<List<PropertyDetail>> GetPropertyValuesById(int propertyId)
+        {
+            return await Task.FromResult<List<PropertyDetail>>(_context.PropertyDetails.Where(s => s.PropertyId == propertyId).ToList());
+        }
 
+        public async Task<bool> AddPropertyValues(List<PropertyDetail> values)
+        {
+            _context.PropertyDetails.AddRange(values);
+            await _context.SaveChangesAsync();
+            return await Task.FromResult<bool>(true);
+        }
     }
 }
