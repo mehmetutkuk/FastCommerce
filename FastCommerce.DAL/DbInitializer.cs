@@ -57,6 +57,8 @@ namespace FastCommerce.DAL
             return results.ToList();
         }
 
+        public static double GenerateDouble(int maxValue) =>
+            Math.Round((new Random().NextDouble() * maxValue), 2, MidpointRounding.AwayFromZero);
         public async static void Initialize(dbContext context)
         {
             
@@ -64,17 +66,21 @@ namespace FastCommerce.DAL
             if (context.Products.Any())
                 return;
 
-            int i = 0;
             int count = 5;
             int countSquare = (int) Math.Pow(count, 2);
-            List<Product> products = FillAllProperties<Product>(5);
+            A.Configure<Product>()
+                .Fill(p => p.Price, GenerateDouble(500))
+                .Fill(p => p.Discount, GenerateDouble(40))
+                .Fill(p => p.Rating, GenerateDouble(5))
+                .Fill(p => p.ViewCount, () => new Random().Next(250));
+            List<Product> products = FillAllProperties<Product>(count);
 
-            List<Category> categories = FillAllProperties<Category>(5);
+            List<Category> categories = FillAllProperties<Category>(count);
 
             List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(countSquare);
             List<Address> addresses = FillAllProperties<Address>(count);
 
-            List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
+            List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(count);
             
             categories.Add(new Category() { CategoryName = "Trending Products" });
             foreach (var item in categories)
@@ -90,7 +96,7 @@ namespace FastCommerce.DAL
 
             List<StockProperties> stockProperties = FillAllProperties<StockProperties>(5);
             List<Stock> stocks = FillAllProperties<Stock>(5);
-            i = 0;
+            int i = 0;
             foreach (var item in stocks)
             {
                 item.Product = products.ToList()[i];
@@ -116,7 +122,7 @@ namespace FastCommerce.DAL
                 item.StockProperties = stockProperties.ToList();
             }
 
-            List<User> users = FillAllProperties<User>(5);
+            List<User> users = FillAllProperties<User>(count);
 
             users.Add(new User(){Email="mehmetburakeker@gmail.com",Password="Burak26",Active = true});
             foreach (var user in users)
