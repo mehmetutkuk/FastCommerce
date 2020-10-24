@@ -277,13 +277,13 @@ namespace FastCommerce.Web.API.Controllers.Property
         /// </returns>
 
         [HttpPost("AddPropertyValues")]
-        public async Task<HttpResponseMessage> AddPropertyValues(AddPropertyValuesDto values)
+        public async Task<HttpResponseMessage> AddPropertyValues(List<AddPropertyValuesDto> values)
         {
             Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.ErrorState = !await _propertyManager.AddPropertyValues(values.list.Adapt<List<PropertyDetail>>());
+                httpResponse.ErrorState = !await _propertyManager.AddPropertyValues(values.Adapt<List<PropertyDetail>>());
 
             }
             catch (Exception ex)

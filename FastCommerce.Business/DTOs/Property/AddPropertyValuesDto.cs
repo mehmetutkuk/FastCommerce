@@ -6,8 +6,9 @@ namespace FastCommerce.Business.DTOs.Property
 {
     public class AddPropertyValuesDto
     {
-        public List<AddPropertyValue> list { get; set; }
-
+        public int PropertyDetailId { get; set; }
+        public string PropertyValue { get; set; }
+        public int PropertyId { get; set; }
     }
 
 }

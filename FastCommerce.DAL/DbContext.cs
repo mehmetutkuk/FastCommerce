@@ -34,6 +34,7 @@ namespace FastCommerce.DAL
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
             modelBuilder.Entity<Product>()
                 .Property(b => b.ProductId)
                 .ValueGeneratedOnAdd();
