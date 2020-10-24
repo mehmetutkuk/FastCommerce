@@ -34,7 +34,7 @@ namespace FastCommerce.DAL
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
             modelBuilder.Entity<Product>()
                 .Property(b => b.ProductId)
                 .ValueGeneratedOnAdd();
@@ -62,9 +62,13 @@ namespace FastCommerce.DAL
             modelBuilder.Entity<Stock>()
                 .Property(b => b.StockId)
                 .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<StockPropertyCombination>()
                 .Property(b => b.StockPropertyCombinationId)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<StockPropertyCombination>().HasOne(e => e.Stock).WithMany(e=> e.StockPropertyCombinations);
+            
 
             modelBuilder.Entity<Role>()
                 .Property(b => b.RoleID)

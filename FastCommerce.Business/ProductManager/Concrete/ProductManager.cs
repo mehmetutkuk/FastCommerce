@@ -130,7 +130,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
                 StockPropertyCombination
                     {
                         Stock = stock,
-                        PropertyDetail = pd
+                        PropertyDetailId = pd.PropertyDetailId
                     });
                 }
                 return list;
@@ -146,16 +146,22 @@ namespace FastCommerce.Business.ProductManager.Concrete
                 {
                     foreach (var combo in combos)
                     {
+                        stock = new Stock
+                        {
+                            Quantity = 0,
+                            Product = stock.Product
+                        };
 
                         outputs.Add(new StockPropertyCombination
                         {
                             Stock = stock,
-                            PropertyDetail = new PropertyDetail { PropertyDetailId = tagPart.PropertyDetailId, PropertyValue = tagPart.PropertyValue },
+                            PropertyDetailId = tagPart.PropertyDetailId
                         });
+
                         outputs.Add(new StockPropertyCombination
                         {
                             Stock = stock,
-                            PropertyDetail = combo.PropertyDetail,
+                            PropertyDetailId = combo.PropertyDetailId
                         });
                     }
                 }
@@ -177,7 +183,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
             productCategories.ProductId = adedproduct.ProductId;
             await _context.ProductCategories.AddAsync(productCategories);
 
-            List<StockPropertyCombination> stockPropertyCombinations = new List<StockPropertyCombination>();
+     //       List<StockPropertyCombination> stockPropertyCombinations = new List<StockPropertyCombination>();
             #region GetCateogry
             List<Property> categoryProperties = await _propertyManager.GetPropertiesByCategoryId(productdto.CategoryId);
 
@@ -190,7 +196,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
             }; ;
             #region CreateStockPropertyCombination
 
-            var lisssst = new List<StockCombinationDto>();
+            var listOfStockCombinationDto = new List<StockCombinationDto>();
 
             foreach (var cpRow in categoryProperties)
             {
@@ -204,7 +210,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
                   .Where(c => c.PropertyId == cpRow.PropertyID).AsNoTracking()
                   .ToList();
 
-                lisssst.Add(new StockCombinationDto
+                listOfStockCombinationDto.Add(new StockCombinationDto
                 {
                     Key = cpRow.PropertyID,
                     Value = propertyDetails.Select(s => s).ToList()
@@ -212,14 +218,16 @@ namespace FastCommerce.Business.ProductManager.Concrete
             }
 
 
-            List<StockPropertyCombination> rest = GetCombos(lisssst.Adapt<IEnumerable<KeyValuePair<int, List<PropertyDetail>>>>(), Stock);
+            List<StockPropertyCombination> rest = GetCombos(listOfStockCombinationDto.Adapt<IEnumerable<KeyValuePair<int, List<PropertyDetail>>>>(), Stock);
 
             foreach (var item in rest)
             {
-                await _context.StockPropertyCombinations.AddAsync(item);
-            }
-     
 
+                ///_context.Entry<PropertyDetail>(item.PropertyDetail).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                ///_context.Entry<StockPropertyCombination>(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                await _context.StockPropertyCombinations.AddAsync(item);
+                await _context.SaveChangesAsync();
+            }
 
             
 
