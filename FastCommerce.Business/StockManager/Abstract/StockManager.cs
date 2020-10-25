@@ -38,12 +38,34 @@ namespace FastCommerce.Business.StockManager.Abstract
             List<GetStocksDto> getStocksDtosList = new List<GetStocksDto>();
 
 
-            //List<StockPropertyCombination> stockProperties = _context.StockPropertyCombinations
-            //    .Include("Stock")
-            //    .Include("Property")
-            //    .Include("Stock.Product")
-            //    .Include("Stock.Product.ProductImages")
-            //    .Select(s => s).ToList();
+            var Stocks = (from sp in _context.StockPropertyCombinations
+                          group sp by new { sp.StockId} into gr
+                          select gr.Key
+            ).ToArray();
+
+            foreach (var item in Stocks)
+            {
+                List<PropertyDetail> propertyDetails = _context.StockPropertyCombinations.Include("PropertyDetail").Where(c => c.StockId == item.StockId).Select(s => s.PropertyDetail).ToList();
+             
+                
+                Product StockProduct = _context.Stocks
+                    .Include("Product")
+                    .Where(c => c.StockId== item.StockId)
+                    .Select(s =>  s.Product).FirstOrDefault();
+
+                List<ProductImage> productImages = _context.ProductImages.Where(s => s.ProductId == StockProduct.ProductId).ToList();
+
+                int Quantity =  _context.Stocks.Where(s => s.StockId == item.StockId).Select(q => q.Quantity).FirstOrDefault();
+                
+                getStocksDtosList.Add(new GetStocksDto
+                {
+                    PropertyDetails = propertyDetails,
+                    ProductId = StockProduct.ProductId,
+                    ProductName = StockProduct.ProductName,
+                    ProductImages = productImages,
+                    Quantity = Quantity
+                });
+            }
 
             //foreach (var row in stockProperties)
             //{
@@ -54,10 +76,10 @@ namespace FastCommerce.Business.StockManager.Abstract
             //        getStocksDto.properties = _context.Properties.Where(c => CategoryIds.Contains(c.CategoryId)).OrderBy(odr => odr.PropertyName)
             //            .Select(s => s.Adapt<GetStocksDtoProperty>()).ToList();
 
-            //getStocksDto.ProductName = row.Stock.Product.ProductName;
-            //getStocksDto.ProductId = row.Stock.Product.ProductId;
-            //getStocksDto.StockId = row.Stock.StockId;
-            //getStocksDto.Quantity = row.Stock.Quantity;
+            //    getStocksDto.ProductName = row.Stock.Product.ProductName;
+            //    getStocksDto.ProductId = row.Stock.Product.ProductId;
+            //    getStocksDto.StockId = row.Stock.StockId;
+            //    getStocksDto.Quantity = row.Stock.Quantity;
 
             //    getStocksDto.ProductImages = _context.ProductImages.Where(con => con.ProductId == row.Stock.ProductId).ToList();
 
@@ -70,7 +92,7 @@ namespace FastCommerce.Business.StockManager.Abstract
 
         public async Task<bool> SetStockPropertyCombination(int CategoryId, int ProductId)
         {
-            List<Property> categoryProperties = await _propertyManager.GetPropertiesByCategoryId(CategoryId);   
+            List<Property> categoryProperties = await _propertyManager.GetPropertiesByCategoryId(CategoryId);
             List<StockPropertyCombination> listOfStockPropertyCombination = new List<StockPropertyCombination>();
             List<List<PropertyDetail>> listofPropertyDetails = new List<List<PropertyDetail>>();
 
@@ -81,7 +103,7 @@ namespace FastCommerce.Business.StockManager.Abstract
                   .ToList());
             }
 
-            var  CombinatedProductPropertyDetialsList = CartesianProduct<PropertyDetail>(listofPropertyDetails);
+            var CombinatedProductPropertyDetialsList = CartesianProduct<PropertyDetail>(listofPropertyDetails);
 
             foreach (var Combination in CombinatedProductPropertyDetialsList)
             {

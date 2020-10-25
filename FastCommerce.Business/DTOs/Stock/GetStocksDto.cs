@@ -13,13 +13,8 @@ namespace FastCommerce.Business.DTOs.Stock
         public int StockId { get; set; }
         public int Quantity { get; set; }
         public int CategoryId { get; set; }
-        public List<GetStocksDtoProperty> properties { get; set; }
+        public List<PropertyDetail> PropertyDetails { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 
-    public class GetStocksDtoProperty {
-
-        public string PropertyName { get; set; }
-        public string PropertyValue { get; set; }
-    }
 }
