@@ -70,55 +70,54 @@ namespace FastCommerce.Business.StockManager.Abstract
 
         public async Task<bool> SetStockPropertyCombination(int CategoryId, int ProductId)
         {
-            #region GetCateogry
-            List<Property> categoryProperties = await _propertyManager.GetPropertiesByCategoryId(CategoryId);
-
-            Stock Stock = new Stock
-            {
-                Quantity = 0,
-                ProductId = ProductId,
-            }; ;
-            #region CreateStockPropertyCombination
-
-            var listOfStockCombinationDto = new List<StockCombinationDto>();
+            List<Property> categoryProperties = await _propertyManager.GetPropertiesByCategoryId(CategoryId);   
+            List<StockPropertyCombination> listOfStockPropertyCombination = new List<StockPropertyCombination>();
+            List<List<PropertyDetail>> listofPropertyDetails = new List<List<PropertyDetail>>();
 
             foreach (var cpRow in categoryProperties)
             {
-                Stock = new Stock
+                listofPropertyDetails.Add(_context.PropertyDetails
+                  .Where(c => c.PropertyId == cpRow.PropertyID).AsNoTracking()
+                  .ToList());
+            }
+
+            var  CombinatedProductPropertyDetialsList = CartesianProduct<PropertyDetail>(listofPropertyDetails);
+
+            foreach (var Combination in CombinatedProductPropertyDetialsList)
+            {
+                Stock Stock = new Stock
                 {
                     Quantity = 0,
                     ProductId = ProductId,
                 };
 
-                List<PropertyDetail> propertyDetails = _context.PropertyDetails
-                  .Where(c => c.PropertyId == cpRow.PropertyID).AsNoTracking()
-                  .ToList();
-
-                listOfStockCombinationDto.Add(new StockCombinationDto
+                foreach (var item in Combination)
                 {
-                    Key = cpRow.PropertyID,
-                    Value = propertyDetails.Select(s => s).ToList()
-                });
+                    listOfStockPropertyCombination.Add(new StockPropertyCombination
+                    {
+                        PropertyDetailId = item.PropertyDetailId,
+                        Stock = Stock
+                    });
+                }
             }
 
+            await _context.StockPropertyCombinations.AddRangeAsync(listOfStockPropertyCombination);
 
-            List<StockPropertyCombination> rest = GetCombos(listOfStockCombinationDto.Adapt<IEnumerable<KeyValuePair<int, List<PropertyDetail>>>>(), Stock);
-
-            foreach (var item in rest)
-            {
-
-                await _context.StockPropertyCombinations.AddAsync(item);
-                await _context.SaveChangesAsync();
-            }
-
-
-
-            #endregion
-
-            #endregion
             return await Task.FromResult<bool>(true);
         }
-
+        public IEnumerable<IEnumerable<T>> CartesianProduct<T>(List<List<T>> sequences)
+        {
+            IEnumerable<IEnumerable<T>> result = new[] { Enumerable.Empty<T>() };
+            foreach (var sequence in sequences)
+            {
+                var localSequence = sequence;
+                result = result.SelectMany(
+                  _ => localSequence,
+                  (seq, item) => seq.Concat(new[] { item })
+                );
+            }
+            return result;
+        }
         List<StockPropertyCombination> GetCombos(IEnumerable<KeyValuePair<int, List<PropertyDetail>>> remainingTags, Stock stock)
         {
 

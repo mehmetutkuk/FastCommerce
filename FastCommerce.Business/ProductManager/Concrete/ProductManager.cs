@@ -136,8 +136,6 @@ namespace FastCommerce.Business.ProductManager.Concrete
             if(!await AddProductImages(productdto.Images, adedproduct.ProductId))
                 throw new Exception("Product Images Requried");
 
-            
-
             //ProductElasticIndexDto productElasticIndexDto = new ProductElasticIndexDto();
             //productElasticIndexDto.Adapt(adedproduct);
             //await CreateIndexes(productElasticIndexDto);
