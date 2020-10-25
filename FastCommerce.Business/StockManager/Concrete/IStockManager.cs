@@ -11,5 +11,6 @@ namespace FastCommerce.Business.StockManager.Concrete
     {
         Task<List<StockPropertyCombination>> GetStocks(int page);
         Task<List<GetStocksDto>> GetStocks();
+        Task<bool> SetStockPropertyCombination(int CategoryId, int ProductId);
     }
 }

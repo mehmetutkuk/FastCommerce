@@ -17,6 +17,6 @@ namespace FastCommerce.Business.ProductManager.Abstract
 
         Task<List<Category>> GetCategories();
 
-
+        Task<bool> AddProductCategoryRelation(int CategoryId, int ProductId);
     }
 }
