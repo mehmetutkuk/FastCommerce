@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FastCommerce.Business.CategoryManager.Abstract;
 using FastCommerce.Business.DTOs.Property;
+using FastCommerce.Entities.Entities;
 using FastCommerce.Web.API.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
@@ -250,5 +251,49 @@ namespace FastCommerce.Web.API.Controllers.Property
             }
             return httpResponse;
         }
+        [HttpGet("GetPropertyValuesById/{propertyId}")]
+        public async Task<HttpResponseMessage> GetPropertyValuesById(int propertyId)
+        {
+            Response<PropertyDetail> httpResponse = new Response<PropertyDetail>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = await _propertyManager.GetPropertyValuesById(propertyId);
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+
+        /// <summary>
+        /// AddPropertyValues
+        /// </summary>
+        /// <returns>
+        /// <paramref name="Task<HttpResponseMessage>"/>
+        /// </returns>
+
+        [HttpPost("AddPropertyValues")]
+        public async Task<HttpResponseMessage> AddPropertyValues(List<AddPropertyValuesDto> values)
+        {
+            Response<Entities.Entities.Property> httpResponse = new Response<Entities.Entities.Property>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _propertyManager.AddPropertyValues(values.Adapt<List<PropertyDetail>>());
+
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        
+
     }
 }

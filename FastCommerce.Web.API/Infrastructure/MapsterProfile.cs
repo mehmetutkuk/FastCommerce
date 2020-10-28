@@ -1,4 +1,5 @@
-﻿using FastCommerce.Entities.Entities;
+﻿using FastCommerce.Business.DTOs.Stock;
+using FastCommerce.Entities.Entities;
 using FastCommerce.Web.API.Interfaces;
 using FastCommerce.Web.API.Models;
 using Mapster;
@@ -22,6 +23,9 @@ namespace FastCommerce.Web.API.Infrastructure
             .NewConfig()
             .Map(dest => dest.Message, src => src.Message)
             .Map(dest => dest.Detail, src => src.StackTrace);
+
+
+            
         }
     }
 }

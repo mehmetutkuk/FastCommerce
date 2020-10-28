@@ -54,6 +54,15 @@ namespace FastCommerce.Business.ProductManager.Concrete
 
             return await Task.FromResult(query);
         }
+        public async Task<bool> AddProductCategoryRelation(int CategoryId, int ProductId)
+        {
+            await _context.ProductCategories.AddAsync(new ProductCategories
+            {
+                ProductId = ProductId,
+                CategoryId = CategoryId
+            });
 
+            return await Task.FromResult(true);
+        }
     }
 }
