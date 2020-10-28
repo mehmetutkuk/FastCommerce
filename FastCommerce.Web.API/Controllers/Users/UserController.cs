@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FastCommerce.Business.DTOs.User;
 using FastCommerce.Business.UserManager;
@@ -11,6 +12,7 @@ using FastCommerce.Entities.Entities;
 using FastCommerce.Entities.Models;
 using FastCommerce.Web.API.Models;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -176,6 +178,26 @@ namespace FastCommerce.Web.API.Controllers.Users
             {
                 _response.RequestState = true;
                 _response.DataList = await _userManager.GetUsers();
+                _response.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorState = true;
+                _response.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return _response;
+        }
+        [HttpGet("GetAddresses")]
+        [Authorize]
+        public async Task<HttpResponseMessage> GetAddresses()
+        {
+            Response<Address> _response = new Response<Address>();
+            int userId = Int32.Parse(HttpContext.User.FindFirstValue("id"));
+
+            try
+            {
+                _response.RequestState = true;
+                _response.DataList = await _userManager.GetAddressesByUserId(userId);
                 _response.ErrorState = false;
             }
             catch (Exception ex)

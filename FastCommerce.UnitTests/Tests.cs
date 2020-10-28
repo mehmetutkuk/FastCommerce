@@ -45,7 +45,7 @@ namespace FastCommerce.UnitTests
         [Test]
         public async Task AddProduct()
         {
-            var product = A.New<AddProductDto>();
+            var product = A.New<Product>().Adapt<AddProductDto>();
 
             var mockedService = new Mock<IProductManager>();
             mockedService.Setup(x => x.AddProduct(product)).Returns(Task.FromResult(true));

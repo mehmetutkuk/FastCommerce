@@ -36,12 +36,20 @@ namespace FastCommerce.DAL
                     }
                 }
             }
-            foreach (T row in results)
+
+            if (PKInfo != null)
             {
-                row.GetType().GetProperty(PKInfo.Name).SetValue(row, 0);
+                foreach (T row in results)
+                {
+
+                    row.GetType().GetProperty(PKInfo.Name).SetValue(row, 0);
+                }
             }
             return results.ToList();
         }
+
+        public static double GenerateDouble(int maxValue) =>
+            Math.Round((new Random().NextDouble() * maxValue), 2, MidpointRounding.AwayFromZero);
         public async static void Initialize(dbContext context)
         {
 
@@ -49,17 +57,21 @@ namespace FastCommerce.DAL
             if (context.Products.Any())
                 return;
 
-            int i = 0;
             int count = 5;
-            int countSquare = (int)Math.Pow(count, 2);
-            List<Product> products = FillAllProperties<Product>(5);
+            int countSquare = (int) Math.Pow(count, 2);
+            A.Configure<Product>()
+                .Fill(p => p.Price, GenerateDouble(500))
+                .Fill(p => p.Discount, GenerateDouble(40))
+                .Fill(p => p.Rating, GenerateDouble(5))
+                .Fill(p => p.ViewCount, () => new Random().Next(250));
+            List<Product> products = FillAllProperties<Product>(count);
 
-            List<Category> categories = FillAllProperties<Category>(5);
+            List<Category> categories = FillAllProperties<Category>(count);
 
             List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(countSquare);
+            List<Address> addresses = FillAllProperties<Address>(count);
 
             List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
-
             categories.Add(new Category() { CategoryName = "Trending Products" });
             foreach (var item in categories)
             {
@@ -75,15 +87,19 @@ namespace FastCommerce.DAL
             List<StockPropertyCombination> stockPropertyCombinations = FillAllProperties<StockPropertyCombination>(5);
             List<PropertyDetail> propertyDetails = FillAllProperties<PropertyDetail>(5);
             List<Stock> stocks = FillAllProperties<Stock>(5);
-            i = 0;
+            int i = 0;
             foreach (var item in stocks)
             {
                 item.Product = products.ToList()[i];
                 i++;
 
             }
+            foreach (var item in addresses)
+            {
+                item.UserId = 1;
 
-            for (int pr = 0; pr < count; pr++)
+            }
+            foreach (var item in stockProperties)
             {
                 propertyDetails[pr].Property = properties[pr];
                 propertyDetails[pr].StockPropertyCombination = stockPropertyCombinations[pr];
@@ -93,15 +109,17 @@ namespace FastCommerce.DAL
             {
                 stockPropertyCombinations[pt].Stock = stocks[pt];
             }
-            List<User> users = FillAllProperties<User>(5);
 
+            List<User> users = FillAllProperties<User>(count);
+
+            users.Add(new User(){Email="mehmetburakeker@gmail.com",Password="Burak26",Active = true});
             foreach (var user in users)
             {
                 user.Password = Cryptography.Encrypt(user.Password);
             }
 
             await context.AddRangeAsync(users);
-
+            
             await context.AddRangeAsync(productCategories);
             await context.AddRangeAsync(products);
             await context.AddRangeAsync(properties);
@@ -109,6 +127,8 @@ namespace FastCommerce.DAL
             await context.AddRangeAsync(categories);
             await context.AddRangeAsync(stockPropertyCombinations);
             await context.AddRangeAsync(stocks);
+            context.SaveChanges();
+            await context.AddRangeAsync(addresses);
             context.SaveChanges();
         }
     }

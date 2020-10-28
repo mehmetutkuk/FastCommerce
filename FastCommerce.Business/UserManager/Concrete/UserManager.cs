@@ -56,12 +56,13 @@ namespace FastCommerce.Business.UserManager.Concrete
 
         public LoginResponse Login(Login login)
         {
-            User fetchedUser = _context.Users.Where(w => w.Email == login.Email).SingleOrDefault();
+            User fetchedUser = _context.Users.Single(w => w.Email == login.Email);
             if (fetchedUser != null)
             {
                 login.LoggedIn = (fetchedUser.Password == Cryptography.Encrypt(login.Password));
                 if (login.LoggedIn)
                 {
+                    login.UserID = fetchedUser.UserID;
                     IsAuthenticated(login, out string token);
                     login.Token = token;
                 }
@@ -98,6 +99,11 @@ namespace FastCommerce.Business.UserManager.Concrete
             _context.SaveChangesAsync();
         }
 
+        public async Task<List<Address>> GetAddressesByUserId(int userId)
+        {
+            var addresses = await _context.Addresses.Where(adr => adr.UserId == userId).ToListAsync();
+            return await Task.FromResult(addresses);
+        }
 
         private string[] ConvertUserToMailBoxesArray(User user)
         {
@@ -133,7 +139,8 @@ namespace FastCommerce.Business.UserManager.Concrete
             token = string.Empty;
             var claim = new[]
             {
-                new Claim(ClaimTypes.Name, request.Email)
+                new Claim("id", request.UserID.ToString()),
+                new Claim("email", request.Email)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenManagement.Secret));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
