@@ -49,5 +49,22 @@ namespace FastCommerce.Web.API.Controllers.StockController
             }
             return httpResponse;
         }
+
+        [HttpPost("UpdateQuantity")]
+        public async Task<HttpResponseMessage> UpdateQuantity(UpdateQuantityDto updateQuantityDto)
+        {
+            Response<GetStocksDto> httpResponse = new Response<GetStocksDto>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState  = !await _stockManager.UpdateQuantityByStockId(updateQuantityDto.StockId, updateQuantityDto.Quantity);
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
     }
 }

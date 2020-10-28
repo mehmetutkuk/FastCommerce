@@ -23,15 +23,38 @@ namespace FastCommerce.Business.StockManager.Abstract
             _propertyManager = propertyManager;
         }
 
-        public async Task<List<StockPropertyCombination>> GetStocks(int page)
+        public async Task<List<GetStocksDto>> GetStocksByProductId(int id)
         {
-            return await Task.FromResult<List<StockPropertyCombination>>
-                (_context.StockPropertyCombinations
-                .Include("Stock")
-                .Include("Property")
-                .Include("Stock.Product")
-                .Include("Stock.Product.ProductImages")
-                .Select(s => s).ToList());
+            List<GetStocksDto> getStocksDtosList = new List<GetStocksDto>();
+
+            var Stocks = (from sp in _context.StockPropertyCombinations
+                          where sp.Stock.ProductId == id
+                          group sp by new { sp.StockId } into gr
+                          select gr.Key
+            ).ToArray();
+
+            foreach (var item in Stocks)
+            {
+                List<PropertyDetail> propertyDetails = _context.StockPropertyCombinations.Include("PropertyDetail").Where(c => c.StockId == item.StockId).Select(s => s.PropertyDetail).ToList();
+                Product StockProduct = _context.Stocks
+                    .Include("Product")
+                    .Where(c => c.StockId == item.StockId)
+                    .Select(s => s.Product).FirstOrDefault();
+
+                List<ProductImage> productImages = _context.ProductImages.Where(s => s.ProductId == StockProduct.ProductId).ToList();
+
+                int Quantity = _context.Stocks.Where(s => s.StockId == item.StockId).Select(q => q.Quantity).FirstOrDefault();
+
+                getStocksDtosList.Add(new GetStocksDto
+                {
+                    PropertyDetails = propertyDetails,
+                    ProductId = StockProduct.ProductId,
+                    ProductName = StockProduct.ProductName,
+                    ProductImages = productImages,
+                    Quantity = Quantity
+                });
+            }
+            return await Task.FromResult<List<GetStocksDto>>(getStocksDtosList);
         }
         public async Task<List<GetStocksDto>> GetStocks()
         {
@@ -62,31 +85,11 @@ namespace FastCommerce.Business.StockManager.Abstract
                     PropertyDetails = propertyDetails,
                     ProductId = StockProduct.ProductId,
                     ProductName = StockProduct.ProductName,
+                    StockId = item.StockId,
                     ProductImages = productImages,
                     Quantity = Quantity
                 });
             }
-
-            //foreach (var row in stockProperties)
-            //{
-            //    int[] CategoryIds = _context.ProductCategories.Where(w => w.Product.ProductId == row.Stock.ProductId).Select(s => s.CategoryId).ToArray();
-
-            //    GetStocksDto getStocksDto = new GetStocksDto();
-            //    if (CategoryIds.Length > 0)
-            //        getStocksDto.properties = _context.Properties.Where(c => CategoryIds.Contains(c.CategoryId)).OrderBy(odr => odr.PropertyName)
-            //            .Select(s => s.Adapt<GetStocksDtoProperty>()).ToList();
-
-            //    getStocksDto.ProductName = row.Stock.Product.ProductName;
-            //    getStocksDto.ProductId = row.Stock.Product.ProductId;
-            //    getStocksDto.StockId = row.Stock.StockId;
-            //    getStocksDto.Quantity = row.Stock.Quantity;
-
-            //    getStocksDto.ProductImages = _context.ProductImages.Where(con => con.ProductId == row.Stock.ProductId).ToList();
-
-            //    getStocksDtosList.Add(getStocksDto);
-            //}
-
-
             return await Task.FromResult<List<GetStocksDto>>(getStocksDtosList);
         }
 
@@ -198,6 +201,15 @@ namespace FastCommerce.Business.StockManager.Abstract
             }
 
 
+        }
+
+        public async Task<bool> UpdateQuantityByStockId(int Id,int Quantity)
+        {
+            Stock stock = _context.Stocks.Where(s => s.StockId == Id).FirstOrDefault();
+            stock.Quantity = Quantity;
+            await _context.SaveChangesAsync();
+
+            return await Task.FromResult<bool>(true);
         }
     }
 }
