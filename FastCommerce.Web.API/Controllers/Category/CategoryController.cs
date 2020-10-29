@@ -10,6 +10,7 @@ using FastCommerce.Web.API.Models;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FastCommerce.Web.API.Controllers.Category
 {
@@ -18,9 +19,11 @@ namespace FastCommerce.Web.API.Controllers.Category
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryManager _categoryManager;
-        public CategoryController(ICategoryManager categoryManager)
+        private readonly ILogger<CategoryController> _logger;
+        public CategoryController(ICategoryManager categoryManager, ILogger<CategoryController> logger)
         {
             _categoryManager = categoryManager;
+            _logger = logger;
         }
         /// <summary>
         /// AddCategory
@@ -32,6 +35,7 @@ namespace FastCommerce.Web.API.Controllers.Category
         [HttpPost("AddCategory")]
         public async Task<HttpResponseMessage> AddCategory(AddCategoryDto req)
         {
+            _logger.LogDebug("AddCategory init with",req);
             Response<Entities.Entities.Category> httpResponse = new  Response<Entities.Entities.Category>();
             try
             {
@@ -40,9 +44,11 @@ namespace FastCommerce.Web.API.Controllers.Category
             }
             catch (Exception ex)
             {
+                _logger.LogError("AddCategory Error", ex);
                 httpResponse.ErrorState = true;
                 httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
             }
+            _logger.LogDebug("AddCategory end with", httpResponse);
             return httpResponse;
         }
         /// <summary>
@@ -55,6 +61,7 @@ namespace FastCommerce.Web.API.Controllers.Category
         [HttpPost("DeleteCategory")]
         public async Task<HttpResponseMessage> DeleteCategory(DeleteCategoryDto category)
         {
+            _logger.LogDebug("DeleteCategory init with", category);
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
             try
             {
@@ -64,9 +71,11 @@ namespace FastCommerce.Web.API.Controllers.Category
             }
             catch (Exception ex)
             {
+                _logger.LogError("DeleteCategory Error", ex);
                 httpResponse.ErrorState = true;
                 httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
             }
+            _logger.LogDebug("DeleteCategory end with", httpResponse);
             return httpResponse;
         }
 
@@ -80,6 +89,8 @@ namespace FastCommerce.Web.API.Controllers.Category
         [HttpPost("UpdateCategory")]
         public async Task<HttpResponseMessage> UpdateCategory(UpdateCategoryDto category)
         {
+            _logger.LogDebug("UpdateCategory init with", category);
+
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
             try
             {
@@ -88,9 +99,11 @@ namespace FastCommerce.Web.API.Controllers.Category
             }
             catch (Exception ex)
             {
+                _logger.LogError("UpdateCategory Error", ex);
                 httpResponse.ErrorState = true;
                 httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
             }
+            _logger.LogDebug("UpdateCategory end with", httpResponse);
             return httpResponse;
         }
         /// <summary>
@@ -103,6 +116,7 @@ namespace FastCommerce.Web.API.Controllers.Category
         [HttpGet("GetCategories")]
         public async Task<HttpResponseMessage> GetCategories()
         {
+            _logger.LogDebug("GetCategories init");
             Response<Entities.Entities.Category> httpResponse = new Response<Entities.Entities.Category>();
             try
             {
@@ -115,6 +129,7 @@ namespace FastCommerce.Web.API.Controllers.Category
                 httpResponse.ErrorState = true;
                 httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
             }
+            _logger.LogDebug("GetCategories end with", httpResponse);
             return httpResponse;
         }
     }
