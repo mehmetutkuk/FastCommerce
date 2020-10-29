@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
 
 namespace FastCommerce.Web.API
 {
@@ -16,6 +18,24 @@ namespace FastCommerce.Web.API
     {
         public static void Main(string[] args)
         {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile(
+                    $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json",
+                    optional: true)
+                .Build();
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(configuration["ElasticSearchOptions:ConnectionString:HostUrls"]))
+                {
+                    AutoRegisterTemplate = true,
+                    IndexFormat = $"{configuration["Logging:LogIndex"]}-{DateTime.UtcNow:yyyy-MM}"
+                })
+                .Enrich.WithProperty("Environment", environment)
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
+
             var host = CreateHostBuilder(args).ConfigureAppConfiguration((hostContext, builder) =>
             {
                 
@@ -49,6 +69,12 @@ namespace FastCommerce.Web.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                }).ConfigureAppConfiguration(configuration =>
+                {
+                    configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                    configuration.AddJsonFile(
+                        $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true);
+                })
+        .UseSerilog();
     }
 }

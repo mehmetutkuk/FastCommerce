@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
-    public partial class RemovingIndicesStockPropertyCombination : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -187,13 +187,17 @@ namespace FastCommerce.DAL.Migrations
                     AddressId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(nullable: false),
-                    City = table.Column<string>(nullable: true),
+                    AddressName = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    EmailAddress = table.Column<string>(nullable: true),
+                    Country = table.Column<string>(nullable: true),
+                    AddressLine = table.Column<string>(nullable: true),
+                    TownCity = table.Column<string>(nullable: true),
                     Province = table.Column<string>(nullable: true),
-                    District = table.Column<string>(nullable: true),
-                    Street = table.Column<string>(nullable: true),
-                    BuildingNo = table.Column<string>(nullable: true),
-                    DoorNo = table.Column<string>(nullable: true),
-                    AddressLine = table.Column<string>(nullable: true)
+                    StateCounty = table.Column<string>(nullable: true),
+                    PostalCode = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -214,7 +218,8 @@ namespace FastCommerce.DAL.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(nullable: false),
                     Stage = table.Column<int>(nullable: false),
-                    OrderProductsId = table.Column<int>(nullable: false)
+                    OrderProductsId = table.Column<int>(nullable: false),
+                    TotalPrice = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -278,7 +283,9 @@ namespace FastCommerce.DAL.Migrations
                     OrderProductId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     OrderId = table.Column<int>(nullable: false),
-                    ProductId = table.Column<int>(nullable: false)
+                    ProductId = table.Column<int>(nullable: false),
+                    Quantity = table.Column<int>(nullable: false),
+                    Price = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {
