@@ -25,7 +25,13 @@ namespace FastCommerce.Business.AppSettings.Concrete
             await _context.SaveChangesAsync();
             return await Task.FromResult(true);
         }
-
+        public async Task<bool> DeleteSliderImage(SliderImage sliderImage)
+        {
+            var sliderImageEntity = _context.SliderImages.Single(item => item.SliderImageId == sliderImage.SliderImageId);
+            _context.SliderImages.Remove(sliderImageEntity);
+            await _context.SaveChangesAsync();
+            return await Task.FromResult(true);
+        }
         public async Task<List<SliderImage>> GetSliderImages() => await _context.SliderImages.ToListAsync();
 
         public async Task<bool> UpdateSliderImage(SliderImage sliderImage)

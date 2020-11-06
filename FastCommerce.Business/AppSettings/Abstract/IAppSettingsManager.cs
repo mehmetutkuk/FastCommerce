@@ -11,5 +11,6 @@ namespace FastCommerce.Business.AppSettings.Abstract
         public Task<bool> AddSliderImage(SliderImage sliderImage);
         public Task<List<SliderImage>> GetSliderImages();
         public Task<bool> UpdateSliderImage(SliderImage sliderImage);
+        public Task<bool> DeleteSliderImage(SliderImage sliderImage);
     }
 }
