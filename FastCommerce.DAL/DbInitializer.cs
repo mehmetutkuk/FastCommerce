@@ -65,7 +65,30 @@ namespace FastCommerce.DAL
                 .Fill(p => p.Rating, GenerateDouble(5))
                 .Fill(p => p.ViewCount, () => new Random().Next(250));
             List<Product> products = new List<Product>();
-            products.Add(new Product() { ProductName = "Model Y Yüzük"});
+            products.Add(new Product() { ProductName = "Model A Yüzük" , LastModified = DateTime.Now});
+            products.Add(new Product() { ProductName = "Model B Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model C Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model D Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model E Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model F Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Aa Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Ba Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Cc Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Dd Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Ee Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Ff Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model AA Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model BB Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model CC Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model EE Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model DD Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model FF Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model AAa Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model AAA Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model BBb Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model BBB Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model CCc Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model CCC Bracelets", LastModified = DateTime.Now });
 
             List<Category> categories = new List<Category>();
             categories.Add(new Category() { CategoryName = "Trending Products" });
@@ -76,6 +99,31 @@ namespace FastCommerce.DAL
             List<ProductCategories> productCategories = new List<ProductCategories>();
 
             productCategories.Add(new ProductCategories() { Product = products[0], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[1], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[2], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[3], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[4], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[5], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[6], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[7], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[8], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[9], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[10], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[11], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[12], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[13], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[14], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[15], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[16], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[17], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[18], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[19], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[20], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[21], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[22], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[23], Category = categories[3] });
+
+
 
             List<Address> addresses = FillAllProperties<Address>(count);
 
@@ -96,7 +144,6 @@ namespace FastCommerce.DAL
             foreach (var item in addresses)
             {
                 item.UserId = 1;
-
             }
           
 
