@@ -14,6 +14,7 @@ namespace FastCommerce.Entities.Entities
         public string ImageUrl { get; set; }
         public string SliderHeader { get; set; }
         public string SliderText { get; set; }
+        public string SliderNavigationText { get; set; }
         public string SliderNavigationUrl { get; set; }
     }
 }

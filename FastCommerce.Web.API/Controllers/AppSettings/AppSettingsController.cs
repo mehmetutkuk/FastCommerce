@@ -76,7 +76,7 @@ namespace FastCommerce.Web.API.Controllers.AppSettings
             }
             return httpResponse;
         }
-        [HttpGet("DeleteSliderImage")]
+        [HttpPost("DeleteSliderImage")]
         public async Task<Response<SliderImage>> DeleteSliderImage([FromBody] SliderImage sliderImage)
         {
             var httpResponse = new Response<SliderImage>();
