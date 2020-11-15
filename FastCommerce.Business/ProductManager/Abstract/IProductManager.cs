@@ -11,6 +11,10 @@ namespace FastCommerce.Business.ProductManager.Abstract
     {
         Task<bool> CreateIndexes(ProductElasticIndexDto productElasticIndexDto);
         Task<List<ProductGetDTO>> Get();
+        Task<List<GetTrendingProductsDto>> GetTrendingProducts();
+        Task<bool> AddTrendingProduct(TrendingProduct trendingProduct);
+        Task<bool> UpdateTrendingProduct(TrendingProduct trendingProduct);
+        Task<bool> RemoveTrendingProduct(TrendingProduct trendingProduct);
         Task<ProductGetDTO> GetProductById(int ProdcutId);
         Task<List<ProductGetDTO>> GetProductsByCategoryId(int id);
         Task<List<ProductGetDTO>> GetProductsByCategoryName(string name);

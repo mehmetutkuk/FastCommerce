@@ -151,6 +151,57 @@ namespace FastCommerce.Business.ProductManager.Concrete
             await _context.SaveChangesAsync();
             return await Task.FromResult<bool>(true);
         }
+
+        public async Task<List<GetTrendingProductsDto>> GetTrendingProducts()
+        {
+            var trendingProducts = await _context.TrendingProducts.Include(tp=>tp.Product).ThenInclude(product=>product.ProductImages).ToListAsync();
+            
+            var trendingCategories = from tp in trendingProducts
+                group tp by new {tp.TrendingProductId,tp.CategoryName}
+                into gtpd
+                select new {gtpd.Key.TrendingProductId, gtpd.Key.CategoryName };
+
+            var getTrendingProductsDtoList = new List<GetTrendingProductsDto>();
+            foreach (var item in trendingCategories)
+            {
+                var productGetDtoList = trendingProducts.Where(tp => tp.TrendingProductId == item.TrendingProductId)
+                    .Select(tp => tp.Product.Adapt<ProductGetDTO>()).ToList();
+                var getTrendingProductsDto = new GetTrendingProductsDto()
+                {
+                    CategoryName = item.CategoryName,
+                    Products = productGetDtoList
+                };
+                getTrendingProductsDtoList.Add(getTrendingProductsDto);
+            }
+            return getTrendingProductsDtoList;
+        }
+
+        public async Task<bool> AddTrendingProduct(TrendingProduct trendingProduct)
+        {
+            await _context.AddAsync(trendingProduct);
+            await _context.SaveChangesAsync();
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> UpdateTrendingProduct(TrendingProduct trendingProduct)
+        {
+            var trendingProductEntities = await _context.TrendingProducts
+                .Where(tp => tp.CategoryName == trendingProduct.CategoryName).ToListAsync();
+            foreach (var item in trendingProductEntities)
+            {
+                item.CategoryName = trendingProduct.CategoryName;
+            }
+
+            await _context.SaveChangesAsync();
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> RemoveTrendingProduct(TrendingProduct trendingProduct)
+        {
+            _context.Remove(trendingProduct);
+            await _context.SaveChangesAsync();
+            return await Task.FromResult(true);
+        }
     }
 
 }

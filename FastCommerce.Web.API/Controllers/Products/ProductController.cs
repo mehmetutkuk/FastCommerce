@@ -53,9 +53,71 @@ namespace FastCommerce.Web.API.Controllers.Products
             return httpResponse;
         }
 
-
-
-
+        [HttpGet("GetTrendingProducts")]
+        public async Task<Response<GetTrendingProductsDto>> GetTrendingProducts()
+        {
+            var httpResponse = new Response<GetTrendingProductsDto>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = await _productManager.GetTrendingProducts();
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        [HttpPost("AddTrendingProduct")]
+        public async Task<Response<TrendingProduct>> AddTrendingProduct(TrendingProduct trendingProduct)
+        {
+            var httpResponse = new Response<TrendingProduct>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _productManager.AddTrendingProduct(trendingProduct);
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        [HttpPost("RemoveTrendingProduct")]
+        public async Task<Response<TrendingProduct>> RemoveTrendingProduct(TrendingProduct trendingProduct)
+        {
+            var httpResponse = new Response<TrendingProduct>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _productManager.RemoveTrendingProduct(trendingProduct);
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        [HttpPost("UpdateTrendingProduct")]
+        public async Task<Response<TrendingProduct>> UpdateTrendingProduct(TrendingProduct trendingProduct)
+        {
+            var httpResponse = new Response<TrendingProduct>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _productManager.UpdateTrendingProduct(trendingProduct);
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
         /// <summary>
         /// GetProductById
         /// </summary>

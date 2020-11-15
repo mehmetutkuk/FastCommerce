@@ -28,6 +28,7 @@ namespace FastCommerce.DAL
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<SliderImage> SliderImages { get; set; }
+        public DbSet<TrendingProduct> TrendingProducts { get; set; }
 
         public dbContext(DbContextOptions options) : base(options)
         {
