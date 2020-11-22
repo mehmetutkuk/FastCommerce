@@ -26,5 +26,5 @@ RUN dotnet publish "FastCommerce.Web.API.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "FastCommerce.Web.API.dll", "--urls", "http://*:5000;http://*:5001"]
+ENTRYPOINT ["dotnet", "FastCommerce.Web.API.dll", "--urls", "https://*:5000;http://*:5001"]
 

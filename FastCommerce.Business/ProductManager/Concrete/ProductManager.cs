@@ -173,8 +173,20 @@ namespace FastCommerce.Business.ProductManager.Concrete
                 productPropertyFilters = (await _context.Properties
                 .Include("PropertyDetails")
                 .ToListAsync()).GroupBy(u => u.PropertyName).Select(grp => grp.ToList())
-            }); 
-          
+            });
+
+        }
+
+        public async Task<GetMinMaxPriceDto> GetMinMaxPrice()
+        {
+
+            return (from row in _context.Products
+                    group row by true into r
+                    select new GetMinMaxPriceDto
+                    {
+                        Min = r.Min(z => z.Price),
+                        Max = r.Max(z => z.Price)
+                    }).SingleOrDefault();
         }
     }
 

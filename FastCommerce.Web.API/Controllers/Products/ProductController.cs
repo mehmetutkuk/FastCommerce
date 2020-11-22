@@ -237,7 +237,25 @@ namespace FastCommerce.Web.API.Controllers.Products
             return httpResponse;
         }
 
-        
-
+        [HttpGet("GetMinMaxPrice")]
+        public async Task<Response<GetMinMaxPriceDto>> GetMinMaxPrice()
+        {
+            _logger.LogDebug("GetMinMaxPrice init with");
+            Response<GetMinMaxPriceDto> httpResponse = new Response<GetMinMaxPriceDto>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.Data = await _productManager.GetMinMaxPrice();
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("GetMinMaxPrice Error", ex);
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            _logger.LogDebug("GetMinMaxPrice end with", httpResponse);
+            return httpResponse;
+        }
     }
 }
