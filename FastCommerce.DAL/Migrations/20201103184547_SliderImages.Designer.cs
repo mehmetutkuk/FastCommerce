@@ -3,15 +3,17 @@ using System;
 using FastCommerce.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class dbContextModelSnapshot : ModelSnapshot
+    [Migration("20201103184547_SliderImages")]
+    partial class SliderImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -348,9 +350,6 @@ namespace FastCommerce.DAL.Migrations
                     b.Property<string>("SliderImageName")
                         .HasColumnType("text");
 
-                    b.Property<string>("SliderNavigationText")
-                        .HasColumnType("text");
-
                     b.Property<string>("SliderNavigationUrl")
                         .HasColumnType("text");
 
@@ -403,29 +402,6 @@ namespace FastCommerce.DAL.Migrations
                     b.HasIndex("StockId");
 
                     b.ToTable("StockPropertyCombinations");
-                });
-
-            modelBuilder.Entity("FastCommerce.Entities.Entities.TrendingProduct", b =>
-                {
-                    b.Property<int>("TrendingProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("CategoryName")
-                        .HasColumnType("text");
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("TrendingProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("TrendingProducts");
                 });
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.User", b =>
@@ -570,7 +546,7 @@ namespace FastCommerce.DAL.Migrations
             modelBuilder.Entity("FastCommerce.Entities.Entities.PropertyDetail", b =>
                 {
                     b.HasOne("FastCommerce.Entities.Entities.Property", "Property")
-                        .WithMany("PropertyDetails")
+                        .WithMany()
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -611,15 +587,6 @@ namespace FastCommerce.DAL.Migrations
                     b.HasOne("FastCommerce.Entities.Entities.Stock", "Stock")
                         .WithMany("StockPropertyCombinations")
                         .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FastCommerce.Entities.Entities.TrendingProduct", b =>
-                {
-                    b.HasOne("FastCommerce.Entities.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

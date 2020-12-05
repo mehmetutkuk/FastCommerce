@@ -59,6 +59,26 @@ namespace FastCommerce.Web.API.Controllers.Products
             return httpResponse;
         }
 
+
+        [HttpGet("GetTrendingProducts")]
+        public async Task<Response<GetTrendingProductsDto>> GetTrendingProducts()
+        {
+            var httpResponse = new Response<GetTrendingProductsDto>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = await _productManager.GetTrendingProducts();
+                 httpResponse.ErrorState = false;
+           }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+
+
         [HttpGet("GetProductByPageNumber/{pageNo:int}")]
         public async Task<Response<ProductGetDTO>> GetProductByPageNumber(int pageNo)
         {
@@ -69,11 +89,10 @@ namespace FastCommerce.Web.API.Controllers.Products
                 httpResponse.RequestState = true;
                 httpResponse.DataList = await _productManager.GetProductByPageNumber(pageNo);
                 httpResponse.EntityCount = httpResponse.DataList.Count();
-                httpResponse.ErrorState = false;
             }
             catch (Exception ex)
             {
-                _logger.LogError("GetProductByPageNumber Error", ex);
+              _logger.LogError("GetProductByPageNumber Error", ex);
                 httpResponse.ErrorState = true;
                 httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
             }
@@ -82,7 +101,74 @@ namespace FastCommerce.Web.API.Controllers.Products
         }
         
 
-
+        [HttpGet("GetTrendingProductEntities")]
+        public async Task<Response<TrendingProduct>> GetTrendingProductEntities()
+        {
+            var httpResponse = new Response<TrendingProduct>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = await _productManager.GetTrendingProductEntities();
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        
+        [HttpPost("AddTrendingProduct")]
+        public async Task<Response<TrendingProduct>> AddTrendingProduct(TrendingProduct trendingProduct)
+        {
+            var httpResponse = new Response<TrendingProduct>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _productManager.AddTrendingProduct(trendingProduct);
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        
+        [HttpPost("RemoveTrendingProduct")]
+        public async Task<Response<TrendingProduct>> RemoveTrendingProduct(RemoveTrendingProductDto trendingProduct)
+        {
+            var httpResponse = new Response<TrendingProduct>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _productManager.RemoveTrendingProduct(trendingProduct);
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
+        
+        [HttpPost("UpdateTrendingProduct")]
+        public async Task<Response<TrendingProduct>> UpdateTrendingProduct(TrendingProduct trendingProduct)
+        {
+            var httpResponse = new Response<TrendingProduct>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.ErrorState = !await _productManager.UpdateTrendingProduct(trendingProduct);
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
 
         /// <summary>
         /// GetProductById
@@ -194,6 +280,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             _logger.LogDebug("GetProductsByCategoryId end with", httpResponse);
             return httpResponse;
         }
+        
         [HttpGet("GetProductsByCategoryName/{name}")]
         public async Task<Response<ProductGetDTO>> GetProductsByCategoryName(string name)
         {
@@ -216,6 +303,7 @@ namespace FastCommerce.Web.API.Controllers.Products
 
             return httpResponse;
         }
+        
         [HttpGet("GetProductFilters")]
         public async Task<Response<GetProductFilters>> GetProductFilters()
         {

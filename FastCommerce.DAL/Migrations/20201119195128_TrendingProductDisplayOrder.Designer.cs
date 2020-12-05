@@ -3,15 +3,17 @@ using System;
 using FastCommerce.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class dbContextModelSnapshot : ModelSnapshot
+    [Migration("20201119195128_TrendingProductDisplayOrder")]
+    partial class TrendingProductDisplayOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -570,7 +572,7 @@ namespace FastCommerce.DAL.Migrations
             modelBuilder.Entity("FastCommerce.Entities.Entities.PropertyDetail", b =>
                 {
                     b.HasOne("FastCommerce.Entities.Entities.Property", "Property")
-                        .WithMany("PropertyDetails")
+                        .WithMany()
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
