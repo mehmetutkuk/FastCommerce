@@ -15,7 +15,7 @@ namespace FastCommerce.Business.ProductManager.Abstract
         Task<List<TrendingProduct>> GetTrendingProductEntities();
         Task<bool> AddTrendingProduct(TrendingProduct trendingProduct);
         Task<bool> UpdateTrendingProduct(TrendingProduct trendingProduct);
-        Task<bool> RemoveTrendingProduct(TrendingProduct trendingProduct);
+        Task<bool> RemoveTrendingProduct(RemoveTrendingProductDto trendingProduct);
         Task<ProductGetDTO> GetProductById(int ProdcutId);
         Task<List<ProductGetDTO>> GetProductsByCategoryId(int id);
         Task<List<ProductGetDTO>> GetProductsByCategoryName(string name);

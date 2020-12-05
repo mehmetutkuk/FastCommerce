@@ -104,7 +104,7 @@ namespace FastCommerce.Web.API.Controllers.Products
             return httpResponse;
         }
         [HttpPost("RemoveTrendingProduct")]
-        public async Task<Response<TrendingProduct>> RemoveTrendingProduct(TrendingProduct trendingProduct)
+        public async Task<Response<TrendingProduct>> RemoveTrendingProduct(RemoveTrendingProductDto trendingProduct)
         {
             var httpResponse = new Response<TrendingProduct>();
             try

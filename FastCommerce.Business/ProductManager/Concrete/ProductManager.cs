@@ -157,14 +157,15 @@ namespace FastCommerce.Business.ProductManager.Concrete
             var trendingProducts = await _context.TrendingProducts.Include(tp=>tp.Product).ThenInclude(product=>product.ProductImages).ToListAsync();
             
             var trendingCategories = from tp in trendingProducts
-                group tp by new {tp.TrendingProductId,tp.CategoryName}
+                group tp by new {tp.CategoryName}
                 into gtpd
-                select new {gtpd.Key.TrendingProductId, gtpd.Key.CategoryName };
+                select new { gtpd.Key.CategoryName };
 
             var getTrendingProductsDtoList = new List<GetTrendingProductsDto>();
             foreach (var item in trendingCategories)
             {
-                var productGetDtoList = trendingProducts.Where(tp => tp.TrendingProductId == item.TrendingProductId)
+                var productGetDtoList = trendingProducts.Where(tp => tp.CategoryName == item.CategoryName)
+                    .OrderBy(tp=>tp.DisplayOrder)
                     .Select(tp => tp.Product.Adapt<ProductGetDTO>()).ToList();
                 var getTrendingProductsDto = new GetTrendingProductsDto()
                 {
@@ -198,9 +199,9 @@ namespace FastCommerce.Business.ProductManager.Concrete
             return await Task.FromResult(true);
         }
 
-        public async Task<bool> RemoveTrendingProduct(TrendingProduct trendingProduct)
+        public async Task<bool> RemoveTrendingProduct(RemoveTrendingProductDto trendingProduct)
         {
-            _context.Remove(trendingProduct);
+            _context.Remove(trendingProduct.Adapt<TrendingProduct>());
             await _context.SaveChangesAsync();
             return await Task.FromResult(true);
         }
