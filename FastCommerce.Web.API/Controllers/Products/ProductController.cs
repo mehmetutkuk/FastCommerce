@@ -70,6 +70,23 @@ namespace FastCommerce.Web.API.Controllers.Products
             }
             return httpResponse;
         }
+        [HttpGet("GetTrendingProductEntities")]
+        public async Task<Response<TrendingProduct>> GetTrendingProductEntities()
+        {
+            var httpResponse = new Response<TrendingProduct>();
+            try
+            {
+                httpResponse.RequestState = true;
+                httpResponse.DataList = await _productManager.GetTrendingProductEntities();
+                httpResponse.ErrorState = false;
+            }
+            catch (Exception ex)
+            {
+                httpResponse.ErrorState = true;
+                httpResponse.ErrorList.Add(ex.Adapt<ApiException>());
+            }
+            return httpResponse;
+        }
         [HttpPost("AddTrendingProduct")]
         public async Task<Response<TrendingProduct>> AddTrendingProduct(TrendingProduct trendingProduct)
         {

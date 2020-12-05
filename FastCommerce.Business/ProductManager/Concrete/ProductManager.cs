@@ -183,6 +183,8 @@ namespace FastCommerce.Business.ProductManager.Concrete
             return await Task.FromResult(true);
         }
 
+        public async Task<List<TrendingProduct>> GetTrendingProductEntities() =>
+            await _context.TrendingProducts.Include(_=>_.Product).ToListAsync();
         public async Task<bool> UpdateTrendingProduct(TrendingProduct trendingProduct)
         {
             var trendingProductEntities = await _context.TrendingProducts
