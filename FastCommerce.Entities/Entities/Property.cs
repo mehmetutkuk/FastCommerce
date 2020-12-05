@@ -19,6 +19,8 @@ namespace FastCommerce.Entities.Entities
         [ForeignKey("CategoryId")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
-       
+        public List<PropertyDetail> PropertyDetails { get; set; }
+
     }
 }
+ 

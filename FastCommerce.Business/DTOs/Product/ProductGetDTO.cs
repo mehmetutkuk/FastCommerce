@@ -12,6 +12,7 @@ namespace FastCommerce.Business.DTOs.Product
         public double Rating { get; set; }
         public double Discount { get; set; }
         public double Price { get; set; }
+        public DateTime LastModified { get; set; }
         public virtual ICollection<ProductImage> ProductImages { get; set; }
     }
 }

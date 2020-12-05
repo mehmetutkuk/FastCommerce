@@ -1,10 +1,12 @@
-﻿using FastCommerce.Business.DTOs.Stock;
+﻿using FastCommerce.Business.DTOs.Product;
+using FastCommerce.Business.DTOs.Stock;
 using FastCommerce.Entities.Entities;
 using FastCommerce.Web.API.Interfaces;
 using FastCommerce.Web.API.Models;
 using Mapster;
 using Microsoft.AspNetCore.Hosting;
 using System;
+using System.Linq;
 
 namespace FastCommerce.Web.API.Infrastructure
 {
@@ -24,8 +26,6 @@ namespace FastCommerce.Web.API.Infrastructure
             .Map(dest => dest.Message, src => src.Message)
             .Map(dest => dest.Detail, src => src.StackTrace);
 
-
-            
         }
     }
 }

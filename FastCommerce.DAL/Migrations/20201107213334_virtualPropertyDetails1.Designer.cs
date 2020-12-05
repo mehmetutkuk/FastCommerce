@@ -3,15 +3,17 @@ using System;
 using FastCommerce.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FastCommerce.DAL.Migrations
 {
     [DbContext(typeof(dbContext))]
-    partial class dbContextModelSnapshot : ModelSnapshot
+    [Migration("20201107213334_virtualPropertyDetails1")]
+    partial class virtualPropertyDetails1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -329,39 +331,6 @@ namespace FastCommerce.DAL.Migrations
                     b.ToTable("Shipments");
                 });
 
-            modelBuilder.Entity("FastCommerce.Entities.Entities.SliderImage", b =>
-                {
-                    b.Property<int>("SliderImageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SliderHeader")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SliderImageName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SliderNavigationText")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SliderNavigationUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SliderText")
-                        .HasColumnType("text");
-
-                    b.HasKey("SliderImageId");
-
-                    b.ToTable("SliderImages");
-                });
-
             modelBuilder.Entity("FastCommerce.Entities.Entities.Stock", b =>
                 {
                     b.Property<int>("StockId")
@@ -403,29 +372,6 @@ namespace FastCommerce.DAL.Migrations
                     b.HasIndex("StockId");
 
                     b.ToTable("StockPropertyCombinations");
-                });
-
-            modelBuilder.Entity("FastCommerce.Entities.Entities.TrendingProduct", b =>
-                {
-                    b.Property<int>("TrendingProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("CategoryName")
-                        .HasColumnType("text");
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("TrendingProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("TrendingProducts");
                 });
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.User", b =>
@@ -611,15 +557,6 @@ namespace FastCommerce.DAL.Migrations
                     b.HasOne("FastCommerce.Entities.Entities.Stock", "Stock")
                         .WithMany("StockPropertyCombinations")
                         .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FastCommerce.Entities.Entities.TrendingProduct", b =>
-                {
-                    b.HasOne("FastCommerce.Entities.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
