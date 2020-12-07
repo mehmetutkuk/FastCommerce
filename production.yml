@@ -1,0 +1,126 @@
+version: '3.4'
+
+networks:
+  dockerapi-dev:
+    driver: bridge 
+
+services:
+  fastcommerce.web.api:
+    image: ${DOCKER_REGISTRY-}fastcommercewebapi
+    depends_on:
+      - "postgres_image"
+      - "redis_image"
+    build:
+      context: .
+      dockerfile: FastCommerce.Web.API/Dockerfile
+    environment:
+      DB_CONNECTION_STRING: "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword"      
+      PRODUCTION: 'true'
+    networks:
+      - dockerapi-dev
+    ports:
+      - "5000:443"
+      - "5001:80"
+  postgres_image:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgresPassword"
+      POSTGRES_DB: "fastCommerce"
+    networks:
+      - dockerapi-dev
+  redis_image:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - dockerapi-dev
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    environment:
+      - bootstrap.memory_lock=true
+      - cluster.name=docker-cluster
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-XX:UseAVX=2 -Xms1g -Xmx1g
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+    networks:
+      - dockerapi-dev
+    healthcheck:
+      interval: 20s
+      retries: 10
+      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.0
+    ports:
+      - "5601:5601"
+    networks:
+      - dockerapi-dev
+    depends_on:
+        elasticsearch:
+            condition: service_healthy
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    healthcheck:
+      interval: 10s
+      retries: 20
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:7.10.0
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+    cap_drop: ["ALL"]
+    ports:
+    - 8200:8200
+    networks:
+    - dockerapi-dev
+    command: >
+       apm-server -e
+         -E apm-server.rum.enabled=true
+         -E setup.kibana.host=kibana:5601
+         -E setup.template.settings.index.number_of_replicas=0
+         -E apm-server.kibana.enabled=true
+         -E apm-server.kibana.host=kibana:5601
+         -E output.elasticsearch.hosts=["elasticsearch:9200"]
+    healthcheck:
+      interval: 10s
+      retries: 12
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+  pgadmin: 
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+    - "8080:8081"
+    environment:
+        PGADMIN_DEFAULT_EMAIL: m.utkukul@gmail.com
+        PGADMIN_DEFAULT_PASSWORD: BigSecret
+        PGADMIN_LISTEN_PORT: 8081
+    volumes:
+    - pgadmin-data:/var/lib/pgadmin
+    links:
+    - "postgres_image:pgsql-server"
+    networks:
+      - dockerapi-dev
+volumes:
+  esdata:
+     driver: local
+  database-data:
+  pgadmin-data:

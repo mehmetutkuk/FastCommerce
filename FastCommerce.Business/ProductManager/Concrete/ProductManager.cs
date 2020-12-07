@@ -154,18 +154,18 @@ namespace FastCommerce.Business.ProductManager.Concrete
         }
         public async Task<List<GetTrendingProductsDto>> GetTrendingProducts()
         {
-            var trendingProducts = await _context.TrendingProducts.Include(tp=>tp.Product).ThenInclude(product=>product.ProductImages).ToListAsync();
-            
+            var trendingProducts = await _context.TrendingProducts.Include(tp => tp.Product).ThenInclude(product => product.ProductImages).ToListAsync();
+
             var trendingCategories = from tp in trendingProducts
-                group tp by new {tp.CategoryName}
+                                     group tp by new { tp.CategoryName }
                 into gtpd
-                select new { gtpd.Key.CategoryName };
+                                     select new { gtpd.Key.CategoryName };
 
             var getTrendingProductsDtoList = new List<GetTrendingProductsDto>();
             foreach (var item in trendingCategories)
             {
                 var productGetDtoList = trendingProducts.Where(tp => tp.CategoryName == item.CategoryName)
-                    .OrderBy(tp=>tp.DisplayOrder)
+                    .OrderBy(tp => tp.DisplayOrder)
                     .Select(tp => tp.Product.Adapt<ProductGetDTO>()).ToList();
                 var getTrendingProductsDto = new GetTrendingProductsDto()
                 {
@@ -185,7 +185,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
         }
 
         public async Task<List<TrendingProduct>> GetTrendingProductEntities() =>
-            await _context.TrendingProducts.Include(_=>_.Product).ToListAsync();
+            await _context.TrendingProducts.Include(_ => _.Product).ToListAsync();
         public async Task<bool> UpdateTrendingProduct(TrendingProduct trendingProduct)
         {
             var trendingProductEntities = await _context.TrendingProducts
@@ -205,6 +205,8 @@ namespace FastCommerce.Business.ProductManager.Concrete
             await _context.SaveChangesAsync();
             return await Task.FromResult(true);
 
+           
+        }
         public async Task<List<ProductGetDTO>> GetProductByPageNumber(int pageNo, int pageSize = 10)
         {
             int itemCount = _context.Products.Count();
