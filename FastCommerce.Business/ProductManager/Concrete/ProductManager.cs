@@ -204,6 +204,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
             _context.Remove(trendingProduct.Adapt<TrendingProduct>());
             await _context.SaveChangesAsync();
             return await Task.FromResult(true);
+        }
 
         public async Task<List<ProductGetDTO>> GetProductByPageNumber(int pageNo, int pageSize = 10)
         {
