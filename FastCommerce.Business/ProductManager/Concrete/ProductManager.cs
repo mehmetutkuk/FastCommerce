@@ -18,6 +18,9 @@ using FastCommerce.Business.CategoryManager.Abstract;
 using FastCommerce.Business.DTOs.Stock;
 using Elasticsearch.Net;
 using FastCommerce.Business.StockManager.Concrete;
+using System.Diagnostics.Tracing;
+using FastCommerce.Entities.Models.Enums;
+using FastCommerce.Business.DTOs.Property;
 
 namespace FastCommerce.Business.ProductManager.Concrete
 {
@@ -28,8 +31,8 @@ namespace FastCommerce.Business.ProductManager.Concrete
         private IPropertyManager _propertyManager;
         private ICategoryManager _categoryManager;
         private IStockManager _stockManager;
-        public ProductManager(dbContext context, IElasticSearchService elasticSearchService, IPropertyManager propertyManager, 
-            ICategoryManager categoryManager,IStockManager stockManager)
+        public ProductManager(dbContext context, IElasticSearchService elasticSearchService, IPropertyManager propertyManager,
+            ICategoryManager categoryManager, IStockManager stockManager)
         {
             _context = context;
             _elasticSearchService = elasticSearchService;
@@ -93,8 +96,6 @@ namespace FastCommerce.Business.ProductManager.Concrete
 
         public async Task<List<ProductGetDTO>> GetProductsByCategoryName(string name) => _context.Products.Where(p => p.ProductCategories.Any(pc => pc.Category.CategoryName == name)).Select(_ => _.Adapt<ProductGetDTO>()).ToList();
 
-        //return await _context.Products
-        //    .Where(p => p.ProductCategories.All(item => req.Categories.Contains(item.Category))).ToListAsync();
         public async Task<List<ProductGetDTO>> Get()
         {
 
@@ -119,7 +120,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
             ProductImages = _context.ProductImages.Where(c => c.ProductId == id).ToList()
         }
         ).SingleOrDefault().Adapt<ProductGetDTO>();
-       
+
 
         public async Task<bool> AddProduct(AddProductDto productdto)
         {
@@ -130,10 +131,10 @@ namespace FastCommerce.Business.ProductManager.Concrete
             if (!await _categoryManager.AddProductCategoryRelation(productdto.CategoryId, adedproduct.ProductId))
                 throw new Exception("Product And Category Relation Requried");
 
-            if(!await _stockManager.SetStockPropertyCombination(productdto.CategoryId, adedproduct.ProductId))
+            if (!await _stockManager.SetStockPropertyCombination(productdto.CategoryId, adedproduct.ProductId))
                 throw new Exception("Product Variation Requried");
 
-            if(!await AddProductImages(productdto.Images, adedproduct.ProductId))
+            if (!await AddProductImages(productdto.Images, adedproduct.ProductId))
                 throw new Exception("Product Images Requried");
 
             //ProductElasticIndexDto productElasticIndexDto = new ProductElasticIndexDto();
@@ -142,7 +143,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
             return await Task.FromResult<bool>(true);
         }
 
-        public async Task<bool> AddProductImages(List<AddProductImages> images,int ProductId)
+        public async Task<bool> AddProductImages(List<AddProductImages> images, int ProductId)
         {
             foreach (var image in images)
             {
@@ -150,6 +151,95 @@ namespace FastCommerce.Business.ProductManager.Concrete
             }
             await _context.SaveChangesAsync();
             return await Task.FromResult<bool>(true);
+        }
+        public async Task<List<GetTrendingProductsDto>> GetTrendingProducts()
+        {
+            var trendingProducts = await _context.TrendingProducts.Include(tp=>tp.Product).ThenInclude(product=>product.ProductImages).ToListAsync();
+            
+            var trendingCategories = from tp in trendingProducts
+                group tp by new {tp.CategoryName}
+                into gtpd
+                select new { gtpd.Key.CategoryName };
+
+            var getTrendingProductsDtoList = new List<GetTrendingProductsDto>();
+            foreach (var item in trendingCategories)
+            {
+                var productGetDtoList = trendingProducts.Where(tp => tp.CategoryName == item.CategoryName)
+                    .OrderBy(tp=>tp.DisplayOrder)
+                    .Select(tp => tp.Product.Adapt<ProductGetDTO>()).ToList();
+                var getTrendingProductsDto = new GetTrendingProductsDto()
+                {
+                    CategoryName = item.CategoryName,
+                    Products = productGetDtoList
+                };
+                getTrendingProductsDtoList.Add(getTrendingProductsDto);
+            }
+            return getTrendingProductsDtoList;
+        }
+
+        public async Task<bool> AddTrendingProduct(TrendingProduct trendingProduct)
+        {
+            await _context.AddAsync(trendingProduct);
+            await _context.SaveChangesAsync();
+            return await Task.FromResult(true);
+        }
+
+        public async Task<List<TrendingProduct>> GetTrendingProductEntities() =>
+            await _context.TrendingProducts.Include(_=>_.Product).ToListAsync();
+        public async Task<bool> UpdateTrendingProduct(TrendingProduct trendingProduct)
+        {
+            var trendingProductEntities = await _context.TrendingProducts
+                .Where(tp => tp.CategoryName == trendingProduct.CategoryName).ToListAsync();
+            foreach (var item in trendingProductEntities)
+            {
+                item.CategoryName = trendingProduct.CategoryName;
+            }
+
+            await _context.SaveChangesAsync();
+            return await Task.FromResult(true);
+        }
+
+        public async Task<bool> RemoveTrendingProduct(RemoveTrendingProductDto trendingProduct)
+        {
+            _context.Remove(trendingProduct.Adapt<TrendingProduct>());
+            await _context.SaveChangesAsync();
+            return await Task.FromResult(true);
+
+        public async Task<List<ProductGetDTO>> GetProductByPageNumber(int pageNo, int pageSize = 10)
+        {
+            int itemCount = _context.Products.Count();
+            List<ProductGetDTO> result =
+                   await _context.Products.Include("ProductImages")
+                   .OrderByDescending(d => d.LastModified).Skip(pageNo * pageSize)
+                   .Take(pageSize).Select(pr => pr.Adapt<ProductGetDTO>()).ToListAsync();
+            return await Task.FromResult<List<ProductGetDTO>>(result);
+        }
+
+        public async Task<GetProductFilters> GetProductFilters()
+        {
+            return await Task.FromResult<GetProductFilters>(new GetProductFilters()
+            {
+                productCategoryFilters = _context.Category
+                .Select(s => new Category { CategoryId = s.CategoryId, CategoryName = s.CategoryName }).ToList(),
+
+                productPropertyFilters = (await _context.Properties
+                .Include("PropertyDetails")
+                .ToListAsync()).GroupBy(u => u.PropertyName).Select(grp => grp.ToList())
+            });
+
+        }
+
+        public async Task<GetMinMaxPriceDto> GetMinMaxPrice()
+        {
+
+            return (from row in _context.Products
+                    group row by true into r
+                    select new GetMinMaxPriceDto
+                    {
+                        Min = r.Min(z => z.Price),
+                        Max = r.Max(z => z.Price)
+                    }).SingleOrDefault();
+
         }
     }
 

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using FastCommerce.Business.AppSettings.Abstract;
+using FastCommerce.Business.AppSettings.Concrete;
+using Elastic.Apm.NetCoreAll;
 using FastCommerce.Business.CategoryManager.Abstract;
 using FastCommerce.Business.CategoryManager.Concrete;
 using FastCommerce.Business.ElasticSearch.Abstract;
@@ -62,6 +65,7 @@ namespace FastCommerce.Web.API
             services.AddTransient<IPropertyManager, PropertyManager>();
             services.AddTransient<IOrderManager, OrderManager>();
             services.AddTransient<IStockManager, StockManager>();
+            services.AddTransient<IAppSettingsManager, AppSettingsManager>();
             services.AddMemoryCache();
             services.AddCors();
 
@@ -176,7 +180,7 @@ namespace FastCommerce.Web.API
                 .AllowAnyHeader()
                 .SetIsOriginAllowed(origin => true)
                 .AllowCredentials());
-
+            app.UseAllElasticApm(Configuration);
             app.UseHttpsRedirection();
             TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetEntryAssembly());
             app.UseAuthentication();

@@ -2,21 +2,21 @@
 
 namespace FastCommerce.DAL.Migrations
 {
-    public partial class AddAddressName : Migration
+    public partial class AddedSliderNavigationText : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "AddressName",
-                table: "Addresses",
+                name: "SliderNavigationText",
+                table: "SliderImages",
                 nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "AddressName",
-                table: "Addresses");
+                name: "SliderNavigationText",
+                table: "SliderImages");
         }
     }
 }

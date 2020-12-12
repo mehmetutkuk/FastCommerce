@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FastCommerce.DAL.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20201018142941_AddAddressProvince")]
-    partial class AddAddressProvince
+    [Migration("20201103184547_SliderImages")]
+    partial class SliderImages
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -233,14 +233,34 @@ namespace FastCommerce.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PropertyValue")
-                        .HasColumnType("text");
+                    b.Property<int>("PropertyType")
+                        .HasColumnType("integer");
 
                     b.HasKey("PropertyID");
 
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Properties");
+                });
+
+            modelBuilder.Entity("FastCommerce.Entities.Entities.PropertyDetail", b =>
+                {
+                    b.Property<int>("PropertyDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PropertyValue")
+                        .HasColumnType("text");
+
+                    b.HasKey("PropertyDetailId");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("PropertyDetails");
                 });
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.Role", b =>
@@ -311,6 +331,36 @@ namespace FastCommerce.DAL.Migrations
                     b.ToTable("Shipments");
                 });
 
+            modelBuilder.Entity("FastCommerce.Entities.Entities.SliderImage", b =>
+                {
+                    b.Property<int>("SliderImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SliderHeader")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SliderImageName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SliderNavigationUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SliderText")
+                        .HasColumnType("text");
+
+                    b.HasKey("SliderImageId");
+
+                    b.ToTable("SliderImages");
+                });
+
             modelBuilder.Entity("FastCommerce.Entities.Entities.Stock", b =>
                 {
                     b.Property<int>("StockId")
@@ -331,26 +381,27 @@ namespace FastCommerce.DAL.Migrations
                     b.ToTable("Stocks");
                 });
 
-            modelBuilder.Entity("FastCommerce.Entities.Entities.StockProperties", b =>
+            modelBuilder.Entity("FastCommerce.Entities.Entities.StockPropertyCombination", b =>
                 {
-                    b.Property<int>("StockPropertiesId")
+                    b.Property<int>("StockPropertyCombinationId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("PropertyID")
+                    b.Property<int>("PropertyDetailId")
                         .HasColumnType("integer");
 
                     b.Property<int>("StockId")
                         .HasColumnType("integer");
 
-                    b.HasKey("StockPropertiesId");
+                    b.HasKey("StockPropertyCombinationId");
 
-                    b.HasIndex("PropertyID");
+                    b.HasIndex("PropertyDetailId")
+                        .IsUnique();
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("StockProperties");
+                    b.ToTable("StockPropertyCombinations");
                 });
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.User", b =>
@@ -485,9 +536,18 @@ namespace FastCommerce.DAL.Migrations
 
             modelBuilder.Entity("FastCommerce.Entities.Entities.Property", b =>
                 {
-                    b.HasOne("FastCommerce.Entities.Entities.Category", null)
+                    b.HasOne("FastCommerce.Entities.Entities.Category", "Category")
                         .WithMany("Properties")
                         .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FastCommerce.Entities.Entities.PropertyDetail", b =>
+                {
+                    b.HasOne("FastCommerce.Entities.Entities.Property", "Property")
+                        .WithMany()
+                        .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -516,16 +576,16 @@ namespace FastCommerce.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FastCommerce.Entities.Entities.StockProperties", b =>
+            modelBuilder.Entity("FastCommerce.Entities.Entities.StockPropertyCombination", b =>
                 {
-                    b.HasOne("FastCommerce.Entities.Entities.Property", "Property")
-                        .WithMany("StockProperties")
-                        .HasForeignKey("PropertyID")
+                    b.HasOne("FastCommerce.Entities.Entities.PropertyDetail", "PropertyDetail")
+                        .WithOne("StockPropertyCombination")
+                        .HasForeignKey("FastCommerce.Entities.Entities.StockPropertyCombination", "PropertyDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FastCommerce.Entities.Entities.Stock", "Stock")
-                        .WithMany("StockProperties")
+                        .WithMany("StockPropertyCombinations")
                         .HasForeignKey("StockId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

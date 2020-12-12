@@ -10,11 +10,13 @@ namespace FastCommerce.Web.API.Models
     {
         public T Data { get; set; }
         public List<T> DataList { get; set; }
+        public Task<List<T>> AsyncList { get; set; }
         public int EntityCount { get; set; }
         public Response()
         {
             ErrorList = new List<ApiException>();
             DataList = new List<T>();
+
         }
     }
 }

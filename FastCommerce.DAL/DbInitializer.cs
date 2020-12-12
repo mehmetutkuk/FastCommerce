@@ -64,51 +64,90 @@ namespace FastCommerce.DAL
                 .Fill(p => p.Discount, GenerateDouble(40))
                 .Fill(p => p.Rating, GenerateDouble(5))
                 .Fill(p => p.ViewCount, () => new Random().Next(250));
-            List<Product> products = FillAllProperties<Product>(count);
+            List<Product> products = new List<Product>();
+            products.Add(new Product() { ProductName = "Model A Yüzük" , LastModified = DateTime.Now});
+            products.Add(new Product() { ProductName = "Model B Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model C Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model D Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model E Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model F Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Aa Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Ba Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Cc Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Dd Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Ee Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model Ff Necklaces", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model AA Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model BB Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model CC Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model EE Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model DD Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model FF Yüzük", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model AAa Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model AAA Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model BBb Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model BBB Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model CCc Bracelets", LastModified = DateTime.Now });
+            products.Add(new Product() { ProductName = "Model CCC Bracelets", LastModified = DateTime.Now });
 
-            List<Category> categories = FillAllProperties<Category>(count);
+            List<Category> categories = new List<Category>();
+            categories.Add(new Category() { CategoryName = "Trending Products" });
+            categories.Add(new Category() { CategoryName = "Rings" });
+            categories.Add(new Category() { CategoryName = "Necklaces" });
+            categories.Add(new Category() { CategoryName = "Bracelets" });
 
-            List<ProductCategories> productCategories = FillAllProperties<ProductCategories>(countSquare);
+            List<ProductCategories> productCategories = new List<ProductCategories>();
+
+            productCategories.Add(new ProductCategories() { Product = products[0], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[1], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[2], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[3], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[4], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[5], Category = categories[1] });
+            productCategories.Add(new ProductCategories() { Product = products[6], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[7], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[8], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[9], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[10], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[11], Category = categories[2] });
+            productCategories.Add(new ProductCategories() { Product = products[12], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[13], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[14], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[15], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[16], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[17], Category = categories[0] });
+            productCategories.Add(new ProductCategories() { Product = products[18], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[19], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[20], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[21], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[22], Category = categories[3] });
+            productCategories.Add(new ProductCategories() { Product = products[23], Category = categories[3] });
+
+
+
             List<Address> addresses = FillAllProperties<Address>(count);
 
-            List<Entities.Entities.Property> properties = FillAllProperties<Entities.Entities.Property>(5);
-            categories.Add(new Category() { CategoryName = "Trending Products" });
-            foreach (var item in categories)
-            {
-                item.Properties = properties.ToList();
-            }
+            List<Entities.Entities.Property> properties = new List<Entities.Entities.Property>();
 
-            for (var j = 0; j < countSquare; j++)
-            {
-                productCategories[j].Product = products.ToList()[j / count];
-                productCategories[j].Category = categories.ToList()[j % 5];
-            }
+            properties.Add(new Entities.Entities.Property() {  PropertyName = "Renk",PropertyType = Entities.Models.Enums.PropertyType.String, Category = categories[1]  });
+            properties.Add(new Entities.Entities.Property() { PropertyName = "Geniþlik", PropertyType = Entities.Models.Enums.PropertyType.String, Category = categories[1] });
 
-            List<StockPropertyCombination> stockPropertyCombinations = FillAllProperties<StockPropertyCombination>(5);
-            List<PropertyDetail> propertyDetails = FillAllProperties<PropertyDetail>(5);
-            List<Stock> stocks = FillAllProperties<Stock>(5);
-            int i = 0;
-            foreach (var item in stocks)
-            {
-                item.Product = products.ToList()[i];
-                i++;
+            List<PropertyDetail> propertyDetails = new List<PropertyDetail>();
+            propertyDetails.Add(new PropertyDetail() { PropertyValue = "100", Property = properties[1] });
+            propertyDetails.Add(new PropertyDetail() { PropertyValue = "200", Property = properties[1] });
+            propertyDetails.Add(new PropertyDetail() { PropertyValue = "300", Property = properties[1] });
+            propertyDetails.Add(new PropertyDetail() { PropertyValue = "Sarý", Property = properties[0] });
+            propertyDetails.Add(new PropertyDetail() { PropertyValue = "Beyaz", Property = properties[0] });
 
-            }
+
+       
             foreach (var item in addresses)
             {
                 item.UserId = 1;
+            }
+          
 
-            }
-            foreach (var item in stockProperties)
-            {
-                propertyDetails[pr].Property = properties[pr];
-                propertyDetails[pr].StockPropertyCombination = stockPropertyCombinations[pr];
-            }
-
-            for (var pt = 0; pt < count; pt++)
-            {
-                stockPropertyCombinations[pt].Stock = stocks[pt];
-            }
+   
 
             List<User> users = FillAllProperties<User>(count);
 
@@ -125,8 +164,6 @@ namespace FastCommerce.DAL
             await context.AddRangeAsync(properties);
             await context.AddRangeAsync(propertyDetails);
             await context.AddRangeAsync(categories);
-            await context.AddRangeAsync(stockPropertyCombinations);
-            await context.AddRangeAsync(stocks);
             context.SaveChanges();
             await context.AddRangeAsync(addresses);
             context.SaveChanges();
