@@ -19,7 +19,7 @@ RUN dotnet build "FastCommerce.UnitTests/FastCommerce.UnitTests.csproj" -c Relea
 
 
 FROM build AS publish
-RUN dotnet publish "FastCommerce.Web.API.csproj" -c Release -o /app/publish
+RUN dotnet publish "FastCommerce.Web.API/FastCommerce.Web.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

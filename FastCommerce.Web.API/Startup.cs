@@ -130,9 +130,8 @@ namespace FastCommerce.Web.API
             });
             services.AddSwaggerGenNewtonsoftSupport();
 
-            services.Configure<TokenModel>(Configuration.GetSection("tokenManagement"));
             var token = Configuration.GetSection("tokenManagement").Get<TokenModel>();
-            var secret = Encoding.ASCII.GetBytes(token.Secret);
+            var secret = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("TOKEN_SECRET"));
 
             services.AddAuthentication(x =>
             {
@@ -204,8 +203,8 @@ namespace FastCommerce.Web.API
     {
         public static void AddDomainDataServices(this IServiceCollection services)
         {
-            //string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-            var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
+            string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            //var connectionString = "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword;";
             services.AddDbContext<dbContext>(options => options.UseNpgsql(connectionString, y => y.MigrationsAssembly("FastCommerce.DAL")));
             services.AddTransient<UserManager>();
             services.AddTransient<IProductManager, ProductManager>();
@@ -215,8 +214,6 @@ namespace FastCommerce.Web.API
     {
         public static void AddEmailSender(this IServiceCollection services, IConfiguration configuration)
         {
-            //    var config = configuration.GetSection("Email").Get<EmailConfig>();
-            services.Configure<EmailConfig>(configuration.GetSection("Email"));
             services.AddTransient<IEmailService, EmailService>();
         }
     }

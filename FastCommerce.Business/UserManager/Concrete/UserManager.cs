@@ -137,18 +137,26 @@ namespace FastCommerce.Business.UserManager.Concrete
         private bool IsAuthenticated(Login request, out string token)
         {
             token = string.Empty;
+            var tokenManagement = new TokenModel()
+            {
+                AccessExpiration = int.Parse(Environment.GetEnvironmentVariable("TOKEN_ACCESS_EXPIRATION")),
+                Audience = Environment.GetEnvironmentVariable("TOKEN_AUDIENCE"),
+                Issuer = Environment.GetEnvironmentVariable("TOKEN_ISSUER"),
+                RefreshExpiration = int.Parse(Environment.GetEnvironmentVariable("TOKEN_REFRESH_EXPIRATION")),
+                Secret = Environment.GetEnvironmentVariable("TOKEN_SECRET")
+            };
             var claim = new[]
             {
                 new Claim("id", request.UserID.ToString()),
                 new Claim("email", request.Email)
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenManagement.Secret));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenManagement.Secret));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var jwtToken = new JwtSecurityToken(
-                          _tokenManagement.Issuer,
-                          _tokenManagement.Audience,
+                        tokenManagement.Issuer,
+                        tokenManagement.Audience,
                           claim,
-                          expires: DateTime.Now.AddMinutes(_tokenManagement.AccessExpiration),
+                          expires: DateTime.Now.AddMinutes(tokenManagement.AccessExpiration),
                           signingCredentials: credentials
                       );
 
