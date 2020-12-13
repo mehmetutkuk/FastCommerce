@@ -14,7 +14,19 @@ services:
       context: .
       dockerfile: FastCommerce.Web.API/Dockerfile
     environment:
-      DB_CONNECTION_STRING: "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword"      
+      DB_CONNECTION_STRING: "host=postgres_image;port=5432;Database=fastCommerce;Username=postgres;Password=postgresPassword"
+      EMAIL_FROM_ADDRESS: ""
+      EMAIL_LOCAL_DOMAIN: ""
+      EMAIL_FROM_NAME: ""
+      EMAIL_MAIL_SERVER_ADDRESS: ""
+      EMAIL_MAIL_SERVER_PORT: ""
+      EMAIL_USER_ID: ""
+      EMAIL_USER_PASSWORD: ""
+      TOKEN_ACCESS_EXPIRATION: 3000
+      TOKEN_AUDIENCE: "Fast Commerce"
+      TOKEN_ISSUER: "Fast Commerce Com."
+      TOKEN_REFRESH_EXPIRATION: 60000
+      TOKEN_SECRET: "RandomPassIDK"
     networks:
       - dockerapi-dev
     ports:
@@ -32,6 +44,8 @@ services:
       POSTGRES_DB: "fastCommerce"
     networks:
       - dockerapi-dev
+    volumes:
+      - /C/PgData:/var/lib/postgresql/data
   redis_image:
     image: redis:latest
     ports:
@@ -121,5 +135,4 @@ services:
 volumes:
   esdata:
      driver: local
-  database-data:
   pgadmin-data:

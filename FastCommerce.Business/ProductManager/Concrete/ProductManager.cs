@@ -154,18 +154,18 @@ namespace FastCommerce.Business.ProductManager.Concrete
         }
         public async Task<List<GetTrendingProductsDto>> GetTrendingProducts()
         {
-            var trendingProducts = await _context.TrendingProducts.Include(tp=>tp.Product).ThenInclude(product=>product.ProductImages).ToListAsync();
-            
+            var trendingProducts = await _context.TrendingProducts.Include(tp => tp.Product).ThenInclude(product => product.ProductImages).ToListAsync();
+
             var trendingCategories = from tp in trendingProducts
-                group tp by new {tp.CategoryName}
+                                     group tp by new { tp.CategoryName }
                 into gtpd
-                select new { gtpd.Key.CategoryName };
+                                     select new { gtpd.Key.CategoryName };
 
             var getTrendingProductsDtoList = new List<GetTrendingProductsDto>();
             foreach (var item in trendingCategories)
             {
                 var productGetDtoList = trendingProducts.Where(tp => tp.CategoryName == item.CategoryName)
-                    .OrderBy(tp=>tp.DisplayOrder)
+                    .OrderBy(tp => tp.DisplayOrder)
                     .Select(tp => tp.Product.Adapt<ProductGetDTO>()).ToList();
                 var getTrendingProductsDto = new GetTrendingProductsDto()
                 {
@@ -185,7 +185,7 @@ namespace FastCommerce.Business.ProductManager.Concrete
         }
 
         public async Task<List<TrendingProduct>> GetTrendingProductEntities() =>
-            await _context.TrendingProducts.Include(_=>_.Product).ToListAsync();
+            await _context.TrendingProducts.Include(_ => _.Product).ToListAsync();
         public async Task<bool> UpdateTrendingProduct(TrendingProduct trendingProduct)
         {
             var trendingProductEntities = await _context.TrendingProducts
@@ -206,14 +206,44 @@ namespace FastCommerce.Business.ProductManager.Concrete
             return await Task.FromResult(true);
         }
 
-        public async Task<List<ProductGetDTO>> GetProductByPageNumber(int pageNo, int pageSize = 10)
+        public async Task<List<ProductGetDTO>> GetProductByPageNumber(PostProductDTO payload)
         {
-            int itemCount = _context.Products.Count();
-            List<ProductGetDTO> result =
-                   await _context.Products.Include("ProductImages")
-                   .OrderByDescending(d => d.LastModified).Skip(pageNo * pageSize)
-                   .Take(pageSize).Select(pr => pr.Adapt<ProductGetDTO>()).ToListAsync();
+            int[] filteredProductIds = arrayFilterSelector(getProductIdByCategories(payload.categoryIds), getProductIdByPropertyDetails(payload.propertyDetailIds));
+
+            var query = _context.Products.Include("ProductImages")
+                   .OrderByDescending(d => d.LastModified).Skip(payload.pageNo * payload.pageSize);
+            if (filteredProductIds != null)
+                query = query.Where(p => filteredProductIds.Contains(p.ProductId));
+
+            query = query.Take(payload.pageSize);
+
+            List<ProductGetDTO> result = await query.Select(pr => pr.Adapt<ProductGetDTO>()).ToListAsync();
             return await Task.FromResult<List<ProductGetDTO>>(result);
+        }
+        public int[] arrayFilterSelector(int[] a, int[] b)
+        {
+            if (a.Length > 0 & b.Length > 0)
+            {
+                return a.Intersect(b).ToArray();
+            }
+            else if (a.Length > 0 & b.Length == 0)
+            { return a; }
+            else if (b.Length > 0 & a.Length == 0)
+            { return b; }
+            else
+            {
+                return null;
+            }
+        }
+
+        public int[] getProductIdByCategories(int[] categoryIds)
+        {
+            return _context.ProductCategories.Where(s => categoryIds.Contains(s.CategoryId)).Select(a => a.ProductId).ToArray();
+        }
+        public int[] getProductIdByPropertyDetails(int[] propertyDetailIds)
+        {
+            return _context.StockPropertyCombinations.Include("Stock").Where(s => propertyDetailIds.Contains(s.PropertyDetailId))
+                .Select(a => a.Stock.ProductId).ToArray();
         }
 
         public async Task<GetProductFilters> GetProductFilters()

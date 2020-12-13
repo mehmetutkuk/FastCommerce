@@ -79,15 +79,15 @@ namespace FastCommerce.Web.API.Controllers.Products
         }
 
 
-        [HttpGet("GetProductByPageNumber/{pageNo:int}")]
-        public async Task<Response<ProductGetDTO>> GetProductByPageNumber(int pageNo)
+        [HttpPost("GetProductByPageNumber")]
+        public async Task<Response<ProductGetDTO>> GetProductByPageNumber(PostProductDTO payload)
         {
-            _logger.LogDebug("GetProductByPageNumber init with",pageNo);
+            _logger.LogDebug("GetProductByPageNumber init with",payload);
             Response<ProductGetDTO> httpResponse = new Response<ProductGetDTO>();
             try
             {
                 httpResponse.RequestState = true;
-                httpResponse.DataList = await _productManager.GetProductByPageNumber(pageNo);
+                httpResponse.DataList = await _productManager.GetProductByPageNumber(payload);
                 httpResponse.EntityCount = httpResponse.DataList.Count();
             }
             catch (Exception ex)
