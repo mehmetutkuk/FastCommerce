@@ -22,14 +22,4 @@ Documentation coming soon.
 
 # Usage And Installation
 
-
- -docker 
- -kibana 
- -elasticsearch 
- -dotnetcore 
- -N-Tier 
- -EntityFrameworkCore 
- -Multilayer
- -redis
-
-
+Docker Repo : https://hub.docker.com/repository/docker/fastcommerce/fastcommerce
